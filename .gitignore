@@ -1,5 +1,3 @@
+.DS_Store
 node_modules/
-public/styles
-.env
-*.log
-*.sqlite3
+*.env

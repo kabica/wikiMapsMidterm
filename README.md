@@ -1,5 +1,17 @@
 LHL Node Skeleton
 =========
+## Connect to midterm DB as LABBER
+  - psql -d midterm -U labber 
+
+## GIT Workflow 
+  - clone 
+  - branch
+  - code
+  - checkout master 
+  - pull 
+  - merge
+  - push 
+  - repeat from step 2
 
 ## Project Setup
 
