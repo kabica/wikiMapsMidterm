@@ -13,6 +13,12 @@ LHL Node Skeleton
   - push 
   - repeat from step 2
 
+## Heroku push/pull
+  - Heroku db pull request
+    - heroku pg:pull d4jnfg8fgb3kkl midterm --app wikimaps-lhl
+  - Heroku db push request
+    - heroku pg:push midterm d4jnfg8fgb3kkl --app wikimaps-lhl
+
 ## Project Setup
 
 The following steps are only for _one_ of the group members to perform.
