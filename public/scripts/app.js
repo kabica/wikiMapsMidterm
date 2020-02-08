@@ -3,8 +3,8 @@ $(() => {
     method: "GET",
     url: "/api/users"
   }).done((users) => {
-    for(user of users) {
+    Object.keys(users).forEach(user => {
       $("<div>").text(user.name).appendTo($("body"));
-    }
-  });;
+    })
+  });
 });
