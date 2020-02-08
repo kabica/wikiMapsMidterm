@@ -13,6 +13,12 @@ LHL Node Skeleton
   - push 
   - repeat from step 2
 
+## Heroku add app remote
+  - heroku git:remote -a wikimaps-lhls
+
+## Heroku run psql
+  - heroku pg:psql
+
 ## Heroku push/pull
   - Heroku db pull request
     - heroku pg:pull d4jnfg8fgb3kkl midterm --app wikimaps-lhl
