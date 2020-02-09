@@ -1,17 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Home Page</title>
+<html>
+<head>
+  <title>Home Page</title>
 
-    <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
-    <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
-    <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+  <!-- Framework CSS -->
+  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap-grid.css" type="text/css" /> -->
 
-    <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-    <script type="text/javascript" src="/scripts/app.js"></script>
-  </head>
+  <!-- Internal CSS -->
+  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
 
-  <body>
-    <h1>Hello World!</h1>
-  </body>
+  <!-- Framework JS -->
+  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+  <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
+  <!-- <script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.js"></script> -->
+
+  <!-- Internal JS -->
+  <script type="text/javascript" src="/scripts/app.js"></script>
+  <script type="text/javascript" src="/scripts/nav.js"></script>
+</head>
+
+<body>
+  <nav class="topnav" id="myTopnav">
+    <p class="nav-logo">LOGO</p>
+    <a href="javascript:void(0);" class="icon nav-menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <p class="nav-auth">Login/Reg</p>
+  </nav>
+
+  <aside class="menu">
+    <section class="menu-search">
+      <form class="menu-search-form">
+        SEARCH
+        <input type="text" class="menu-search-input" name="search-input">
+      </form>
+    </section>
+    <section class="menu-discover">
+      <span class="fa-stack fa-2x">
+        <i class="fas fa-utensils fa-stack-1x"></i>
+        <i class="far fa-circle fa-stack-2x"></i>
+        <p>Food</p>
+      </span>
+      <span class="fa-stack fa-2x">
+        <i class="fas fa-film fa-stack-1x"></i>
+        <i class="far fa-circle fa-stack-2x"></i>
+        <p>Movies</p>
+      </span>
+      <span class="fa-stack fa-2x">
+        <i class="fas fa-glass-martini fa-stack-1x"></i>
+        <i class="far fa-circle fa-stack-2x"></i>
+        <p>Drinks</p>
+      </span>
+      <span class="fa-stack fa-2x">
+        <i class="fas fa-running fa-stack-1x"></i>
+        <i class="far fa-circle fa-stack-2x"></i>
+        <p>Active</p>
+      </span>
+    </section>
+  </aside>
+
+  <header id="map" class="gmaps">
+    <h2>MAPS!</h2>
+  </header>
+</body>
 </html>

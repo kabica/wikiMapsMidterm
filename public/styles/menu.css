@@ -1,0 +1,31 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  padding: 0em 1em;
+  background-color: steelblue;
+}
+
+.menu-search {
+  width: 100%;
+}
+
+.menu-search-input {
+  margin-left: 1em;
+  width: 80%;
+}
+
+.menu-discover {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  color: white;
+}
+
+.menu-discover span {
+  margin: 0.5em 0.5em 1em;
+}
+
+.menu span p {
+  padding-top: 0.5em;
+}

@@ -1,7 +1,23 @@
 body {
   background-color: #EEE;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 3.5em auto 1fr;
+  grid-template-areas:
+  "nav nav nav"
+  "navDrop navDrop navDrop"
+  "content content content";
+  grid-gap: 0em;
 }
 
-body h1 {
-  color: #244751;
+nav {
+  grid-area: nav;
+}
+
+.menu {
+  grid-area: navDrop;
+}
+
+.gmaps {
+  grid-area: content;
 }
