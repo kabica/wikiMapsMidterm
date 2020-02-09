@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
   <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
   <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/header.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
 
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
@@ -22,47 +24,48 @@
 </head>
 
 <body>
-  <nav class="topnav" id="myTopnav">
-    <p class="nav-logo">LOGO</p>
-    <a href="javascript:void(0);" class="icon nav-menu">
-      <i class="fa fa-bars"></i>
-    </a>
-    <p class="nav-auth">Login/Reg</p>
-  </nav>
 
-  <aside class="menu">
-    <section class="menu-search">
-      <form class="menu-search-form">
-        SEARCH
-        <input type="text" class="menu-search-input" name="search-input">
-      </form>
-    </section>
-    <section class="menu-discover">
-      <span class="fa-stack fa-2x">
-        <i class="fas fa-utensils fa-stack-1x"></i>
-        <i class="far fa-circle fa-stack-2x"></i>
-        <p>Food</p>
-      </span>
-      <span class="fa-stack fa-2x">
-        <i class="fas fa-film fa-stack-1x"></i>
-        <i class="far fa-circle fa-stack-2x"></i>
-        <p>Movies</p>
-      </span>
-      <span class="fa-stack fa-2x">
-        <i class="fas fa-glass-martini fa-stack-1x"></i>
-        <i class="far fa-circle fa-stack-2x"></i>
-        <p>Drinks</p>
-      </span>
-      <span class="fa-stack fa-2x">
-        <i class="fas fa-running fa-stack-1x"></i>
-        <i class="far fa-circle fa-stack-2x"></i>
-        <p>Active</p>
-      </span>
-    </section>
-  </aside>
+  <%- include partials/_nav %>
 
-  <header id="map" class="gmaps">
-    <h2>MAPS!</h2>
-  </header>
+  <%- include partials/_menu %>
+
+  <main class="container">
+    <header id="map" class="gmaps">
+      <h2>MAPS!</h2>
+    </header>
+
+      <article class="discover-category cat1">
+        <header class="discover-category-header">
+          <h3 class="discover-category-name">
+            Food
+          </h3>
+        </header>
+        <section class="discover-category-main">
+          <h3>REVIEWS</h3>
+        </section>
+      </article>
+
+      <article class="discover-category cat2">
+        <header class="discover-category-header">
+          <h3 class="discover-category-name">
+            Movies
+          </h3>
+        </header>
+        <section class="discover-category-main">
+          <h3>REVIEWS</h3>
+        </section>
+      </article>
+
+      <article class="discover-category cat3">
+        <header class="discover-category-header">
+          <h3 class="discover-category-name">
+            Active
+          </h3>
+        </header>
+        <section class="discover-category-main">
+          <h3>REVIEWS</h3>
+        </section>
+      </article>
+  </main>
 </body>
 </html>

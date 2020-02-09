@@ -1,13 +1,6 @@
 body {
   background-color: #EEE;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 3.5em auto 1fr;
-  grid-template-areas:
-  "nav nav nav"
-  "navDrop navDrop navDrop"
-  "content content content";
-  grid-gap: 0em;
+
 }
 
 nav {
@@ -18,6 +11,43 @@ nav {
   grid-area: navDrop;
 }
 
-.gmaps {
+main {
   grid-area: content;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 20em 20em;
+  grid-template-areas:
+  "gmaps gmaps gmaps desc"
+  "article1 article2 article3 .";
+  row-gap: 2em;
+  column-gap: 1em;
+  margin: 2em 0em 0em 2em;
+}
+
+/* Checking for desktop displays and Setting styles */
+
+@media screen and (min-width: 1024px) {
+  body {
+    display: grid;
+    grid-template-columns: 10em auto;
+    grid-template-rows: 3.5em auto;
+    grid-template-areas:
+    "nav nav"
+    "navDrop content";
+    }
+  }
+
+/* Checking for anything under desktop size and setting styles */
+
+@media screen and (max-width: 1024px) {
+body {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 3.5em auto 1fr;
+  grid-template-areas:
+  "nav"
+  "navDrop"
+  "content";
+  grid-gap: 0em;
+  }
 }

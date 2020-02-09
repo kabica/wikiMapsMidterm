@@ -1,31 +1,72 @@
 .menu {
-  display: flex;
-  flex-direction: column;
-  height: auto;
   padding: 0em 1em;
   background-color: steelblue;
 }
 
-.menu-search {
-  width: 100%;
-}
-
-.menu-search-input {
-  margin-left: 1em;
-  width: 80%;
-}
-
 .menu-discover {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
   color: white;
+}
+
+.menu-discover-header {
+  color: white;
+  margin-bottom: 0em;
+  align-self: center;
 }
 
 .menu-discover span {
   margin: 0.5em 0.5em 1em;
+  display: flex;
+  justify-content: center;
 }
 
 .menu span p {
   padding-top: 0.5em;
 }
+
+ /* Checking for desktop displays and Setting styles */
+
+@media screen and (min-width: 1024px) {
+  .menu {
+    display: flex;
+    flex-direction: column;
+    width: 10em;
+    height: 100%;
+    z-index: 100;
+    margin-top: 3em;
+    position: fixed;
+  }
+
+  .menu-search {
+    display: none;
+  }
+
+  .menu-discover {
+    flex-direction: column;
+  }
+}
+
+/* Checking for anything under desktop size and setting styles */
+
+@media screen and (max-width: 1024px) {
+  .menu {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .menu-search {
+    width: 100%;
+  }
+
+  .menu-search-input {
+    margin-left: 1em;
+    width: 80%;
+  }
+
+  .menu-discover {
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+}
+

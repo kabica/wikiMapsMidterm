@@ -1,0 +1,6 @@
+.gmaps {
+  grid-area: gmaps;
+  height: 20em;
+  /* width: 70%; */
+  border: 2px solid black;
+}
