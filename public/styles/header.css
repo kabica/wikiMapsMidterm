@@ -1,3 +1,12 @@
+.map-desc {
+  grid-area: desc;
+  margin: none;
+}
+
+.map-desc-title {
+  margin-top: 0em;
+}
+
 .gmaps {
   grid-area: gmaps;
   height: 20em;

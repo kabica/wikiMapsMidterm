@@ -30,42 +30,18 @@
   <%- include partials/_menu %>
 
   <main class="container">
-    <header id="map" class="gmaps">
-      <h2>MAPS!</h2>
+
+    <header class="map-desc">
+      <h1 class="map-desc-title">MAP TITLE!</h1>
+      <p class="map-desc-info">MAP INFO!</p>
     </header>
 
-      <article class="discover-category cat1">
-        <header class="discover-category-header">
-          <h3 class="discover-category-name">
-            Food
-          </h3>
-        </header>
-        <section class="discover-category-main">
-          <h3>REVIEWS</h3>
-        </section>
-      </article>
+    <section id="map" class="gmaps">
+      <h2>MAPS!</h2>
+    </section>
 
-      <article class="discover-category cat2">
-        <header class="discover-category-header">
-          <h3 class="discover-category-name">
-            Movies
-          </h3>
-        </header>
-        <section class="discover-category-main">
-          <h3>REVIEWS</h3>
-        </section>
-      </article>
+  <%- include partials/_discover %>
 
-      <article class="discover-category cat3">
-        <header class="discover-category-header">
-          <h3 class="discover-category-name">
-            Active
-          </h3>
-        </header>
-        <section class="discover-category-main">
-          <h3>REVIEWS</h3>
-        </section>
-      </article>
   </main>
 </body>
 </html>

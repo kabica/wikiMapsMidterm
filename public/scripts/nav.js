@@ -5,6 +5,5 @@ function nav() {
 }
 
 $( document ).ready(function() {
-  // $('.menu').hide();
   nav();
 });
