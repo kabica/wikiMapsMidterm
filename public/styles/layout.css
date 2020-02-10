@@ -53,15 +53,14 @@ main {
     grid-gap: 0em;
   }
 
+  /* Change this layout for tablet sizes */
   main {
-    grid-template-columns: 1fr;
-    grid-template-rows: 5em 20em 10em 10em 10em;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 5em 20em 20em;
     grid-template-areas:
-    "desc"
-    "gmaps"
-    "article1"
-    "article2"
-    "article3";
+    ". desc ."
+    "gmaps gmaps gmaps"
+    "article1 article2 article3";
     margin: 2em 2em 0em 2em;
   }
 }
@@ -78,15 +77,15 @@ main {
     grid-gap: 0em;
     }
 
-    main {
-      grid-template-columns: 1fr;
-      grid-template-rows: 5em 20em 10em 10em 10em;
-      grid-template-areas:
-      "desc"
-      "gmaps"
-      "article1"
-      "article2"
-      "article3";
-      margin: 2em 2em 0em 2em;
-    }
+  main {
+    grid-template-columns: 1fr;
+    grid-template-rows: 5em 20em 10em 10em 10em;
+    grid-template-areas:
+    "desc"
+    "gmaps"
+    "article1"
+    "article2"
+    "article3";
+    margin: 2em 2em 0em 2em;
+  }
 }
