@@ -1,0 +1,56 @@
+.user-maps-heading {
+  grid-area: 1 / 1;
+  text-align: center;
+}
+
+.user-favorites-heading {
+  grid-area: 1 / 4;
+  text-align: center;
+}
+
+.user-section {
+  grid-area: 1 / 2 / span 2 / span 2;
+  display: flex;
+  justify-content: center;
+}
+
+.user-section-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  width: 40%;
+  padding-top: 10em;
+}
+
+.user-maps {
+  grid-area: 2 / 1;
+  border: 2px solid black;
+  height: 20em;
+  border-radius: 0.5em;
+  margin-bottom: 1em;
+}
+
+.user-favorites {
+  grid-area: 2 / 4;
+}
+
+.big-map {
+  border: 2px solid black;
+  border-radius: 0.5em;
+  height: 30em;
+  width: 99%;
+}
+
+.user-create {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home Page</title>
+
+  <!-- Framework CSS -->
+  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+
+  <!-- Internal CSS -->
+  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/header.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/users.css" type="text/css" />
+
+
+  <!-- Framework JS -->
+  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+  <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
+
+  <!-- Internal JS -->
+  <script type="text/javascript" src="/scripts/app.js"></script>
+  <script type="text/javascript" src="/scripts/nav.js"></script>
+  <script type="text/javascript" src="./googleAPI.js"></script>
+</head>
+
+<body>
+
+  <%- include partials/_nav %>
+
+  <%- include partials/_auth %>
+
+  <%- include partials/_menu %>
+
+  <main class="container">
+
+    <h2 class="user-maps-heading">My Maps!</h2>
+    <h2 class="user-favorites-heading">Favorites</h2>
+
+    <section class="user-maps-section">
+      <article class="user-maps map1">
+
+      </article>
+
+      <article class="user-maps map2">
+
+      </article>
+
+      <article class="user-maps map3">
+
+      </article>
+    </section>
+
+    <section class="user-favorites-section">
+      <article class="user-maps fav1">
+
+      </article>
+
+      <article class="user-maps fav2">
+
+      </article>
+
+      <article class="user-maps fav3">
+
+      </article>
+    </section>
+
+    <section class="user-section">
+      <article class="user-section-grid"
+      <h2 class="user-email"><%= users[0].email %></h2>
+      <span class="fa-stack fa-2x">
+        <i class="fas fa-user fa-stack-1x"></i>
+        <i class="far fa-circle fa-stack-2x"></i>
+      </span>
+      <div class="big-map">
+
+      </div>
+      <button class="user-create">
+        Create a new map
+      </button>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

@@ -5,6 +5,15 @@
       <input type="text" class="menu-search-input" name="search-input">
     </form>
   </section>
+  <% if (locals.users) { %>
+  <section class="user">
+    <h2 class="user-email"><%= users[0].email %></h2>
+    <span class="fa-stack fa-2x">
+      <i class="fas fa-user fa-stack-1x"></i>
+      <i class="far fa-circle fa-stack-2x"></i>
+    </span>
+  </section>
+  <% } %>
   <h2 class="menu-discover-header">Discover:</h2>
   <section class="menu-discover">
     <span class="fa-stack fa-2x">

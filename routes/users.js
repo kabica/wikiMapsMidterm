@@ -62,8 +62,9 @@ module.exports = (db) => {
             error: "error"
           });
           return;
-        } // req.session.userId = user.id;
-        res.redirect('/:users');
+        }
+        req.session.userId = user.id;
+        res.redirect(`/${email}`);
       })
       .catch(err => {
         res
@@ -75,15 +76,16 @@ module.exports = (db) => {
 
   });
   // GET -- LOGIN
-  router.get("/login", (req, res) => {
-    res.render('login');
-  });
+  // router.get("/login", (req, res) => {
+  //   res.render('login');
+  // });
 
 
   //============================== REGISTER ===============================//
-  router.get("/register", (req, res) => {
-    res.render("register");
-  });
+  // router.get("/register", (req, res) => {
+  //   templat
+  //   res.render("register");
+  // });
   const createNewUser = function (name, email, password, defaultCity, preferences) {
     return db.query(`
   INSERT INTO users (name, email, password, default_city, preferences)
@@ -168,7 +170,20 @@ module.exports = (db) => {
   });
 
   router.get("/:users", (req, res) => {
+    email = req.params.users;
 
+    db.query(`SELECT * FROM users WHERE email = '${email}'`)
+      .then(userData => {
+        const user = userData.rows;
+        templateVars = {
+          users: user
+        }
+        console.log(user, 'queryusers')
+        res.render("user", templateVars)
+      })
+      .catch(err => {
+        res.status(500).json({error: err.message});
+      });
   })
 
   return router;

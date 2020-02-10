@@ -30,6 +30,7 @@
   .menu {
     display: flex;
     flex-direction: column;
+    align-content: center;
     width: 10em;
     height: 100%;
     z-index: 100;
@@ -43,6 +44,14 @@
 
   .menu-discover {
     flex-direction: column;
+  }
+
+  .user {
+    align-items: center;
+  }
+
+  .user-email {
+    font-size: 100%;
   }
 }
 
@@ -68,6 +77,10 @@
   .menu-discover {
     flex-wrap: wrap;
     justify-content: space-evenly;
+  }
+
+  .user {
+    display: none;
   }
 }
 

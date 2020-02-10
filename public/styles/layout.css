@@ -31,7 +31,7 @@ main {
 
   main {
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 20em 20em;
+    grid-template-rows: 20em auto;
     grid-template-areas:
     "gmaps gmaps gmaps desc"
     "article1 article2 article3 .";

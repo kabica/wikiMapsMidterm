@@ -7,5 +7,8 @@
     Search your city
     <input type="text" class="nav-search-input" name="search-input">
   </form>
+  <% if (locals.users) { %>
+    <h3 class="user-loggedIn">Welcome: <%= users[0].name %></h3>
+  <% } %>
   <button class="open-button" onclick="openForm()">Open Form</button>
 </nav>
