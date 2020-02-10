@@ -6,21 +6,124 @@
  */
 
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
+const apiKEY = process.env.API_KEY;
+
 
 module.exports = (db) => {
-  router.get("/", (req, res) => {
+  router.get("/api/users", (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
     db.query(`SELECT * FROM users;`)
       .then(data => {
-        console.log('hi');
         const users = data.rows;
-        res.json({ users });
+        res.json({
+          users
+        });
       })
       .catch(err => {
         res
           .status(500)
-          .json({ error: err.message });
+          .json({
+            error: err.message
+          });
       });
   });
+
+
+  //================================ LOGIN =================================//
+
+  const getUserWithEmail = function (email) {
+    return db.query(`
+  SELECT * FROM users
+  WHERE email = $1
+  `, [email])
+      .then(res => res.rows[0])
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const login =  function(email, password) {
+    return getUserWithEmail(email)
+    .then(user => {
+      if (password === user.password) {
+        return user;
+      }
+      return null;
+    });
+  };
+  // POST -- LOGIN
+  router.post("/login", (req, res) => {
+    const email = req.body.username;
+    const password = req.body.password;
+    login(email , password)
+    .then(user => {
+      if (!user) {
+        res.send({error: "error"});
+        return;
+      } // req.session.userId = user.id;
+      res.send({user: {name: user.name, email: user.email, id: user.id}});
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({
+          error: err.message
+        });
+    });
+
+  });
+  // GET -- LOGIN
+  router.get("/login", (req, res) => {
+    res.render('login');
+  });
+
+
+  //============================== REGISTER ===============================//
+  router.get("/register", (req, res) => {
+    res.render("register");
+  });
+  const createNewUser = function (name, email, password, defaultCity, preferences) {
+    return db.query(`
+  INSERT INTO users (name, email, password, defaultCity, preferences)
+  VALUES ($1,$2,$3,$4,$5);
+  `, [name, email, password, defaultCity, preferences])
+      .then(res => res.rows)
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  // POST -- REGISTER
+  router.post("/create", (req, res) => {
+    const name = 'testName';
+    const defaultCity = 'testCity';
+    const preferences = 'testPreferences';
+    const email = req.body.username;
+    const password = req.body.password;
+    getUserWithEmail(email)
+    .then(user => {
+      if (user) {
+        res.send("Email is already in use");
+        return;
+      } // req.session.userId = user.id;
+    })
+    .then(createNewUser(name, email, password, defaultCity, preferences))
+    .catch(err => {
+      res
+        .status(500)
+        .json({
+          error: err.message
+        });
+    });
+
+  });
+  router.get("/", (req, res) => {
+    const templateVars = {
+      key: apiKEY
+    };
+    res.render("index", templateVars);
+  });
+
   return router;
 };
