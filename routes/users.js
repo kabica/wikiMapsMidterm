@@ -30,8 +30,6 @@ module.exports = (db) => {
           });
       });
   });
-
-
   //================================ LOGIN =================================//
 
   const getUserWithEmail = function (email) {
@@ -44,34 +42,36 @@ module.exports = (db) => {
         console.log(error);
       });
   };
-  const login =  function(email, password) {
+  const login = function (email, password) {
     return getUserWithEmail(email)
-    .then(user => {
-      if (password === user.password) {
-        return user;
-      }
-      return null;
-    });
+      .then(user => {
+        if (password === user.password) {
+          return user;
+        }
+        return null;
+      });
   };
   // POST -- LOGIN
   router.post("/login", (req, res) => {
     const email = req.body.username;
     const password = req.body.password;
-    login(email , password)
-    .then(user => {
-      if (!user) {
-        res.send({error: "error"});
-        return;
-      } // req.session.userId = user.id;
-      res.send({user: {name: user.name, email: user.email, id: user.id}});
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .json({
-          error: err.message
-        });
-    });
+    login(email, password)
+      .then(user => {
+        if (!user) {
+          res.send({
+            error: "error"
+          });
+          return;
+        } // req.session.userId = user.id;
+        res.redirect('/myMaps');
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: err.message
+          });
+      });
 
   });
   // GET -- LOGIN
@@ -96,12 +96,12 @@ module.exports = (db) => {
       });
   };
   /* REGISTER
-  *   - post is made on /register page (user enter email and password)
-  *   - getUserWithEmail is called with the input email
-  *   - if a valid user is returned, that means the email was already in use
-  *   - if null is returned, createNewUser is called with fake data
-  *   - /api/users is called to show db table with newly added user
-  */
+   *   - post is made on /register page (user enter email and password)
+   *   - getUserWithEmail is called with the input email
+   *   - if a valid user is returned, that means the email was already in use
+   *   - if null is returned, createNewUser is called with fake data
+   *   - /api/users is called to show db table with newly added user
+   */
   router.post("/register", (req, res) => {
     const name = 'testName';
     const defaultCity = 'testCity';
@@ -109,20 +109,21 @@ module.exports = (db) => {
     const email = req.body.username;
     const password = req.body.password;
     getUserWithEmail(email)
-    .then(user => {
-      if(user) {
-        res.send('ALREADY EXISTS')
-        return;
-      }
-      createNewUser(name, email, password, defaultCity, preferences)
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .json({
-          error: err.message
-        });
-    });
+      .then(user => {
+        if (user) {
+          res.send('ALREADY EXISTS')
+          return;
+        }
+        createNewUser(name, email, password, defaultCity, preferences)
+          .then(res.redirect('/api/users'))
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: err.message
+          });
+      });
 
   });
   router.get("/", (req, res) => {
@@ -130,6 +131,40 @@ module.exports = (db) => {
       key: apiKEY
     };
     res.render("index", templateVars);
+  });
+
+  //============================== VALID USER ===============================//
+  const newMap = function(user_id, metaData) {
+    return db.query(`
+  INSERT INTO maps (user_id, center, title, description)
+  VALUES ($1,$2,$3,$4)
+  RETURNING *;
+  `, [user_id, metaData.center, metaData.title, metaData.description])
+      .then(res => res.rows)
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+
+  router.get("/maps", (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    db.query(`SELECT * FROM maps;`)
+      .then(data => {
+        const users = data.rows;
+        res.json({
+          users
+        });
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: err.message
+          });
+      });
   });
 
   return router;
