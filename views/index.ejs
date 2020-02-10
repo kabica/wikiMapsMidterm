@@ -16,6 +16,7 @@
 <body>
   <h1 class="title">Hello World!</h1>
   <div id="map"></div>
+
   <style>
     /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -33,39 +34,91 @@
       padding: 0;
     }
   </style>
+  <div id="floating-panel">
+    <button id="drop" onclick="addMarker(map)">Drop Markers</button>
+    <button id="drop" onclick="displayMarkers(markers)">Display Markers</button>
+    <button id="drop" onclick="sendMarkers(markers)">Send Markers</button>
 
-  <script>
-    var map;
+    <div id="map"></div>
+    <script>
+      var map;
+      const center = {
+        lat: -33.890542,
+        lng: 151.274856
+      };
 
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: {
-          lat: -34.397,
-          lng: 150.644
-        },
-        zoom: 8
-      });
-    }
-  </script>
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: center,
+          zoom: 8
+        });
+      };
+      var beaches = [
+        ['Bondi Beach', -33.890542, 151.274856, 4],
 
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
-  </script>
+      ];
 
-  <form id="create" action="/register" method="GET">
-    <div class="flexBox">
-      <input class="button" type="submit" value="Register">
-    </div>
-  </form>
-  <form id="login" action="/login" method="GET">
-    <div class="flexBox">
-      <input class="button" type="submit" value="login">
-    </div>
-  </form>
-  <form id="logout" action="/logout" method="GET">
-    <div class="flexBox">
-      <input class="button" type="submit" value="logout">
-    </div>
-  </form>
+      let markers = [];
+      const addMarker = function (map) {
+        marker = new google.maps.Marker({
+          map: map,
+          draggable: true,
+          animation: google.maps.Animation.DROP,
+          position: {
+            lat: -33.890542,
+            lng: 151.274856
+          }
+        });
+        markers.push(marker);
+        marker.addListener('click', toggleBounce);
+      }
+
+      function toggleBounce() {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+      }
+      const displayMarkers = function (markers) {
+        markers.forEach(marker => {
+          let lat = marker.getPosition().lat();
+          let lng = marker.getPosition().lng();
+          console.log(`lat: ${lat} , lng: ${lng}`);
+        })
+      };
+
+
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
+
+
+
+    <form id="create" action="/register" method="GET">
+      <div class="flexBox">
+        <input class="button" type="submit" value="Register">
+      </div>
+    </form>
+    <form id="login" action="/login" method="GET">
+      <div class="flexBox">
+        <input class="button" type="submit" value="login">
+      </div>
+    </form>
+    <form id="logout" action="/logout" method="GET">
+      <div class="flexBox">
+        <input class="button" type="submit" value="logout">
+      </div>
+    </form>
+    <form id="create" action="/create" method="GET">
+      <div class="flexBox">
+        <input class="button" type="submit" value="create">
+      </div>
+    </form>
+    <form id="create" action="/showMap" method="GET">
+      <div class="flexBox">
+        <input class="button" type="submit" value="showMap">
+      </div>
+    </form>
 
 </body>
 

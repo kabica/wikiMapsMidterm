@@ -9,6 +9,7 @@ const express = require('express');
 const router = express.Router();
 const apiKEY = process.env.API_KEY;
 
+
 module.exports = (db) => {
   router.get("/api/users", (req, res) => {
     const username = req.body.username;
@@ -91,22 +92,15 @@ module.exports = (db) => {
   });
   const createNewUser = function (name, email, password, defaultCity, preferences) {
     return db.query(`
-  INSERT INTO users (name, email, password, default_city, preferences)
-  VALUES ($1,$2,$3,$4,$5)
-  RETURNING *;
-  `, [name, email, password, defaultCity, preferences])
+      INSERT INTO users (name, email, password, default_city, preferences)
+      VALUES ($1,$2,$3,$4,$5)
+      RETURNING *;
+      `, [name, email, password, defaultCity, preferences])
       .then(res => res.rows[0])
       .catch((error) => {
         console.log(error);
       });
   };
-  /* REGISTER
-   *   - post is made on /register page (user enter email and password)
-   *   - getUserWithEmail is called with the input email
-   *   - if a valid user is returned, that means the email was already in use
-   *   - if null is returned, createNewUser is called with fake data
-   *   - /api/users is called to show db table with newly added user
-   */
   router.post("/register", (req, res) => {
     const name = 'testName';
     const defaultCity = 'testCity';
@@ -139,24 +133,32 @@ module.exports = (db) => {
   });
 
   //============================== VALID USER ===============================//
-  const newMap = function(user_id, metaData) {
-    return db.query(`
-  INSERT INTO maps (user_id, center, title, description)
-  VALUES ($1,$2,$3,$4)
-  RETURNING *;
-  `, [user_id, metaData.center, metaData.title, metaData.description])
-      .then(res => res.rows)
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  router.get("/create", (req, res) => {
+    res.render("createMap");
+  });
+  router.post("/create", (req, res) => {
+
+  });
+
+
+
+
+
+
+
+
+
+
+
 
 
   router.get("/maps", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
-    db.query(`SELECT * FROM maps;`)
+    db.query(`SELECT * FROM maps
+    WHERE user_id = 2;
+    `)
       .then(data => {
         const users = data.rows;
         res.json({
