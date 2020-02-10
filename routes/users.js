@@ -9,7 +9,6 @@ const express = require('express');
 const router = express.Router();
 const apiKEY = process.env.API_KEY;
 
-
 module.exports = (db) => {
   router.get("/api/users", (req, res) => {
     const username = req.body.username;
@@ -62,7 +61,8 @@ module.exports = (db) => {
             error: "error"
           });
           return;
-        } // req.session.userId = user.id;
+        }
+        req.session.user_id = user.id;
         res.redirect('/api/users');
       })
       .catch(err => {
@@ -77,6 +77,11 @@ module.exports = (db) => {
   // GET -- LOGIN
   router.get("/login", (req, res) => {
     res.render('login');
+  });
+  router.get("/logout", (req, res) => {
+    req.session.user_id = null;
+    req.session = null;
+    res.redirect('/');
   });
 
 
