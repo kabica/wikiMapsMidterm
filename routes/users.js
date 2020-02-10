@@ -86,16 +86,23 @@ module.exports = (db) => {
   });
   const createNewUser = function (name, email, password, defaultCity, preferences) {
     return db.query(`
-  INSERT INTO users (name, email, password, defaultCity, preferences)
-  VALUES ($1,$2,$3,$4,$5);
+  INSERT INTO users (name, email, password, default_city, preferences)
+  VALUES ($1,$2,$3,$4,$5)
+  RETURNING *;
   `, [name, email, password, defaultCity, preferences])
-      .then(res => res.rows)
+      .then(res => res.rows[0])
       .catch((error) => {
         console.log(error);
       });
   };
-  // POST -- REGISTER
-  router.post("/create", (req, res) => {
+  /* REGISTER
+  *   - post is made on /register page (user enter email and password)
+  *   - getUserWithEmail is called with the input email
+  *   - if a valid user is returned, that means the email was already in use
+  *   - if null is returned, createNewUser is called with fake data
+  *   - /api/users is called to show db table with newly added user
+  */
+  router.post("/register", (req, res) => {
     const name = 'testName';
     const defaultCity = 'testCity';
     const preferences = 'testPreferences';
@@ -103,12 +110,12 @@ module.exports = (db) => {
     const password = req.body.password;
     getUserWithEmail(email)
     .then(user => {
-      if (user) {
-        res.send("Email is already in use");
+      if(user) {
+        res.send('ALREADY EXISTS')
         return;
-      } // req.session.userId = user.id;
+      }
+      createNewUser(name, email, password, defaultCity, preferences)
     })
-    .then(createNewUser(name, email, password, defaultCity, preferences))
     .catch(err => {
       res
         .status(500)
