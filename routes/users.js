@@ -63,7 +63,7 @@ module.exports = (db) => {
           });
           return;
         } // req.session.userId = user.id;
-        res.redirect('/myMaps');
+        res.redirect('/:users');
       })
       .catch(err => {
         res
@@ -166,6 +166,10 @@ module.exports = (db) => {
           });
       });
   });
+
+  router.get("/:users", (req, res) => {
+
+  })
 
   return router;
 };
