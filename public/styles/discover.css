@@ -1,0 +1,26 @@
+.cat1 {
+  grid-area: article1;
+}
+
+.cat2 {
+  grid-area: article2;
+}
+
+.cat3 {
+  grid-area: article3;
+}
+
+.discover-category {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid black;
+  border-radius: 0.5em;
+}
+
+.discover-category-header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  border-bottom: 1px solid black;
+}

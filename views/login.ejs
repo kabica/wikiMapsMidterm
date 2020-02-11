@@ -1,30 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <title>Home Page</title>
-
-  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
-  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
-
-  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-  <script type="text/javascript" src="/scripts/app.js"></script>
-  <script type="text/javascript" src="./googleAPI.js"></script>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <title>Places Search Box</title>
+  <link rel="stylesheet" href="/styles/mapStyles.css">
 </head>
 
 <body>
-  <h1 class="title">Hello World!</h1>
+  <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+  <div id="map"></div>
+  <button id="drop" onclick="addMarker(map)">Add Mark</button>
+  <button id="create" onclick="createMap(markers)">Create</button>
 
 
-  <form id="login" action="/login" method="POST">
-    <textarea class="username" name="username" placeholder="Username"></textarea>
-    <textarea class="password" name="password" placeholder="Password"></textarea>
-    <div class="flexBox">
-      <input class="button" type="submit" value="login">
-    </div>
-  </form>
+  <script type='text/javascript' src='/scripts/script.js'></script>
+  <script>
 
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initAutocomplete" async
+    defer></script>
 </body>
 
 </html>

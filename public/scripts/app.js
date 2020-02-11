@@ -6,5 +6,5 @@ $(() => {
     Object.keys(users).forEach(user => {
       $("<div>").text(user.name).appendTo($("body"));
     })
-  });
+  });;
 });

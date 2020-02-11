@@ -4,13 +4,38 @@
  *   these routes are mounted onto /users
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
-
 const express = require('express');
 const router = express.Router();
 const apiKEY = process.env.API_KEY;
+const chalk = require('chalk');
 
 
 module.exports = (db) => {
+  router.get("/alex", (req, res) => {
+    let templateVars = {
+      key: process.env.API_KEY,
+      city: 'Calgary'
+    }
+    res.render('index', templateVars);
+  });
+  router.post("/alex", (req, res) => {
+    let templateVars = {
+      key: process.env.API_KEY,
+      city: req.body.text
+    }
+
+    res.render('index', templateVars);
+  });
+
+  router.post('/endpoint', function(req, res) {
+    console.log(chalk.magenta('body: ' + JSON.stringify(req.body)));
+    req.body.forEach(marker => {
+      console.log(marker);
+    })
+    console.log(req.body[0].marker0.lat);
+    const userID = req.session.user_id;
+  });
+
   router.get("/api/users", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -63,8 +88,8 @@ module.exports = (db) => {
           });
           return;
         }
-        req.session.user_id = user.id;
-        res.redirect('/api/users');
+        req.session.userId = user.id;
+        res.redirect(`/${email}`);
       })
       .catch(err => {
         res
@@ -75,6 +100,21 @@ module.exports = (db) => {
       });
 
   });
+  router.get("/:users", (req, res) => {
+    email = req.params.users;
+    db.query(`SELECT * FROM users WHERE email = '${email}'`)
+      .then(userData => {
+        const user = userData.rows;
+        templateVars = {
+          users: user
+        }
+        console.log(user, 'queryusers')
+        res.render("user", templateVars)
+      })
+      .catch(err => {
+        res.status(500).json({error: err.message});
+      });
+  })
   // GET -- LOGIN
   router.get("/login", (req, res) => {
     res.render('login');
@@ -127,7 +167,8 @@ module.exports = (db) => {
   });
   router.get("/", (req, res) => {
     const templateVars = {
-      key: apiKEY
+      key: apiKEY,
+      city: 'Vancouver'
     };
     res.render("index", templateVars);
   });
@@ -173,6 +214,10 @@ module.exports = (db) => {
           });
       });
   });
+
+  router.get("/:users", (req, res) => {
+
+  })
 
   return router;
 };

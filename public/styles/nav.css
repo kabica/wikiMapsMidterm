@@ -1,0 +1,40 @@
+nav {
+  grid-area: nav;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  height: 3.5em;
+  width: 100%;
+  z-index: 10000;
+  background-color: steelblue;
+}
+
+
+.nav-menu {
+  color: white;
+}
+
+/* Checking for desktop displays and Setting styles */
+
+@media screen and (min-width: 1024px) {
+  nav {
+    padding: 0em 3em;
+  }
+
+  .nav-menu {
+    display: none;
+  }
+}
+
+/* Checking for anything under desktop size and setting styles */
+
+@media screen and (max-width: 1024px) {
+  nav {
+    padding: 0em 1em;
+  }
+
+  .nav-search-form {
+    display: none;
+  }
+}

@@ -1,0 +1,26 @@
+<div class="form-popup" id="myForm">
+  <form action="/login" method="POST" id="login" class="form-container">
+    <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+    <h1>Login</h1>
+
+    <label for="username"><b>Email</b></label>
+    <input type="text" placeholder="Enter Email" name="username" required>
+
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
+
+    <button type="submit" class="btn">Login</button>
+  </form>
+
+  <form action="/register" method="POST" id="create" class="form-container">
+    <h1>Register</h1>
+
+    <label for="username"><b>Email</b></label>
+    <input type="text" placeholder="Enter Email" name="username" required>
+
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
+
+    <button type="submit" class="btn">Register</button>
+  </form>
+</div>

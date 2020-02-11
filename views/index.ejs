@@ -1,125 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
   <title>Home Page</title>
 
+  <!-- Framework CSS -->
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
 
+  <!-- Internal CSS -->
+  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/header.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
+
+
+  <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+  <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
+
+  <!-- Internal JS -->
   <script type="text/javascript" src="/scripts/app.js"></script>
-  <script type="text/javascript" src="./googleAPI.js"></script>
+  <script type="text/javascript" src="/scripts/nav.js"></script>
 </head>
 
 <body>
-  <h1 class="title">Hello World!</h1>
-  <div id="map"></div>
-
-  <style>
-    /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-    #map {
-      height: 300px;
-      width: 300px;
-
-    }
-
-    /* Optional: Makes the sample page fill the window. */
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-  </style>
-  <div id="floating-panel">
-    <button id="drop" onclick="addMarker(map)">Drop Markers</button>
-    <button id="drop" onclick="displayMarkers(markers)">Display Markers</button>
-    <button id="drop" onclick="sendMarkers(markers)">Send Markers</button>
-
-    <div id="map"></div>
-    <script>
-      var map;
-      const center = {
-        lat: -33.890542,
-        lng: 151.274856
-      };
-
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: center,
-          zoom: 8
-        });
-      };
-      var beaches = [
-        ['Bondi Beach', -33.890542, 151.274856, 4],
-
-      ];
-
-      let markers = [];
-      const addMarker = function (map) {
-        marker = new google.maps.Marker({
-          map: map,
-          draggable: true,
-          animation: google.maps.Animation.DROP,
-          position: {
-            lat: -33.890542,
-            lng: 151.274856
-          }
-        });
-        markers.push(marker);
-        marker.addListener('click', toggleBounce);
-      }
-
-      function toggleBounce() {
-        if (marker.getAnimation() !== null) {
-          marker.setAnimation(null);
-        } else {
-          marker.setAnimation(google.maps.Animation.BOUNCE);
-        }
-      }
-      const displayMarkers = function (markers) {
-        markers.forEach(marker => {
-          let lat = marker.getPosition().lat();
-          let lng = marker.getPosition().lng();
-          console.log(`lat: ${lat} , lng: ${lng}`);
-        })
-      };
 
 
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
+  <%- include partials/_nav %>
 
+  <%- include partials/_auth %>
 
+  <%- include partials/_menu %>
 
-    <form id="create" action="/register" method="GET">
-      <div class="flexBox">
-        <input class="button" type="submit" value="Register">
-      </div>
-    </form>
-    <form id="login" action="/login" method="GET">
-      <div class="flexBox">
-        <input class="button" type="submit" value="login">
-      </div>
-    </form>
-    <form id="logout" action="/logout" method="GET">
-      <div class="flexBox">
-        <input class="button" type="submit" value="logout">
-      </div>
-    </form>
-    <form id="create" action="/create" method="GET">
-      <div class="flexBox">
-        <input class="button" type="submit" value="create">
-      </div>
-    </form>
-    <form id="create" action="/showMap" method="GET">
-      <div class="flexBox">
-        <input class="button" type="submit" value="showMap">
-      </div>
-    </form>
+  <main class="container">
+
+    <header class="map-desc">
+      <h1 class="map-desc-title">MAP TITLE!</h1>
+      <p class="map-desc-info">MAP INFO!</p>
+      <form id="testButton">
+        <input id="testButton" class="tweet" type="submit" value="Tweet">
+      </form>
+      <button id="drop" onclick="addMarker(map)">Add Mark</button>
+        <button id="create" onclick="createMap(markers)">Create</button>
+    </header>
+
+    <section id="map" class="gmaps"> -->
+      <h2>MAPS!</h2>
+    </section>
+
+    <%- include partials/_discover %>
+    <% console.log(locals) %>
+  </main>
 
 </body>
+<script>
+    // This example requires the Places library. Include the libraries=places
+    // parameter when you first load the API. For example:
+    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+    var map;
+    var service;
+    var infowindow;
+    let markers = [];
+
+    function initMap() {
+      var sydney = new google.maps.LatLng(-33.867, 151.195);
+
+      infowindow = new google.maps.InfoWindow();
+
+      map = new google.maps.Map(
+          document.getElementById('map'), {center: sydney, zoom: 15});
+
+      var request = {
+        query: '<%= city %>',
+        fields: ['name', 'geometry'],
+      };
+
+      service = new google.maps.places.PlacesService(map);
+
+      service.findPlaceFromQuery(request, function(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+          }
+
+          map.setCenter(results[0].geometry.location);
+        }
+      });
+    }
+
+    function createMarker(place) {
+      let marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location,
+        draggable: true,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+      });
+      markers.push(marker);
+
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(place.name);
+        infowindow.open(map, this);
+      });
+    }
+
+
+  function addMarker(map) {
+    let lat = map.getCenter().lat();
+    let lng = map.getCenter().lng();
+    marker = new google.maps.Marker({
+      position: {
+        lat: lat,
+        lng: lng
+      },
+      map: map,
+      draggable: true,
+      animation: google.maps.Animation.DROP
+    });
+    markers.push(marker);
+    marker.addListener('click', toggleBounce);
+  };
+
+  const toggleBounce = function () {
+    if (this.getAnimation() !== null) {
+      this.setAnimation(null);
+    } else {
+      this.setAnimation(google.maps.Animation.BOUNCE);
+    }
+  };
+
+  const createMap = function(markers) {
+    let markerData = [];
+    for(let i = 0; i < markers.length; i++) {
+      let marker = {};
+      marker[`marker${i}`] = { lat: markers[i].getPosition().lat() , lng: markers[i].getPosition().lng() };
+      markerData.push(marker);
+    }
+    console.log(JSON.stringify(markerData));
+    $.ajax({
+        type: 'POST',
+        data: JSON.stringify(markerData),
+        contentType: 'application/json',
+        url: '/endpoint',
+        success: function (data) {
+          console.log('success');
+        }
+      });
+  }
+  </script>
+
+<script type="text/javascript">
+  $(function () {
+    $('#testButton').click(function (e) {
+      e.preventDefault();
+      console.log('select_link clicked');
+
+      var data = {};
+      data.title = "title";
+      data.message = "message";
+
+      $.ajax({
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        url: '/endpoint',
+        success: function (data) {
+          console.log('success');
+          console.log(JSON.stringify(data));
+        }
+      });
+
+    });
+  });
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer></script>
 
 </html>
+
+
+
+
