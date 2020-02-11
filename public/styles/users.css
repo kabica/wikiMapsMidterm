@@ -23,15 +23,29 @@
   padding-top: 10em;
 }
 
-.user-maps {
+.user-maps-section {
   grid-area: 2 / 1;
+
+}
+.user-maps {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   border: 2px solid black;
   height: 20em;
   border-radius: 0.5em;
   margin-bottom: 1em;
 }
 
-.user-favorites {
+article.user-maps:hover span.user-maps-icons {
+  display: flex;
+}
+
+span.user-maps-icons {
+  display: none;
+}
+
+.user-favorites-section {
   grid-area: 2 / 4;
 }
 
