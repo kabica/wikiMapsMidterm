@@ -27,24 +27,124 @@ module.exports = (db) => {
     res.render('index', templateVars);
   });
 
-  router.post('/endpoint', function(req, res) {
-    console.log(chalk.magenta('body: ' + JSON.stringify(req.body)));
-    req.body.forEach(marker => {
-      console.log(marker);
+  const createNewMap = function (map) {
+    return db.query(`
+    INSERT INTO maps (user_id, center, title, description)
+    VALUES ($1 , $2 , $3 , $4)
+    RETURNING id;`, [map.user_id, map.center, map.title, map.description])
+      .then(res => {
+        return res.rows;
+      })
+      // console.log(chalk.yellow('FUNCITON CALL: ',res.rows[0].id));
+      .catch((error) => {
+        console.log(chalk.red('error: ', error))
+      });
+  };
+
+  const createNewMarker = function (markerData) {
+    let queryString = 'INSERT INTO markers (user_id, map_id, location, title, description, img_url) ';
+    let paramString = '';
+    const limit = markerData.length * 6;
+    console.log(limit);
+    for (let i = 0; i < limit; i += 6) {
+      paramString = paramString + `($${i + 1}, $${i + 2}, $${i + 3}, $${i + 4}, $${i + 5}, $${i + 6}),`;
+    }
+    paramString = paramString.slice(0, -1);
+    paramString = 'VALUES ' + paramString + ';';
+    queryString += paramString;
+
+    const queryData = [];
+    markerData.forEach(marker => {
+      marker.forEach(val => {
+        queryData.push(val);
+      })
     })
-    console.log(req.body[0].marker0.lat);
-    const userID = req.session.user_id;
+    console.log('QUERYSTRING : ', queryString);
+    console.log('QUERYDATA : ', queryData);
+    return db.query(queryString, queryData)
+      .then(res => {
+        console.log('MARKER TABLE: ', res.rows)
+        res.rows;
+      })
+      .catch((error) => {
+        console.log(chalk.red('error: ', error))
+      });
+  }
+
+
+  router.post('/endpoint', function (req, res) {
+    console.log(chalk.magenta('body: ' + JSON.stringify(req.body)));
+    const userID = 2;
+    const title = '999';
+    const center = '999';
+    const description = '999';
+
+    createNewMap({
+        user_id: userID,
+        title: title,
+        center: center,
+        description: description
+      })
+      .then(res => {
+        const mapID = res[0].id;
+
+        let allMarkers = [];
+        req.body.forEach(marker => {
+          let temp = [];
+          temp.push(mapID, 1, marker.location, 'title', 'description', 'img_url')
+          allMarkers.push(temp);
+        })
+        createNewMarker(allMarkers)
+      })
+      .then(console.log('DONE'))
+      .catch((error) => {
+        console.log(chalk.red('error: ', error))
+      })
   });
+  router.get("/api/markers", (req, res) => {
+    db.query(`SELECT * FROM markers;`)
+      .then(data => {
+        const AUSTIN = data.rows;
+        res.json({
+          AUSTIN
+        });
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: err.message
+          });
+      });
+  })
 
   router.get("/api/users", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-
     db.query(`SELECT * FROM users;`)
       .then(data => {
         const users = data.rows;
         res.json({
           users
+        });
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: err.message
+          });
+      });
+  });
+  router.get("/api/maps", (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    db.query(`SELECT * FROM maps;`)
+      .then(data => {
+        const maps = data.rows;
+        res.json({
+          maps
         });
       })
       .catch(err => {
@@ -112,7 +212,9 @@ module.exports = (db) => {
         res.render("user", templateVars)
       })
       .catch(err => {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+          error: err.message
+        });
       });
   })
   // GET -- LOGIN
@@ -215,9 +317,7 @@ module.exports = (db) => {
       });
   });
 
-  router.get("/:users", (req, res) => {
 
-  })
 
   return router;
 };

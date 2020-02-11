@@ -44,7 +44,8 @@
         <input id="testButton" class="tweet" type="submit" value="Tweet">
       </form>
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
-        <button id="create" onclick="createMap(markers)">Create</button>
+      <button id="create" onclick="createMap(markers)">Create</button>
+      <button id="create" onclick="clearMarker(markers)">Clear</button>
     </header>
 
     <section id="map" class="gmaps"> -->
@@ -57,55 +58,58 @@
 
 </body>
 <script>
-    // This example requires the Places library. Include the libraries=places
-    // parameter when you first load the API. For example:
-    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+  // This example requires the Places library. Include the libraries=places
+  // parameter when you first load the API. For example:
+  // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
-    var map;
-    var service;
-    var infowindow;
-    let markers = [];
+  var map;
+  var service;
+  var infowindow;
+  let markers = [];
 
-    function initMap() {
-      var sydney = new google.maps.LatLng(-33.867, 151.195);
+  function initMap() {
+    var sydney = new google.maps.LatLng(-33.867, 151.195);
 
-      infowindow = new google.maps.InfoWindow();
+    infowindow = new google.maps.InfoWindow();
 
-      map = new google.maps.Map(
-          document.getElementById('map'), {center: sydney, zoom: 15});
+    map = new google.maps.Map(
+      document.getElementById('map'), {
+        center: sydney,
+        zoom: 15
+      });
 
-      var request = {
-        query: '<%= city %>',
-        fields: ['name', 'geometry'],
-      };
+    var request = {
+      query: '<%= city %>',
+      fields: ['name', 'geometry'],
+    };
 
-      service = new google.maps.places.PlacesService(map);
+    service = new google.maps.places.PlacesService(map);
 
-      service.findPlaceFromQuery(request, function(results, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          for (var i = 0; i < results.length; i++) {
-            createMarker(results[i]);
-          }
-
-          map.setCenter(results[0].geometry.location);
+    service.findPlaceFromQuery(request, function (results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          createMarker(results[i]);
         }
-      });
-    }
 
-    function createMarker(place) {
-      let marker = new google.maps.Marker({
-        map: map,
-        position: place.geometry.location,
-        draggable: true,
-        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-      });
-      markers.push(marker);
+        map.setCenter(results[0].geometry.location);
+      }
+    });
+  }
 
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(place.name);
-        infowindow.open(map, this);
-      });
-    }
+  function createMarker(place) {
+    let marker = new google.maps.Marker({
+      map: map,
+      position: place.geometry.location,
+      draggable: true,
+      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+    });
+    markers.push(marker);
+
+    google.maps.event.addListener(marker, 'click', function () {
+      infowindow.setContent(place.name);
+      infowindow.open(map, this);
+    });
+  }
 
 
   function addMarker(map) {
@@ -114,8 +118,10 @@
     marker = new google.maps.Marker({
       position: {
         lat: lat,
-        lng: lng
+        lng: lng,
       },
+      title: 'ALEX',
+      description: 'ALEX',
       map: map,
       draggable: true,
       animation: google.maps.Animation.DROP
@@ -132,25 +138,33 @@
     }
   };
 
-  const createMap = function(markers) {
+  const clearMarker = function (markers) {
+    for (let i = 1; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
+  };
+  const createMap = function (markers) {
     let markerData = [];
-    for(let i = 0; i < markers.length; i++) {
+    for (let i = 0; i < markers.length; i++) {
       let marker = {};
-      marker[`marker${i}`] = { lat: markers[i].getPosition().lat() , lng: markers[i].getPosition().lng() };
+      marker['location'] = {
+        lat: markers[i].getPosition().lat(),
+        lng: markers[i].getPosition().lng(),
+      };
       markerData.push(marker);
     }
     console.log(JSON.stringify(markerData));
     $.ajax({
-        type: 'POST',
-        data: JSON.stringify(markerData),
-        contentType: 'application/json',
-        url: '/endpoint',
-        success: function (data) {
-          console.log('success');
-        }
-      });
+      type: 'POST',
+      data: JSON.stringify(markerData),
+      contentType: 'application/json',
+      url: '/endpoint',
+      success: function (data) {
+        console.log('success');
+      }
+    });
   }
-  </script>
+</script>
 
 <script type="text/javascript">
   $(function () {
@@ -175,13 +189,10 @@
 
     });
   });
-
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer>
+</script>
 
 </html>
-
-
-
 
