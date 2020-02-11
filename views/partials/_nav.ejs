@@ -1,11 +1,11 @@
 <nav class="topnav" id="myTopnav">
-  <p class="nav-logo">LOGO</p>
+  <div class="nav-logo">LOGO</div>
   <a href="javascript:void(0);" class="icon nav-menu">
     <i class="fa fa-bars"></i>
   </a>
-  <form class="nav-search-form">
+  <form class="nav-search-form" action='/alex' method='POST'>
     Search your city
-    <input type="text" class="nav-search-input" name="search-input">
+    <input type="text" class="nav-search-input" name="text">
   </form>
   <% if (locals.users) { %>
     <h3 class="user-loggedIn">Welcome: <%= users[0].name %></h3>

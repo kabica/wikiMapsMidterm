@@ -4,13 +4,38 @@
  *   these routes are mounted onto /users
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
-
 const express = require('express');
 const router = express.Router();
 const apiKEY = process.env.API_KEY;
+const chalk = require('chalk');
 
 
 module.exports = (db) => {
+  router.get("/alex", (req, res) => {
+    let templateVars = {
+      key: process.env.API_KEY,
+      city: 'Calgary'
+    }
+    res.render('index', templateVars);
+  });
+  router.post("/alex", (req, res) => {
+    let templateVars = {
+      key: process.env.API_KEY,
+      city: req.body.text
+    }
+
+    res.render('index', templateVars);
+  });
+
+  router.post('/endpoint', function(req, res) {
+    console.log(chalk.magenta('body: ' + JSON.stringify(req.body)));
+    req.body.forEach(marker => {
+      console.log(marker);
+    })
+    console.log(req.body[0].marker0.lat);
+    const userID = req.session.user_id;
+  });
+
   router.get("/api/users", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -75,10 +100,27 @@ module.exports = (db) => {
       });
 
   });
+  router.get("/:users", (req, res) => {
+    email = req.params.users;
+    db.query(`SELECT * FROM users WHERE email = '${email}'`)
+      .then(userData => {
+        const user = userData.rows;
+        templateVars = {
+          users: user
+        }
+        console.log(user, 'queryusers')
+        res.render("user", templateVars)
+      })
+      .catch(err => {
+        res.status(500).json({error: err.message});
+      });
+  })
   // GET -- LOGIN
-  // router.get("/login", (req, res) => {
-  //   res.render('login');
-  // });
+  router.get("/logout", (req, res) => {
+    req.session.user_id = null;
+    req.session = null;
+    res.redirect('/');
+  });
 
 
   //============================== REGISTER ===============================//
@@ -88,22 +130,15 @@ module.exports = (db) => {
   // });
   const createNewUser = function (name, email, password, defaultCity, preferences) {
     return db.query(`
-  INSERT INTO users (name, email, password, default_city, preferences)
-  VALUES ($1,$2,$3,$4,$5)
-  RETURNING *;
-  `, [name, email, password, defaultCity, preferences])
+      INSERT INTO users (name, email, password, default_city, preferences)
+      VALUES ($1,$2,$3,$4,$5)
+      RETURNING *;
+      `, [name, email, password, defaultCity, preferences])
       .then(res => res.rows[0])
       .catch((error) => {
         console.log(error);
       });
   };
-  /* REGISTER
-   *   - post is made on /register page (user enter email and password)
-   *   - getUserWithEmail is called with the input email
-   *   - if a valid user is returned, that means the email was already in use
-   *   - if null is returned, createNewUser is called with fake data
-   *   - /api/users is called to show db table with newly added user
-   */
   router.post("/register", (req, res) => {
     const name = 'testName';
     const defaultCity = 'testCity';
@@ -130,30 +165,39 @@ module.exports = (db) => {
   });
   router.get("/", (req, res) => {
     const templateVars = {
-      key: apiKEY
+      key: apiKEY,
+      city: 'Vancouver'
     };
     res.render("index", templateVars);
   });
 
   //============================== VALID USER ===============================//
-  const newMap = function(user_id, metaData) {
-    return db.query(`
-  INSERT INTO maps (user_id, center, title, description)
-  VALUES ($1,$2,$3,$4)
-  RETURNING *;
-  `, [user_id, metaData.center, metaData.title, metaData.description])
-      .then(res => res.rows)
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  router.get("/create", (req, res) => {
+    res.render("createMap");
+  });
+  router.post("/create", (req, res) => {
+
+  });
+
+
+
+
+
+
+
+
+
+
+
 
 
   router.get("/maps", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
-    db.query(`SELECT * FROM maps;`)
+    db.query(`SELECT * FROM maps
+    WHERE user_id = 2;
+    `)
       .then(data => {
         const users = data.rows;
         res.json({

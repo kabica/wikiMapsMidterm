@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <title>Places Search Box</title>
+  <link rel="stylesheet" href="/styles/mapStyles.css">
+</head>
+
+<body>
+  <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+  <div id="map"></div>
+  <button id="drop" onclick="addMarker(map)">Add Mark</button>
+  <button id="create" onclick="createMap(markers)">Create</button>
+
+
+  <script type='text/javascript' src='/scripts/script.js'></script>
+  <script>
+
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initAutocomplete" async
+    defer></script>
+</body>
+
+</html>

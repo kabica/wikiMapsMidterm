@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Home Page</title>
 
@@ -27,6 +28,7 @@
 
 <body>
 
+
   <%- include partials/_nav %>
 
   <%- include partials/_auth %>
@@ -38,29 +40,148 @@
     <header class="map-desc">
       <h1 class="map-desc-title">MAP TITLE!</h1>
       <p class="map-desc-info">MAP INFO!</p>
+      <form id="testButton">
+        <input id="testButton" class="tweet" type="submit" value="Tweet">
+      </form>
+      <button id="drop" onclick="addMarker(map)">Add Mark</button>
+        <button id="create" onclick="createMap(markers)">Create</button>
     </header>
 
-    <section id="map" class="gmaps">
+    <section id="map" class="gmaps"> -->
       <h2>MAPS!</h2>
     </section>
 
-  <%- include partials/_discover %>
-
+    <%- include partials/_discover %>
+    <% console.log(locals) %>
   </main>
+
 </body>
 <script>
-  var map;
+    // This example requires the Places library. Include the libraries=places
+    // parameter when you first load the API. For example:
+    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
-  function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: {
-        lat: -34.397,
-        lng: 150.644
+    var map;
+    var service;
+    var infowindow;
+    let markers = [];
+
+    function initMap() {
+      var sydney = new google.maps.LatLng(-33.867, 151.195);
+
+      infowindow = new google.maps.InfoWindow();
+
+      map = new google.maps.Map(
+          document.getElementById('map'), {center: sydney, zoom: 15});
+
+      var request = {
+        query: '<%= city %>',
+        fields: ['name', 'geometry'],
+      };
+
+      service = new google.maps.places.PlacesService(map);
+
+      service.findPlaceFromQuery(request, function(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+          }
+
+          map.setCenter(results[0].geometry.location);
+        }
+      });
+    }
+
+    function createMarker(place) {
+      let marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location,
+        draggable: true,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+      });
+      markers.push(marker);
+
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(place.name);
+        infowindow.open(map, this);
+      });
+    }
+
+
+  function addMarker(map) {
+    let lat = map.getCenter().lat();
+    let lng = map.getCenter().lng();
+    marker = new google.maps.Marker({
+      position: {
+        lat: lat,
+        lng: lng
       },
-      zoom: 8
+      map: map,
+      draggable: true,
+      animation: google.maps.Animation.DROP
     });
+    markers.push(marker);
+    marker.addListener('click', toggleBounce);
+  };
+
+  const toggleBounce = function () {
+    if (this.getAnimation() !== null) {
+      this.setAnimation(null);
+    } else {
+      this.setAnimation(google.maps.Animation.BOUNCE);
+    }
+  };
+
+  const createMap = function(markers) {
+    let markerData = [];
+    for(let i = 0; i < markers.length; i++) {
+      let marker = {};
+      marker[`marker${i}`] = { lat: markers[i].getPosition().lat() , lng: markers[i].getPosition().lng() };
+      markerData.push(marker);
+    }
+    console.log(JSON.stringify(markerData));
+    $.ajax({
+        type: 'POST',
+        data: JSON.stringify(markerData),
+        contentType: 'application/json',
+        url: '/endpoint',
+        success: function (data) {
+          console.log('success');
+        }
+      });
   }
+  </script>
+
+<script type="text/javascript">
+  $(function () {
+    $('#testButton').click(function (e) {
+      e.preventDefault();
+      console.log('select_link clicked');
+
+      var data = {};
+      data.title = "title";
+      data.message = "message";
+
+      $.ajax({
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        url: '/endpoint',
+        success: function (data) {
+          console.log('success');
+          console.log(JSON.stringify(data));
+        }
+      });
+
+    });
+  });
+
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
-</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer></script>
+
 </html>
+
+
+
+
