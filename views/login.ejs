@@ -6,23 +6,7 @@
   <script type="text/javascript" src="/scripts/promiseAPI.js"></script>
   <style>
     /* Set the size of the div element that contains the map */
-    #map0 {
-      margin-top: 100px;
-      height: 100px;
-      /* The height is 400 pixels */
-      width: 100%;
-      /* The width is the width of the web page */
-    }
-
-    #map1 {
-      margin-top: 100px;
-      height: 100px;
-      /* The height is 400 pixels */
-      width: 100%;
-      /* The width is the width of the web page */
-    }
-
-    #map2 {
+    .map {
       margin-top: 100px;
       height: 100px;
       /* The height is 400 pixels */
@@ -36,72 +20,68 @@
   <h3>My Google Maps Demo</h3>
   <!--The div element for the map -->
   <button id="create">Create</button>
+  <button id="data">Data</button>
   <div id="mapCollection">
-    <div id='map0'></div>
     <div>HELLO</div>
     <div>HELLO</div>
     <div>HELLO</div>
     <div>HELLO</div>
     <div>HELLO</div>
   </div>
+
   <script>
+    function initMap() {
+      let i = 0;
+      '<% for(userMap of maps){ %>'
+      map = new google.maps.Map(
+        document.getElementById(`map${i}`), {
+          zoom: 10,
+          center: {
+            lat: JSON.parse('<%= userMap.lat %>'),
+            lng: JSON.parse('<%= userMap.lng %>')
+          },
+          gestureHandling: 'cooperative'
 
-    const places = [{location: {lat: -25.344, lng: 131.036}}, {location: {lat: -55.344, lng: 100.036}}, {location: {lat: 25.344, lng: -131.036}}]
-    const markers = [{location: {lat: -25.344, lng: 131.036}}, {location: {lat: -55.344, lng: 100.036}}, {location: {lat: 25.344, lng: -131.036}}]
-
-    const mapLocations = function () {
-
-      let map = [];
-      '<% for(map of maps) {console.log(map)}%>'
-
-    }
-
-    function initMap(places, markers) {
-      // The location of Uluru
-      var uluru = {
-        lat: -25.344,
-        lng: 131.036
+        });
+      var marker = new google.maps.Marker({
+        position: {
+          lat: JSON.parse('<%= userMap.lat %>'),
+          lng: JSON.parse('<%= userMap.lng %>')
+        },
+        map: map
+      })
+      i++;
+      '<% for(userMarker of markers){ %>'
+      '<% for(userMarkerData of userMarker){ %>'
+      if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
+        let marker = new google.maps.Marker({
+          position: {
+            lat: JSON.parse('<%= userMarkerData.lat %>'),
+            lng: JSON.parse('<%= userMarkerData.lng %>')
+          },
+          map: map
+        })
       };
-      // The map, centered at Uluru
-      for (let i = 0; i < 3; i++) {
-        console.log('LOGIN PAGE: ', i);
-        let map = new google.maps.Map(
-          document.getElementById(`map${i}`), {
-            zoom: 4,
-            center: places[i].location,
-            gestureHandling: 'cooperative'
-
-          });
-
-            var marker = new google.maps.Marker({
-            position: markers[i].location,
-            map: map
-
-          })
-        };
-    }
+      '<%  } %>'
+      '<%  } %>'
+      '<%  } %>'
+    };
   </script>
+
   <script>
     $(document).ready(function () {
       $mapContainer = $("#mapCollection")
-
-
       const empty = function () {
         $('#mapCollection').empty();
-        for(let i = 0; i < 3; i++) {
-          $('#mapCollection').append(`<div id='map${i}'>ALEX</div>`)
+        for (let i = 0; i < '<%= maps.length %>'; i++) {
+          $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
         }
-        initMap(places, markers);
+        initMap();
       }
-
       $('#create').on('click', function () {
         empty();
-        mapLocations();
       })
-
-
-
-    })
+    });
   </script>
   <!--Load the API from the specified URL
     * The async attribute allows the browser to render the page while the API loads

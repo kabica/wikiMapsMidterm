@@ -79,7 +79,6 @@ module.exports = (db) => {
 
 
   router.post('/endpoint', function (req, res) {
-
     const userID = req.session.user_id;
     const title = '999';
     const description = '999';
@@ -146,14 +145,15 @@ module.exports = (db) => {
       .then(async result => {
         console.log(chalk.magenta(JSON.stringify(result)));
         result.forEach(map => {
-          let mapData = {lat: map.lat, lng: map.lng, title: map.title, description: map.description}
+          let mapData = {id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description}
           userMaps.push(mapData);
           mapIDs.push(map.id)
         })
         console.log(chalk.blue(JSON.stringify(userMaps)))
-        console.log(chalk.magenta(JSON.stringify(mapIDs)))
+        // console.log(chalk.magenta(JSON.stringify(mapIDs)))
 
         const [...userMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
+        console.log(chalk.magenta('ALEX',JSON.stringify(userMarkers)))
         const templateVars = {
           key: process.env.API_KEY,
           maps: userMaps,
