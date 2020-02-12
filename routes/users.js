@@ -148,9 +148,7 @@ module.exports = (db) => {
         console.log(chalk.yellow(JSON.stringify(mapIDs)))
 
         const [...userMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
-        res.send(userMarkers);
       })
-
       .catch(err => {
         res
           .status(500)
@@ -158,6 +156,12 @@ module.exports = (db) => {
             error: err.message
           });
       });
+      const templateVars = {
+        key: process.env.API_KEY,
+        maps: userMaps,
+        marker: userMarkers
+      };
+      res.render('login', templateVars)
   });
 
 
