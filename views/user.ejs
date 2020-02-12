@@ -78,9 +78,9 @@
 
       </article>
     </section>
-
+    <% if (locals.users) { %>
     <section class="user-section">
-      <article class="user-section-grid"
+      <article class="user-section-grid" >
       <h2 class="user-email"><%= users[0].email %></h2>
       <span class="fa-stack fa-2x">
         <i class="fas fa-user fa-stack-1x"></i>
@@ -94,6 +94,8 @@
       </button>
       </article>
     </section>
+
+    <% } %>
   </main>
 </body>
 </html>

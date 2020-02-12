@@ -178,19 +178,6 @@ module.exports = (db) => {
   router.post("/create", (req, res) => {
 
   });
-
-
-
-
-
-
-
-
-
-
-
-
-
   router.get("/maps", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -217,12 +204,12 @@ module.exports = (db) => {
     email = req.params.users;
 
     db.query(`SELECT * FROM users WHERE email = '${email}'`)
-      .then(userData => {
-        const user = userData.rows;
-        templateVars = {
-          users: user
-        }
-        console.log(user, 'queryusers')
+    .then(userData => {
+      const user = userData.rows;
+      templateVars = {
+        users: user
+      }
+      console.log(user, 'queryusers')
         res.render("user", templateVars)
       })
       .catch(err => {
