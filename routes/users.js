@@ -8,6 +8,7 @@ const express = require('express');
 const router = express.Router();
 const apiKEY = process.env.API_KEY;
 const chalk = require('chalk');
+const bcrypt = require('bcrypt');
 
 
 module.exports = (db) => {
@@ -230,7 +231,7 @@ module.exports = (db) => {
   const login = function (email, password) {
     return getUserWithEmail(email)
       .then(user => {
-        if (password === user.password) {
+        if (bcrypt.compareSync(password, user.password)) {
           return user;
         }
         return null;
@@ -307,15 +308,17 @@ module.exports = (db) => {
     const name = 'testName';
     const defaultCity = 'testCity';
     const preferences = 'testPreferences';
+
     const email = req.body.username;
     const password = req.body.password;
+    const hashedPW = bcrypt.hashSync(password, 10);
     getUserWithEmail(email)
       .then(user => {
         if (user) {
           res.send('ALREADY EXISTS')
           return;
         }
-        createNewUser(name, email, password, defaultCity, preferences)
+        createNewUser(name, email, hashedPW, defaultCity, preferences)
           .then(res.redirect('/api/users'))
       })
       .catch(err => {

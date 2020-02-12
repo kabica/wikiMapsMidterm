@@ -11,6 +11,7 @@ const bodyParser = require("body-parser");
 const app        = express();
 const morgan     = require('morgan');
 const cookieSession = require('cookie-session');
+const bcrypt = require('bcrypt');
 
 
 // PG database client/connection setup
