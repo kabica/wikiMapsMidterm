@@ -41,7 +41,6 @@ module.exports = (db) => {
       .then(res => {
         return res.rows;
       })
-      // console.log(chalk.yellow('FUNCITON CALL: ',res.rows[0].id));
       .catch((error) => {
         console.log(chalk.red('error: ', error))
       });
@@ -51,10 +50,9 @@ module.exports = (db) => {
     let queryString = 'INSERT INTO markers (user_id, map_id, lat, lng, title, description, img_url) ';
     let paramString = '';
     const limit = markerData.length * 7;
-    console.log(limit);
     for (let i = 0; i < limit; i += 7) {
       paramString = paramString + `($${i + 1}, $${i + 2}, $${i + 3}, $${i + 4}, $${i + 5}, $${i + 6}, $${i + 7}),`;
-    }
+    };
     paramString = paramString.slice(0, -1);
     paramString = 'VALUES ' + paramString + ';';
     queryString += paramString;
@@ -64,9 +62,7 @@ module.exports = (db) => {
       marker.forEach(val => {
         queryData.push(val);
       })
-    })
-    console.log('QUERYSTRING : ', queryString);
-    console.log('QUERYDATA : ', queryData);
+    });
     return db.query(queryString, queryData)
       .then(res => {
         console.log('MARKER TABLE: ', res.rows)
@@ -75,20 +71,14 @@ module.exports = (db) => {
       .catch((error) => {
         console.log(chalk.red('error: ', error))
       });
-  }
-
+  };
 
   router.post('/endpoint', function (req, res) {
-    const userID = req.session.user_id;
     const title = '999';
     const description = '999';
-    // const center = req.body[0];
+    const userID = req.session.user_id;
     const mapLat = req.body[0].location.lat;
     const mapLng = req.body[0].location.lng;
-
-    console.log(chalk.magenta('mapLAT ',mapLat));
-    console.log(chalk.red('mapLNG: ', mapLng));
-
     createNewMap({
         user_id: userID,
         title: title,
@@ -136,24 +126,20 @@ module.exports = (db) => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
+
   router.get("/mymaps", (req, res) => {
-    const userID = req.session.user_id;
     let mapIDs = [];
     let userMaps = [];
+    const userID = req.session.user_id;
     getMapsByUserID(userID)
       .then(async result => {
         console.log(chalk.magenta(JSON.stringify(result)));
         result.forEach(map => {
-          let mapData = {id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description}
-          userMaps.push(mapData);
-          mapIDs.push(map.id)
-        })
-        console.log(chalk.blue(JSON.stringify(userMaps)))
-        // console.log(chalk.magenta(JSON.stringify(mapIDs)))
-
+          userMaps.push({id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description});
+          mapIDs.push(map.id);
+        });
         const [...userMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
-        console.log(chalk.magenta('ALEX',JSON.stringify(userMarkers)))
         const templateVars = {
           key: process.env.API_KEY,
           maps: userMaps,
@@ -168,9 +154,6 @@ module.exports = (db) => {
             error: err.message
           });
       });
-
-
-      //res.render('login', templateVars)
   });
 
 
