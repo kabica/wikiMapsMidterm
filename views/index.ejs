@@ -114,7 +114,6 @@
   function addMarker(mapData) {
     let lat;
     let lng;
-    console.log('tes', mapData)
     if (mapData.hasOwnProperty('mapDataProviders')) {
       // console.log(mapData)
       lat = map.getCenter().lat();
@@ -166,8 +165,6 @@
         infowindow.setContent(contentString);
         infowindow.open(map, this);
     })
-
-
   };
 
   const toggleBounce = function () {

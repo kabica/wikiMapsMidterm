@@ -6,24 +6,8 @@
   <script type="text/javascript" src="/scripts/promiseAPI.js"></script>
   <style>
     /* Set the size of the div element that contains the map */
-    #map0 {
-      margin-top: 100px;
-      height: 100px;
-      /* The height is 400 pixels */
-      width: 100%;
-      /* The width is the width of the web page */
-    }
-
-    #map1 {
-      margin-top: 100px;
-      height: 100px;
-      /* The height is 400 pixels */
-      width: 100%;
-      /* The width is the width of the web page */
-    }
-
-    #map2 {
-      margin-top: 100px;
+    .testmap {
+      /* margin-top: 100px; */
       height: 100px;
       /* The height is 400 pixels */
       width: 100%;
@@ -37,81 +21,66 @@
   <!--The div element for the map -->
   <button id="create">Create</button>
   <div id="mapCollection">
-    <div id='map0'></div>
-    <div>HELLO</div>
-    <div>HELLO</div>
-    <div>HELLO</div>
-    <div>HELLO</div>
-    <div>HELLO</div>
   </div>
   <script>
 
-    const places = [{location: {lat: -25.344, lng: 131.036}}, {location: {lat: -55.344, lng: 100.036}}, {location: {lat: 25.344, lng: -131.036}}]
-    const markers = [{location: {lat: -25.344, lng: 131.036}}, {location: {lat: -55.344, lng: 100.036}}, {location: {lat: 25.344, lng: -131.036}}]
+    function initMap() {
+      let i = 0;
 
-    const mapLocations = function () {
+      '<% for (userMap of maps) { %>'
+      console.log('lat', '<%= userMap.lat %>')
+      console.log('lng', '<%= userMap.lng %>')
 
-      let map = [];
-      '<% for(map of maps) {console.log(map)}%>'
-
-    }
-
-    function initMap(places, markers) {
-      // The location of Uluru
-      var uluru = {
-        lat: -25.344,
-        lng: 131.036
-      };
-      // The map, centered at Uluru
-      for (let i = 0; i < 3; i++) {
-        console.log('LOGIN PAGE: ', i);
-        let map = new google.maps.Map(
+        // console.log('LOGIN PAGE: ', i);
+        map = new google.maps.Map(
           document.getElementById(`map${i}`), {
-            zoom: 4,
-            center: places[i].location,
+            zoom: 10,
+            center: {lat:JSON.parse('<%= userMap.lat%>'), lng:JSON.parse('<%= userMap.lng%>')},
             gestureHandling: 'cooperative'
-
           });
 
-            var marker = new google.maps.Marker({
-            position: markers[i].location,
-            map: map
+        var marker = new google.maps.Marker({
+          position: {lat:JSON.parse('<%= userMap.lat%>'), lng:JSON.parse('<%= userMap.lng%>')},
+          map: map
+        })
 
-          })
-        };
+        i++;
+
+      '<% for(userMarker of markers){ %>'
+      '<% for(userMarkerData of userMarker){ %>'
+      if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
+        let marker = new google.maps.Marker({
+          position: {
+            lat: JSON.parse('<%= userMarkerData.lat %>'),
+            lng: JSON.parse('<%= userMarkerData.lng %>')
+          },
+          map: map
+        })
+      }
+      '<%  } %>'
+      '<%  } %>'
+      '<% } %>'
     }
+
   </script>
   <script>
     $(document).ready(function () {
       $mapContainer = $("#mapCollection")
 
-
       const empty = function () {
         $('#mapCollection').empty();
-        for(let i = 0; i < 3; i++) {
-          $('#mapCollection').append(`<div id='map${i}'>ALEX</div>`)
+        for(let i = 0; i < '<%= maps.length %>'; i++) {
+          $('#mapCollection').append(`<div id='map${i}' class='testmap'>ALEX</div>`)
         }
-        initMap(places, markers);
+        initMap();
       }
-
       $('#create').on('click', function () {
         empty();
-        mapLocations();
       })
-
-
-
     })
   </script>
-  <!--Load the API from the specified URL
-    * The async attribute allows the browser to render the page while the API loads
-    * The key parameter will contain your own API key (which is not needed for this tutorial)
-    * The callback parameter executes the initMap() function
-    -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
 
-
-
 </body>
-
 </html>
+

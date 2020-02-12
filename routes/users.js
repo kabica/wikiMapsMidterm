@@ -147,7 +147,7 @@ module.exports = (db) => {
       .then(async result => {
         console.log(chalk.magenta(JSON.stringify(result)));
         result.forEach(map => {
-          let mapData = {lat: map.lat, lng: map.lng, title: map.title, description: map.description}
+          let mapData = {id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description}
           userMaps.push(mapData);
           mapIDs.push(map.id)
         })
