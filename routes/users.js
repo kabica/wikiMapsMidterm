@@ -11,6 +11,12 @@ const chalk = require('chalk');
 
 
 module.exports = (db) => {
+  router.get('/maptest', (req,res) => {
+    templateVars = {
+      key: process.env.API_KEY
+    }
+    res.render('login', templateVars);
+  })
   router.get("/alex", (req, res) => {
     let templateVars = {
       key: process.env.API_KEY,
@@ -18,12 +24,12 @@ module.exports = (db) => {
     }
     res.render('index', templateVars);
   });
+
   router.post("/alex", (req, res) => {
     let templateVars = {
       key: process.env.API_KEY,
       city: req.body.text
     }
-
     res.render('index', templateVars);
   });
 
@@ -74,9 +80,9 @@ module.exports = (db) => {
 
   router.post('/endpoint', function (req, res) {
     console.log(chalk.magenta('body: ' + JSON.stringify(req.body)));
-    const userID = 2;
+    const userID = req.session.user_id;
     const title = '999';
-    const center = '999';
+    const center = req.body[0].location;
     const description = '999';
 
     createNewMap({
@@ -87,11 +93,10 @@ module.exports = (db) => {
       })
       .then(res => {
         const mapID = res[0].id;
-
         let allMarkers = [];
         req.body.forEach(marker => {
           let temp = [];
-          temp.push(mapID, 1, marker.location, 'title', 'description', 'img_url')
+          temp.push(userID, mapID, marker.location, 'title', 'description', 'img_url')
           allMarkers.push(temp);
         })
         createNewMarker(allMarkers)
@@ -101,6 +106,64 @@ module.exports = (db) => {
         console.log(chalk.red('error: ', error))
       })
   });
+
+
+  const getMapsByUserID = function(userID) {
+    return db.query(`
+      SELECT * FROM maps
+      WHERE user_id = ${userID};
+      `)
+      .then(res => {
+        return res.rows
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const getMarkersByMapID = function(mapID) {
+    return db.query(`
+      SELECT * FROM markers
+      WHERE map_id = ${mapID};
+      `)
+      .then(res => {
+        return res.rows
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  router.get("/mymaps", (req, res) => {
+    const userID = req.session.user_id;
+    let mapIDs = [];
+    let userMaps = [];
+    getMapsByUserID(userID)
+      .then(async result => {
+        console.log(chalk.magenta(JSON.stringify(result)));
+        result.forEach(map => {
+          let mapData = {center: map.center, title: map.title, description: map.description}
+          userMaps.push(mapData);
+          mapIDs.push(map.id)
+        })
+        console.log(chalk.blue(JSON.stringify(userMaps)))
+        console.log(chalk.yellow(JSON.stringify(mapIDs)))
+
+        const [...userMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
+        res.send(userMarkers);
+      })
+
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: err.message
+          });
+      });
+  });
+
+
+
+
+
   router.get("/api/markers", (req, res) => {
     db.query(`SELECT * FROM markers;`)
       .then(data => {
@@ -188,8 +251,8 @@ module.exports = (db) => {
           });
           return;
         }
-        req.session.userId = user.id;
-        res.redirect(`/${email}`);
+        req.session.user_id = user.id;
+        res.redirect('/');
       })
       .catch(err => {
         res
@@ -316,6 +379,18 @@ module.exports = (db) => {
           });
       });
   });
+
+  router.get("/api/all", (req, res) => {
+    db.query(`SELECT * FROM users JOIN maps ON users.id = user_id GROUP BY users.id, maps.id LIMIT 2;`)
+      .then(userData => {
+        res.send(userData.rows[0])
+      })
+      .catch(err => {
+        res.status(500).json({
+          error: err.message
+        });
+      });
+  })
 
 
 
