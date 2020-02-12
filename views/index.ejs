@@ -180,6 +180,7 @@
     $.ajax({
       type: 'POST',
       data: JSON.stringify(markerData),
+      // data: markerData,
       contentType: 'application/json',
       url: '/endpoint',
       success: function (data) {

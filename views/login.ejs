@@ -48,7 +48,13 @@
 
     const places = [{location: {lat: -25.344, lng: 131.036}}, {location: {lat: -55.344, lng: 100.036}}, {location: {lat: 25.344, lng: -131.036}}]
     const markers = [{location: {lat: -25.344, lng: 131.036}}, {location: {lat: -55.344, lng: 100.036}}, {location: {lat: 25.344, lng: -131.036}}]
-    console.log(places)
+
+    const mapLocations = function () {
+
+      let map = [];
+      '<% for(map of maps) {console.log(map)}%>'
+
+    }
 
     function initMap(places, markers) {
       // The location of Uluru
@@ -56,13 +62,9 @@
         lat: -25.344,
         lng: 131.036
       };
-
-
-
-
       // The map, centered at Uluru
       for (let i = 0; i < 3; i++) {
-        console.log(`map${i}`);
+        console.log('LOGIN PAGE: ', i);
         let map = new google.maps.Map(
           document.getElementById(`map${i}`), {
             zoom: 4,
@@ -77,14 +79,12 @@
 
           })
         };
-
-
-
     }
   </script>
   <script>
     $(document).ready(function () {
       $mapContainer = $("#mapCollection")
+
 
       const empty = function () {
         $('#mapCollection').empty();
@@ -96,7 +96,9 @@
 
       $('#create').on('click', function () {
         empty();
+        mapLocations();
       })
+
 
 
     })

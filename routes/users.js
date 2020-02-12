@@ -35,9 +35,9 @@ module.exports = (db) => {
 
   const createNewMap = function (map) {
     return db.query(`
-    INSERT INTO maps (user_id, center, title, description)
-    VALUES ($1 , $2 , $3 , $4)
-    RETURNING id;`, [map.user_id, map.center, map.title, map.description])
+    INSERT INTO maps (user_id, lat, lng, title, description)
+    VALUES ($1 , $2 , $3 , $4, $5)
+    RETURNING id;`, [map.user_id, map.lat, map.lng, map.title, map.description])
       .then(res => {
         return res.rows;
       })
@@ -48,12 +48,12 @@ module.exports = (db) => {
   };
 
   const createNewMarker = function (markerData) {
-    let queryString = 'INSERT INTO markers (user_id, map_id, location, title, description, img_url) ';
+    let queryString = 'INSERT INTO markers (user_id, map_id, lat, lng, title, description, img_url) ';
     let paramString = '';
-    const limit = markerData.length * 6;
+    const limit = markerData.length * 7;
     console.log(limit);
-    for (let i = 0; i < limit; i += 6) {
-      paramString = paramString + `($${i + 1}, $${i + 2}, $${i + 3}, $${i + 4}, $${i + 5}, $${i + 6}),`;
+    for (let i = 0; i < limit; i += 7) {
+      paramString = paramString + `($${i + 1}, $${i + 2}, $${i + 3}, $${i + 4}, $${i + 5}, $${i + 6}, $${i + 7}),`;
     }
     paramString = paramString.slice(0, -1);
     paramString = 'VALUES ' + paramString + ';';
@@ -79,16 +79,22 @@ module.exports = (db) => {
 
 
   router.post('/endpoint', function (req, res) {
-    console.log(chalk.magenta('body: ' + JSON.stringify(req.body)));
+
     const userID = req.session.user_id;
     const title = '999';
-    const center = req.body[0].location;
     const description = '999';
+    // const center = req.body[0];
+    const mapLat = req.body[0].location.lat;
+    const mapLng = req.body[0].location.lng;
+
+    console.log(chalk.magenta('mapLAT ',mapLat));
+    console.log(chalk.red('mapLNG: ', mapLng));
 
     createNewMap({
         user_id: userID,
         title: title,
-        center: center,
+        lat: mapLat,
+        lng: mapLng,
         description: description
       })
       .then(res => {
@@ -96,7 +102,7 @@ module.exports = (db) => {
         let allMarkers = [];
         req.body.forEach(marker => {
           let temp = [];
-          temp.push(userID, mapID, marker.location, 'title', 'description', 'img_url')
+          temp.push(userID, mapID, marker.location.lat, marker.location.lng, 'title', 'description', 'img_url')
           allMarkers.push(temp);
         })
         createNewMarker(allMarkers)
@@ -140,14 +146,20 @@ module.exports = (db) => {
       .then(async result => {
         console.log(chalk.magenta(JSON.stringify(result)));
         result.forEach(map => {
-          let mapData = {center: map.center, title: map.title, description: map.description}
+          let mapData = {lat: map.lat, lng: map.lng, title: map.title, description: map.description}
           userMaps.push(mapData);
           mapIDs.push(map.id)
         })
         console.log(chalk.blue(JSON.stringify(userMaps)))
-        console.log(chalk.yellow(JSON.stringify(mapIDs)))
+        console.log(chalk.magenta(JSON.stringify(mapIDs)))
 
         const [...userMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
+        const templateVars = {
+          key: process.env.API_KEY,
+          maps: userMaps,
+          markers: userMarkers
+        }
+        res.render('login', templateVars)
       })
       .catch(err => {
         res
@@ -156,12 +168,9 @@ module.exports = (db) => {
             error: err.message
           });
       });
-      const templateVars = {
-        key: process.env.API_KEY,
-        maps: userMaps,
-        marker: userMarkers
-      };
-      res.render('login', templateVars)
+
+
+      //res.render('login', templateVars)
   });
 
 
@@ -210,6 +219,7 @@ module.exports = (db) => {
     db.query(`SELECT * FROM maps;`)
       .then(data => {
         const maps = data.rows;
+        // const finalData = JSON.stringify(maps).replace(/\\/g, '');
         res.json({
           maps
         });
@@ -366,8 +376,7 @@ module.exports = (db) => {
     const username = req.body.username;
     const password = req.body.password;
 
-    db.query(`SELECT * FROM maps
-    WHERE user_id = 2;
+    db.query(`SELECT * FROM maps;
     `)
       .then(data => {
         const users = data.rows;
