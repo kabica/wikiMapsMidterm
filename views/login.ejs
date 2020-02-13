@@ -3,27 +3,90 @@
 
 <head>
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-  <script type="text/javascript" src="/scripts/promiseAPI.js"></script>
-  <style>
-    /* Set the size of the div element that contains the map */
-    .map {
-      margin-top: 100px;
-      height: 100px;
-      /* The height is 400 pixels */
-      width: 100%;
-      /* The width is the width of the web page */
-    }
-  </style>
+
+  <link rel="stylesheet" href="/styles/login.css" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
+
+<style>
+  /* Set the size of the div element that contains the map */
+  .map {
+    margin-top: 100px;
+    margin-left: 20px;
+    height: 50vh;
+    border-radius: 8px;
+    /* The height is 400 pixels */
+    width: 60vh;
+    flex: 0 0 auto;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(11, 14, 21);
+    width: 20%;
+    height: 100vh;
+    font-family: 'Bungee Hairline';
+    font-size: 25px;
+    color: white;
+    position: fixed;
+    z-index: 100;
+  }
+  .options {
+    border-bottom: 1px solid gray;
+    margin-left: 16px;
+    margin-right: 16px;
+    height: 80px;
+  }
+  .title {
+    font-family: 'Bungee Hairline';
+    font-size: 36px;
+    color: white;
+    border-bottom: 1px solid grey;
+    margin-bottom: 25px;
+    height: 45px;
+  }
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+  }
+  .maps{
+    display: flex;
+    flex-direction: row;
+
+
+  }
+  #mapCollection {
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    width: 100%;
+    flex-wrap: nowrap;
+    z-index: 10;
+
+  }
+  main {
+    margin-left: 20%;
+    height: 100vh;
+    width: -webkit-fill-available;
+  }
+</style>
 </head>
 
 <body>
-  <h3>My Google Maps Demo</h3>
-  <!--The div element for the map -->
-  <button id="create">Create</button>
-  <button id="data">Data</button>
+  <nav>
+    <div class="title">GOOGLE API</div>
+    <div class="options">GOOGLE</div>
+    <div class="options">GOOGLE</div>
+    <div class="options">GOOGLE</div>
+    <div class="options">GOOGLE</div>
+  </nav>
+  <main>
+      <button id="create">Create</button>
+      <button id="data">Data</button>
+      <div class="maps"><div id="mapCollection"></div></div>
 
-  <div id="mapCollection">
-  </div>
+  </main>
+
 
   <script>
     function initMap() {

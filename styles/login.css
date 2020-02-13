@@ -1,0 +1,7 @@
+nav {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(11, 14, 21);
+  width: 25%;
+  height: 100%;
+}

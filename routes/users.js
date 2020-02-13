@@ -12,6 +12,14 @@ const bcrypt = require('bcrypt');
 
 
 module.exports = (db) => {
+  router.get('/home', (req,res) => {
+    let templateVars = {
+      key: process.env.API_KEY,
+      city: 'Calgary'
+    }
+    res.render('home', templateVars);
+  })
+
   router.get('/maptest', (req,res) => {
     templateVars = {
       key: process.env.API_KEY
@@ -57,7 +65,7 @@ module.exports = (db) => {
     paramString = paramString.slice(0, -1);
     paramString = 'VALUES ' + paramString + ';';
     queryString += paramString;
-
+    console.log(chalk.magenta(queryString));
     const queryData = [];
     markerData.forEach(marker => {
       marker.forEach(val => {
@@ -157,6 +165,44 @@ module.exports = (db) => {
       });
   });
 
+  const deleteMap = function (mapID) {
+    return db.query(`DELETE FROM maps WHERE id = ${mapID} RETURNING *;`)
+      .then(res => {
+        return res
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getUserByID = function (userID) {
+    return db.query(`SELECT * FROM users WHERE id = ${userID};`)
+      .then(user => {
+        return user;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  router.get("/:mapID/delete", (req, res) => {
+    const userID = req.session.user_id;
+    getUserByID(userID)
+    .then(user => {
+      if(!user) {
+        res.send('NOT LOGGED IN')
+      }
+      deleteMap(req.params['mapID'])
+    })
+    .then(res.redirect('/api/maps'))
+    .catch(err => {
+      res
+        .status(500)
+        .json({
+          error: err.message
+        });
+    });
+  });
+
 
 
 
@@ -250,7 +296,7 @@ module.exports = (db) => {
           return;
         }
         req.session.user_id = user.id;
-        res.redirect('/');
+        res.redirect(`/${req.session.user_id}`);
       })
       .catch(err => {
         res
@@ -261,7 +307,7 @@ module.exports = (db) => {
       });
 
   });
-  router.get("/:users", (req, res) => {
+  router.get("/:user", (req, res) => {
     email = req.params.users;
     db.query(`SELECT * FROM users WHERE email = '${email}'`)
       .then(userData => {
@@ -270,7 +316,7 @@ module.exports = (db) => {
           users: user
         }
         console.log(user, 'queryusers')
-        res.render("user", templateVars)
+        res.render("/mymaps", templateVars)
       })
       .catch(err => {
         res.status(500).json({
@@ -319,7 +365,7 @@ module.exports = (db) => {
           return;
         }
         createNewUser(name, email, hashedPW, defaultCity, preferences)
-          .then(res.redirect('/api/users'))
+          .then(res.redirect('/mymaps'))
       })
       .catch(err => {
         res
@@ -345,18 +391,6 @@ module.exports = (db) => {
   router.post("/create", (req, res) => {
 
   });
-
-
-
-
-
-
-
-
-
-
-
-
 
   router.get("/maps", (req, res) => {
     const username = req.body.username;
