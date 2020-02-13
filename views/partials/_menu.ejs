@@ -1,10 +1,33 @@
+<section class="menu-drop">
+  <div class="menu-logo-container">
+    <button class="nav-logo-btn">LOGO</button>
+    <h3 class="nav-logo-static">LOGO</h3>
+  </div>
+</section>
 <aside class="menu">
+  </section>
   <section class="menu-search">
     <form class="menu-search-form">
       SEARCH
       <input type="text" class="menu-search-input" name="search-input">
     </form>
   </section>
+  <% if (locals.users_id) { %>
+  <section class="user">
+    <h2 class="user-email"><%= users[0].email %></h2>
+    <span class="fa-stack fa-2x">
+      <i class="fas fa-user fa-stack-1x"></i>
+      <i class="far fa-circle fa-stack-2x"></i>
+    </span>
+  </section>
+  <% } %>
+
+  <form class="nav-search-form" action='/alex' method='POST'>
+    Search your city
+    <input type="text" class="nav-search-input" name="text">
+    <button id="testMap" type="submit">search</button>
+  </form>
+
   <h2 class="menu-discover-header">Discover:</h2>
   <section class="menu-discover">
     <span class="fa-stack fa-2x">
@@ -28,4 +51,7 @@
       <p>Active</p>
     </span>
   </section>
+
+  <%- include _auth %>
+
 </aside>

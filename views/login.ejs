@@ -9,6 +9,9 @@
 
 <style>
   /* Set the size of the div element that contains the map */
+  .fav {
+    z-index: 20;
+  }
   .map {
     margin-top: 100px;
     margin-left: 20px;
@@ -94,6 +97,7 @@
       <!-- <button id="create">Create</button>
       <button id="data">Data</button> -->
       <button id="create">Create</button>
+
       <button value='999' id="fill">Fill</button>
 
       <div class="maps" id="mapCollection"></div>
@@ -109,6 +113,7 @@
       let elem = `${type}${i}`
       map = new google.maps.Map(
         document.getElementById(elem), {
+          id: userMap.id,
           zoom: 10,
           center: {
             lat: JSON.parse(userMap.lat),
@@ -116,10 +121,6 @@
           },
           gestureHandling: 'cooperative'
 
-        });
-        map.addListener('click', function() {
-
-        console.log(JSON.stringify($(this).center));
         });
 
       var marker = new google.maps.Marker({
@@ -184,21 +185,12 @@
               initMap(mapData, type);
             }
             populateMaps();
-            console.log('ALEX', title);
           })
       });
     });
   </script>
-  <!--Load the API from the specified URL
-    * The async attribute allows the browser to render the page while the API loads
-    * The key parameter will contain your own API key (which is not needed for this tutorial)
-    * The callback parameter executes the initMap() function
-    -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
-  <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initFood"></script> -->
-
-
 
 </body>
-
 </html>
+

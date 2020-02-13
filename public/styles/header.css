@@ -9,7 +9,7 @@
 
 .gmaps {
   grid-area: gmaps;
-  height: 20em;
+  height: 100%;
   border: 2px solid black;
   border-radius: 0.5em;
 }

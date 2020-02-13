@@ -85,6 +85,8 @@ module.exports = (db) => {
   router.post('/endpoint', function (req, res) {
     const title = '999';
     const description = '999';
+    // const center = req.body[0];
+    console.log('test', req.body);
     const userID = req.session.user_id;
     const mapLat = req.body[0].location.lat;
     const mapLng = req.body[0].location.lng;
@@ -152,9 +154,11 @@ module.exports = (db) => {
         const templateVars = {
           key: process.env.API_KEY,
           maps: userMaps,
-          markers: userMarkers
+          markers: userMarkers,
+          city: 'Calgary',
+          user_id: userID
         }
-        res.render('login', templateVars)
+        res.render('index', templateVars)
       })
       .catch(err => {
         res
@@ -296,7 +300,7 @@ module.exports = (db) => {
           return;
         }
         req.session.user_id = user.id;
-        res.redirect(`/${req.session.user_id}`);
+        res.redirect(`/mymaps`);
       })
       .catch(err => {
         res
@@ -316,7 +320,7 @@ module.exports = (db) => {
           users: user
         }
         console.log(user, 'queryusers')
-        res.render("/mymaps", templateVars)
+        res.redirect("/mymaps", templateVars)
       })
       .catch(err => {
         res.status(500).json({
@@ -324,11 +328,9 @@ module.exports = (db) => {
         });
       });
   })
-  // GET -- LOGIN
-  router.get("/login", (req, res) => {
-    res.render('login');
-  });
-  router.get("/logout", (req, res) => {
+
+  // GET -- LOGOUT
+  router.post("/logout", (req, res) => {
     req.session.user_id = null;
     req.session = null;
     res.redirect('/');
@@ -336,9 +338,10 @@ module.exports = (db) => {
 
 
   //============================== REGISTER ===============================//
-  router.get("/register", (req, res) => {
-    res.render("register");
-  });
+  // router.get("/register", (req, res) => {
+  //   templat
+  //   res.render("register");
+  // });
   const createNewUser = function (name, email, password, defaultCity, preferences) {
     return db.query(`
       INSERT INTO users (name, email, password, default_city, preferences)
@@ -365,7 +368,10 @@ module.exports = (db) => {
           return;
         }
         createNewUser(name, email, hashedPW, defaultCity, preferences)
-          .then(res.redirect('/'))
+          .then(newUser => {
+            req.session.user_id = newUser.id;
+            res.redirect('/mymaps')
+        })
       })
       .catch(err => {
         res
@@ -376,12 +382,13 @@ module.exports = (db) => {
       });
 
   });
+
   router.get("/", (req, res) => {
     const templateVars = {
       key: apiKEY,
       city: 'Vancouver'
     };
-    res.render("index", templateVars);
+    res.render("login", templateVars);
   });
 
   //============================== VALID USER ===============================//
@@ -391,7 +398,6 @@ module.exports = (db) => {
   router.post("/create", (req, res) => {
 
   });
-
   router.get("/maps", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -411,6 +417,23 @@ module.exports = (db) => {
             error: err.message
           });
       });
+  });
+
+  router.get("/:users", (req, res) => {
+    email = req.params.users;
+
+    db.query(`SELECT * FROM users WHERE email = '${email}'`)
+    .then(userData => {
+      const user = userData.rows;
+      templateVars = {
+        users: user
+      }
+      console.log(user, 'queryusers')
+      res.render("user", templateVars)
+    })
+    .catch(err => {
+      res.status(500).json({error: err.message});
+    })
   });
 
   router.get("/api/all", (req, res) => {

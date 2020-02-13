@@ -37,4 +37,8 @@ nav {
   .nav-search-form {
     display: none;
   }
+
+  .user-loggedIn {
+    display: none;
+  }
 }

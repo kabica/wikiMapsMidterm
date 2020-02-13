@@ -3,6 +3,17 @@
   background-color: rgb(38, 33, 39);
 }
 
+.menu-drop {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3em;
+  width: 16em;
+  position: fixed;
+  z-index: 200;
+  background-color: rgb(38, 33, 39);
+}
+
 .menu-discover {
   display: flex;
   color: white;
@@ -30,11 +41,16 @@
   .menu {
     display: flex;
     flex-direction: column;
-    width: 10em;
+    align-content: center;
+    width: 16em;
     height: 100%;
     z-index: 100;
     margin-top: 3em;
     position: fixed;
+  }
+
+  .nav-logo-btn {
+    display: none;
   }
 
   .menu-search {
@@ -43,6 +59,14 @@
 
   .menu-discover {
     flex-direction: column;
+  }
+
+  .user {
+    align-items: center;
+  }
+
+  .user-email {
+    font-size: 100%;
   }
 }
 
@@ -54,6 +78,14 @@
     /* display: flex; */
     flex-direction: column;
     height: auto;
+  }
+
+  .nav-logo-btn {
+    display: block;
+  }
+
+  .nav-logo-static {
+    display: none;
   }
 
   .menu-search {
@@ -68,6 +100,10 @@
   .menu-discover {
     flex-wrap: wrap;
     justify-content: space-evenly;
+  }
+
+  .user {
+    display: none;
   }
 }
 

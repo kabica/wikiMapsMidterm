@@ -15,7 +15,9 @@
   <link rel="stylesheet" href="/styles/header.css" type="text/css" />
   <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
   <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
-
+  <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="/styles/sliderTEST.css" type="text/css" /> -->
+  <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
 
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
@@ -25,14 +27,13 @@
   <!-- Internal JS -->
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
+  <script type="text/javascript" src="/scripts/auth.js"></script>
+
+  <style>
+  </style>
 </head>
 
 <body>
-
-
-  <%- include partials/_nav %>
-
-  <%- include partials/_auth %>
 
   <%- include partials/_menu %>
 
@@ -40,21 +41,24 @@
 
     <header class="map-desc">
       <h1 class="map-desc-title">MAP TITLE!</h1>
-      <p class="map-desc-info">MAP INFO!</p>
-      <form id="testButton">
-        <input id="testButton" class="tweet" type="submit" value="Tweet">
-      </form>
+      <!-- <p class="map-desc-info">MAP INFO!</p> -->
+      <!-- <form id="testButton"> -->
+        <!-- <input id="testButton" class="tweet" type="submit" value="Tweet" /> -->
+        <%# if (locals.users_id) { %>
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
-      <button id="create" onclick="createMap(markers)">Create</button>
-      <button id="create" onclick="clearMarker(markers)">Clear</button>
+      <button id="createMap" onclick="createMap(markers)">Create</button>
+      <button id="clear" onclick="clearMarker(markers)">Clear</button>
+
+      <%#s } %>
     </header>
 
     <section id="map" class="gmaps">
       <h2>MAPS!</h2>
     </section>
 
-    <%- include partials/_discover %>
+    <%# include partials/_discover %>
     <% console.log(locals) %>
+    <%- include partials/_slider %>
   </main>
 
 </body>
@@ -63,19 +67,19 @@
   // parameter when you first load the API. For example:
   // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
-  var map;
-  var service;
-  var infowindow;
-  let markers = [];
+    let map;
+    let service;
+    let infowindow;
+    let markers = [];
 
   function initMap() {
     var sydney = new google.maps.LatLng(-33.867, 151.195);
 
-    infowindow = new google.maps.InfoWindow();
+    // infowindow = new google.maps.InfoWindow();
 
     map = new google.maps.Map(
       document.getElementById('map'), {
-        center: sydney,
+        center: '<%= city %>',
         zoom: 15
       });
 
@@ -91,68 +95,143 @@
         for (var i = 0; i < results.length; i++) {
           createMarker(results[i]);
         }
-
         map.setCenter(results[0].geometry.location);
       }
     });
   }
+
+  function initMapSlider() {
+      let i = 0;
+      // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
+      '<% if (locals.user_id){ %>'
+      '<% for(userMap of maps){ %>'
+      map = new google.maps.Map(
+        document.getElementById(`map${i}`), {
+          zoom: 16,
+          center: {
+            lat: JSON.parse('<%= userMap.lat %>'),
+            lng: JSON.parse('<%= userMap.lng %>')
+          },
+          gestureHandling: 'cooperative'
+
+        });
+      var marker = new google.maps.Marker({
+        position: {
+          lat: JSON.parse('<%= userMap.lat %>'),
+          lng: JSON.parse('<%= userMap.lng %>')
+        },
+        map: map
+      })
+      i++;
+      '<% for(userMarker of markers){ %>'
+      '<% for(userMarkerData of userMarker){ %>'
+      if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
+        let marker = new google.maps.Marker({
+          position: {
+            lat: JSON.parse('<%= userMarkerData.lat %>'),
+            lng: JSON.parse('<%= userMarkerData.lng %>')
+          },
+          map: map
+        })
+      };
+      '<%  } %>'
+      '<%  } %>'
+      '<%  } %>'
+      '<%  } %>'
+    };
 
   function createMarker(place) {
     let marker = new google.maps.Marker({
       map: map,
       position: place.geometry.location,
       draggable: true,
-      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      title: `marker1`,
+      edited: false,
+      id: `marker1`
     });
-    markers.push(marker);
 
-    google.maps.event.addListener(marker, 'click', function () {
-      infowindow.setContent(place.name);
-      infowindow.open(map, this);
-    });
+    markers.push(marker);
+    newInfoWindow(marker);
   }
 
 
-  function addMarker(map) {
-    let lat = map.getCenter().lat();
-    let lng = map.getCenter().lng();
+  function addMarker(mapData) {
+    let lat;
+    let lng;
+    if (mapData.hasOwnProperty('mapDataProviders')) {
+      // console.log(mapData)
+      lat = map.getCenter().lat();
+      lng = map.getCenter().lng();
+      createNewMarker({lat: lat, lng: lng, map: map});
+    } else {
+      // Add in some check that lat long and title are in there
+      mapData.forEach(maps => {
+        lat = maps.lat;
+        lng = maps.lng;
+        createNewMarker({lat: lat, lng: lng, map: map});
+      })
+    }
+  };
+
+  function createNewMarker(markerData) {
     marker = new google.maps.Marker({
       position: {
-        lat: lat,
-        lng: lng,
+        lat: markerData.lat,
+        lng: markerData.lng
       },
-      title: 'ALEX',
-      description: 'ALEX',
-      map: map,
+      map: markerData.map,
       draggable: true,
       animation: google.maps.Animation.DROP,
-      id: 'bica'
+      title: `marker${markers.length + 1}`,
+      edited: false,
+      id: `marker${markers.length + 1}`
     });
-    markers.push(marker);
-    marker.addListener('click', toggleBounce);
-    const contentString =
-      '<div id="marker-form">' +
-      '<form class="marker-form" action="/alex" method="POST">' +
-      'Marker Title' +
-      '<input type="text" class="marker-title" name="title" placeholder="Title">' +
-      'Marker Description' +
-      '<input type="text" class="marker-desc" name="description" placeholder="Description">' +
-      'Image Url' +
-      '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">' +
-      '<button class="" type="submit">submit</button>' +
-      '</form>' +
-      '</div>';
-    const infowindow = new google.maps.InfoWindow();
 
-    // marker.addListener('click', toggleBounce);
-    google.maps.event.addListener(marker, 'click', function () {
-      infowindow.close(); // Close previously opened infowindow
-      infowindow.setContent(contentString);
-      infowindow.open(map, this);
+    markers.push(marker);
+    google.maps.event.clearInstanceListeners(marker);
+    google.maps.event.addListener(marker, 'click', function() {
+      newInfoWindow(marker);
     })
 
-
+    // markers.forEach(marker => markerLoc.push({id: marker.id, lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}))
+    // console.log(markerLoc);
   };
+
+  function newInfoWindow(marker) {
+
+
+    const infowindow = new google.maps.InfoWindow();
+    // marker.addListener('click', toggleBounce);
+
+    infowindow.close(); // Close previously opened infowindow
+
+    // if (needString) {
+      const contentString = setContentString(marker.edited, {title: marker.title, desc: marker.description});
+      infowindow.setContent(contentString);
+    // }
+    infowindow.open(map, marker);
+  }
+
+  function setContentString(edit, data) {
+    if (edit) {
+      return '<div class="marker-display">'+
+      `<button class="marker-edit marker${markers.length}"> edit </button>`+
+      `<h3 class="marker-title">${data.title}</h3>`+
+      `<h5 class="marker-desc">${data.desc}</h5>`+
+    '</div>'
+    } else {
+      return '<div class="marker-form">'+
+      'Marker Title'+
+      '<input type="text" class="marker-title" name="title" placeholder="Title">'+
+      'Marker Description'+
+      '<input type="text" class="marker-desc" name="description" placeholder="Description">'+
+      'Image Url'+
+      '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">'+
+      `<button class="marker-data marker${markers.length}" >submit</button>`+
+    '</div>'
+    }
+  }
 
   const toggleBounce = function () {
     if (this.getAnimation() !== null) {
@@ -192,7 +271,72 @@
 </script>
 
 <script type="text/javascript">
+
   $(function () {
+
+    // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
+    '<% if (locals.user_id){ %>'
+    $mapContainer = $("#mapCollection")
+      const empty = function () {
+        $('#mapCollection').empty();
+        for (let i = 0; i < '<%= maps.length %>'; i++) {
+          $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
+        }
+        initMapSlider();
+      }
+      $('#create').on('click', function () {
+        empty();
+      })
+    '<%  } %>'
+
+
+    $('.gmaps').on('click', `.marker-data`, function() {
+      const title = $(this).siblings()[0];
+      const desc = $(this).siblings()[1];
+      const imgURL = $(this).siblings()[2];
+      const parentDiv = $(this).parent();
+
+        for (const marker of markers) {
+          if (marker.id === this.classList[1]) {
+            marker.title = $(title).val();
+            marker.description = $(desc).val();
+            marker.imgURL = $(imgURL).val();
+            marker.edited = true;
+            const contentString = setContentString(marker.edited, {title: marker.title, desc: marker.description});
+            console.log('content string', contentString)
+            console.log('marker data', marker);
+            $(parentDiv).replaceWith(contentString);
+
+          if (marker.edited) {
+            google.maps.event.clearInstanceListeners(marker);
+            google.maps.event.addListener(marker, 'click', function() {
+              newInfoWindow(marker);
+            })
+          }
+        }
+      }
+    })
+
+    $('.gmaps').on('click', `.marker-edit`, function() {
+      const parentDiv = $(this).parent();
+      for (const marker of markers) {
+        if (marker.id === this.classList[1]) {
+
+        const contentString = setContentString(marker.edited, {title: marker.title, desc: marker.description});
+        $(parentDiv).replaceWith(contentString);
+        marker.edited = false;
+
+        if (!marker.edited) {
+          google.maps.event.clearInstanceListeners(marker);
+          google.maps.event.addListener(marker, 'click', function() {
+            newInfoWindow(marker);
+          })
+          }
+        }
+      }
+
+    })
+
     $('#testButton').click(function (e) {
       e.preventDefault();
       console.log('select_link clicked');
@@ -201,16 +345,16 @@
       data.title = "title";
       data.message = "message";
 
-      $.ajax({
-        type: 'POST',
-        data: JSON.stringify(data),
-        contentType: 'application/json',
-        url: '/endpoint',
-        success: function (data) {
-          console.log('success');
-          console.log(JSON.stringify(data));
-        }
-      });
+      // $.ajax({
+      //   type: 'POST',
+      //   data: JSON.stringify(data),
+      //   contentType: 'application/json',
+      //   url: '/endpoint',
+      //   success: function (data) {
+      //     console.log('success');
+      //     console.log(JSON.stringify(data));
+      //   }
+      // });
 
     });
   });
