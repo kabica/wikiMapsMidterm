@@ -9,6 +9,9 @@
 
 <style>
   /* Set the size of the div element that contains the map */
+  .fav {
+    z-index: 20;
+  }
   .map {
     margin-top: 100px;
     margin-left: 20px;
@@ -64,6 +67,16 @@
     z-index: 10;
 
   }
+  #foodmap {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    width: 100%;
+    flex-wrap: nowrap;
+    z-index: 10;
+
+  }
   main {
     margin-left: 20%;
     height: 100vh;
@@ -81,65 +94,99 @@
     <div class="options">GOOGLE</div>
   </nav>
   <main>
+      <!-- <button id="create">Create</button>
+      <button id="data">Data</button> -->
       <button id="create">Create</button>
-      <button id="data">Data</button>
-      <div class="maps"><div id="mapCollection"></div></div>
+
+      <button value='999' id="fill">Fill</button>
+
+      <div class="maps" id="mapCollection"></div>
+      <div class="maps" id="foodmap"></div>
 
   </main>
-
-
   <script>
-    function initMap() {
+
+    $(function () {
+      function initMap(mapData, type) {
       let i = 0;
-      '<% for(userMap of maps){ %>'
+      for(userMap of mapData[0]){
+      let elem = `${type}${i}`
       map = new google.maps.Map(
-        document.getElementById(`map${i}`), {
+        document.getElementById(elem), {
+          id: userMap.id,
           zoom: 10,
           center: {
-            lat: JSON.parse('<%= userMap.lat %>'),
-            lng: JSON.parse('<%= userMap.lng %>')
+            lat: JSON.parse(userMap.lat),
+            lng: JSON.parse(userMap.lng)
           },
           gestureHandling: 'cooperative'
 
         });
+
       var marker = new google.maps.Marker({
         position: {
-          lat: JSON.parse('<%= userMap.lat %>'),
-          lng: JSON.parse('<%= userMap.lng %>')
+          lat: JSON.parse(userMap.lat),
+          lng: JSON.parse(userMap.lng)
         },
         map: map
       })
       i++;
-      '<% for(userMarker of markers){ %>'
-      '<% for(userMarkerData of userMarker){ %>'
-      if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
+      for(userMarker of mapData[1]){
+        for(userMarkerData of userMarker){
+      if (JSON.parse(userMarkerData.map_id) === JSON.parse(userMap.id)) {
         let marker = new google.maps.Marker({
           position: {
-            lat: JSON.parse('<%= userMarkerData.lat %>'),
-            lng: JSON.parse('<%= userMarkerData.lng %>')
+            lat: JSON.parse(userMarkerData.lat),
+            lng: JSON.parse(userMarkerData.lng)
           },
           map: map
         })
       };
-      '<%  } %>'
-      '<%  } %>'
-      '<%  } %>'
-    };
-  </script>
-
-  <script>
-    $(document).ready(function () {
-      $mapContainer = $("#mapCollection")
-      const empty = function () {
-        $('#mapCollection').empty();
-        for (let i = 0; i < '<%= maps.length %>'; i++) {
-          $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
-        }
-        initMap();
       }
-      $('#create').on('click', function () {
-        empty();
-      })
+      }
+    }
+    };
+
+      $("#fill").on("click", function () {
+        title = $(this).val().split(' ');
+        console.log(title);
+        $.ajax({
+            url: `/discover/999`,
+            method: 'GET'
+          })
+          .done(mapData => {
+            const populateMaps = function () {
+              $('#foodmap').empty();
+              for (let i = 0; i < mapData[0].length; i++) {
+                $('#foodmap').append(`<div class="map" id='foodMap${i}'></div>`)
+              }
+              type = 'foodMap';
+              initMap(mapData, type);
+            }
+            populateMaps();
+            console.log('ALEX', title);
+          })
+      });
+
+      $("#create").on("click", function () {
+        title = $(this).val().split(' ');
+        console.log(title);
+        $.ajax({
+            url: `/alex/maps`,
+            method: 'GET'
+          })
+          .done(mapData => {
+            const populateMaps = function () {
+              $('#mapCollection').empty();
+              for (let i = 0; i < mapData[0].length; i++) {
+                $('#mapCollection').append(`<div class="map" id='map${i}'></div>`)
+              }
+              type = 'map';
+              initMap(mapData, type);
+            }
+            populateMaps();
+          })
+      });
     });
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
