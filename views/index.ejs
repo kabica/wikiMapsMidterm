@@ -293,7 +293,21 @@
     const empty = function () {
       $('#mapCollection').empty();
       for (let i = 0; i < '<%= maps.length %>'; i++) {
-        $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
+        $('#mapCollection').append(`
+        <div class="map-btns">
+          <div class="hover-btns">
+        <span class="fa-stack fa-1x user-maps-icons">
+          <i class="far fa-star fa-stack-1x"></i>
+          <i class="far fa-circle fa-stack-2x"></i>
+        </span>
+        <span class="fa-stack fa-1x user-maps-icons">
+          <i class="fas fa-edit fa-stack-1x"></i>
+          <i class="far fa-circle fa-stack-2x"></i>
+        </span>
+          </div>
+          <div class="map" id='map${i}'>ALEX</div>
+        </div>`
+        )
       }
       initMapSlider();
     }
