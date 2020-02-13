@@ -24,6 +24,10 @@
   <!-- Internal JS -->
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
+
+  <style>
+
+  </style>
 </head>
 
 <body>
@@ -43,8 +47,8 @@
       <form id="testButton">
         <!-- <input id="testButton" class="tweet" type="submit" value="Tweet" /> -->
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
-      <button id="create" onclick="createMap(markers)">Create</button>
-      <button id="create" onclick="clearMarker(markers)">Clear</button>
+      <button id="createMap" onclick="createMap(markers)">Create</button>
+      <button id="clear" onclick="clearMarker(markers)">Clear</button>
     </header>
 
     <section id="map" class="gmaps"> -->
@@ -65,12 +69,11 @@
     let service;
     let infowindow;
     let markers = [];
-    let markerLoc = [];
 
   function initMap() {
     var sydney = new google.maps.LatLng(-33.867, 151.195);
 
-    infowindow = new google.maps.InfoWindow();
+    // infowindow = new google.maps.InfoWindow();
 
     map = new google.maps.Map(
       document.getElementById('map'), {
@@ -100,14 +103,14 @@
       map: map,
       position: place.geometry.location,
       draggable: true,
-      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      title: `marker1`,
+      edited: false,
+      id: `marker1`
     });
-    markers.push(marker);
 
-    google.maps.event.addListener(marker, 'click', function () {
-      infowindow.setContent(place.name);
-      infowindow.open(map, this);
-    });
+    markers.push(marker);
+    newInfoWindow(marker);
   }
 
 
@@ -138,34 +141,55 @@
       map: markerData.map,
       draggable: true,
       animation: google.maps.Animation.DROP,
-      title: 'ALEX',
-      description: 'ALEX',
-      id: 'bica'
+      title: `marker${markers.length + 1}`,
+      edited: false,
+      id: `marker${markers.length + 1}`
     });
 
-    const contentString =
-              '<div class="marker-form">'+
-                'Marker Title'+
-                '<input type="text" class="marker-title" name="title" placeholder="Title">'+
-                'Marker Description'+
-                '<input type="text" class="marker-desc" name="description" placeholder="Description">'+
-                'Image Url'+
-                '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">'+
-                `<button class="marker-data marker${markers.length}" >submit</button>`+
-              '</div>';
-    const infowindow = new google.maps.InfoWindow();
     markers.push(marker);
+    google.maps.event.clearInstanceListeners(marker);
+    google.maps.event.addListener(marker, 'click', function() {
+      newInfoWindow(marker);
+    })
 
     // markers.forEach(marker => markerLoc.push({id: marker.id, lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}))
-
     // console.log(markerLoc);
-    // marker.addListener('click', toggleBounce);
-    google.maps.event.addListener(marker, 'click', function() {
-        infowindow.close(); // Close previously opened infowindow
-        infowindow.setContent(contentString);
-        infowindow.open(map, this);
-    })
   };
+
+  function newInfoWindow(marker) {
+
+
+    const infowindow = new google.maps.InfoWindow();
+    // marker.addListener('click', toggleBounce);
+
+    infowindow.close(); // Close previously opened infowindow
+
+    // if (needString) {
+      const contentString = setContentString(marker.edited, {title: marker.title, desc: marker.description});
+      infowindow.setContent(contentString);
+    // }
+    infowindow.open(map, marker);
+  }
+
+  function setContentString(edit, data) {
+    if (edit) {
+      return '<div class="marker-display">'+
+      `<button class="marker-edit marker${markers.length}"> edit </button>`+
+      `<h3 class="marker-title">${data.title}</h3>`+
+      `<h5 class="marker-desc">${data.desc}</h5>`+
+    '</div>'
+    } else {
+      return '<div class="marker-form">'+
+      'Marker Title'+
+      '<input type="text" class="marker-title" name="title" placeholder="Title">'+
+      'Marker Description'+
+      '<input type="text" class="marker-desc" name="description" placeholder="Description">'+
+      'Image Url'+
+      '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">'+
+      `<button class="marker-data marker${markers.length}" >submit</button>`+
+    '</div>'
+    }
+  }
 
   const toggleBounce = function () {
     if (this.getAnimation() !== null) {
@@ -207,25 +231,51 @@
 <script type="text/javascript">
 
   $(function () {
-
-    let markerArr = [];
-
-    $('.gmaps').on('click', '.marker-data', function() {
-      console.log(markers);
-
-      if (!markerArr.includes(this.classList[1])) {
-        $('.gmaps').on('click', `.${this.classList[1]}`, function() {
-          console.log(this)
-        })
-        markerArr.push(this.classList[1]);
-      }
-
+    $('.gmaps').on('click', `.marker-data`, function() {
       const title = $(this).siblings()[0];
       const desc = $(this).siblings()[1];
       const imgURL = $(this).siblings()[2];
+      const parentDiv = $(this).parent();
 
-      console.log($(title).val(), $(desc).val(), $(imgURL).val());
-      // console.log(markerArr)s
+        for (const marker of markers) {
+          if (marker.id === this.classList[1]) {
+            marker.title = $(title).val();
+            marker.description = $(desc).val();
+            marker.imgURL = $(imgURL).val();
+            marker.edited = true;
+            const contentString = setContentString(marker.edited, {title: marker.title, desc: marker.description});
+            console.log('content string', contentString)
+            console.log('marker data', marker);
+            $(parentDiv).replaceWith(contentString);
+
+          if (marker.edited) {
+            google.maps.event.clearInstanceListeners(marker);
+            google.maps.event.addListener(marker, 'click', function() {
+              newInfoWindow(marker);
+            })
+          }
+        }
+      }
+    })
+
+    $('.gmaps').on('click', `.marker-edit`, function() {
+      const parentDiv = $(this).parent();
+      for (const marker of markers) {
+        if (marker.id === this.classList[1]) {
+
+        const contentString = setContentString(marker.edited, {title: marker.title, desc: marker.description});
+        $(parentDiv).replaceWith(contentString);
+        marker.edited = false;
+
+        if (!marker.edited) {
+          google.maps.event.clearInstanceListeners(marker);
+          google.maps.event.addListener(marker, 'click', function() {
+            newInfoWindow(marker);
+          })
+          }
+        }
+      }
+
     })
 
     $('#testButton').click(function (e) {
