@@ -28,6 +28,7 @@
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
   <script type="text/javascript" src="/scripts/auth.js"></script>
+  <script type="text/javascript" src="/scripts/slider.js"></script>
 
   <style>
   </style>
@@ -43,8 +44,8 @@
       <h1 class="map-desc-title">MAP TITLE!</h1>
       <!-- <p class="map-desc-info">MAP INFO!</p> -->
       <!-- <form id="testButton"> -->
-        <!-- <input id="testButton" class="tweet" type="submit" value="Tweet" /> -->
-        <%# if (locals.users_id) { %>
+      <!-- <input id="testButton" class="tweet" type="submit" value="Tweet" /> -->
+      <%# if (locals.users_id) { %>
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
       <button id="createMap" onclick="createMap(markers)">Create</button>
       <button id="clear" onclick="clearMarker(markers)">Clear</button>
@@ -67,10 +68,10 @@
   // parameter when you first load the API. For example:
   // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
-    let map;
-    let service;
-    let infowindow;
-    let markers = [];
+  let map;
+  let service;
+  let infowindow;
+  let markers = [];
 
   function initMap() {
     var sydney = new google.maps.LatLng(-33.867, 151.195);
@@ -101,44 +102,46 @@
   }
 
   function initMapSlider() {
-      let i = 0;
-      // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
-      '<% if (locals.user_id){ %>'
-      '<% for(userMap of maps){ %>'
-      map = new google.maps.Map(
-        document.getElementById(`map${i}`), {
-          zoom: 16,
-          center: {
-            lat: JSON.parse('<%= userMap.lat %>'),
-            lng: JSON.parse('<%= userMap.lng %>')
-          },
-          gestureHandling: 'cooperative'
-
-        });
-      var marker = new google.maps.Marker({
-        position: {
+    let i = 0;
+    // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
+    '<% if (locals.user_id){ %>'
+    '<% for(userMap of maps){ %>'
+    map = new google.maps.Map(
+      document.getElementById(`map${i}`), {
+        map_id: `Map: ${i}`,
+        zoom: 13,
+        disableDefaultUI: true,
+        center: {
           lat: JSON.parse('<%= userMap.lat %>'),
-          lng: JSON.parse('<%= userMap.lng %>')
+          lng: JSON.parse('<%= userMap.lng %>'),
+        },
+        gestureHandling: 'cooperative'
+
+      });
+    var marker = new google.maps.Marker({
+      position: {
+        lat: JSON.parse('<%= userMap.lat %>'),
+        lng: JSON.parse('<%= userMap.lng %>')
+      },
+      map: map
+    })
+    i++;
+    '<% for(userMarker of markers){ %>'
+    '<% for(userMarkerData of userMarker){ %>'
+    if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
+      let marker = new google.maps.Marker({
+        position: {
+          lat: JSON.parse('<%= userMarkerData.lat %>'),
+          lng: JSON.parse('<%= userMarkerData.lng %>')
         },
         map: map
       })
-      i++;
-      '<% for(userMarker of markers){ %>'
-      '<% for(userMarkerData of userMarker){ %>'
-      if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
-        let marker = new google.maps.Marker({
-          position: {
-            lat: JSON.parse('<%= userMarkerData.lat %>'),
-            lng: JSON.parse('<%= userMarkerData.lng %>')
-          },
-          map: map
-        })
-      };
-      '<%  } %>'
-      '<%  } %>'
-      '<%  } %>'
-      '<%  } %>'
     };
+    '<%  } %>'
+    '<%  } %>'
+    '<%  } %>'
+    '<%  } %>'
+  };
 
   function createMarker(place) {
     let marker = new google.maps.Marker({
@@ -163,13 +166,21 @@
       // console.log(mapData)
       lat = map.getCenter().lat();
       lng = map.getCenter().lng();
-      createNewMarker({lat: lat, lng: lng, map: map});
+      createNewMarker({
+        lat: lat,
+        lng: lng,
+        map: map
+      });
     } else {
       // Add in some check that lat long and title are in there
       mapData.forEach(maps => {
         lat = maps.lat;
         lng = maps.lng;
-        createNewMarker({lat: lat, lng: lng, map: map});
+        createNewMarker({
+          lat: lat,
+          lng: lng,
+          map: map
+        });
       })
     }
   };
@@ -190,7 +201,7 @@
 
     markers.push(marker);
     google.maps.event.clearInstanceListeners(marker);
-    google.maps.event.addListener(marker, 'click', function() {
+    google.maps.event.addListener(marker, 'click', function () {
       newInfoWindow(marker);
     })
 
@@ -207,29 +218,32 @@
     infowindow.close(); // Close previously opened infowindow
 
     // if (needString) {
-      const contentString = setContentString(marker.edited, {title: marker.title, desc: marker.description});
-      infowindow.setContent(contentString);
+    const contentString = setContentString(marker.edited, {
+      title: marker.title,
+      desc: marker.description
+    });
+    infowindow.setContent(contentString);
     // }
     infowindow.open(map, marker);
   }
 
   function setContentString(edit, data) {
     if (edit) {
-      return '<div class="marker-display">'+
-      `<button class="marker-edit marker${markers.length}"> edit </button>`+
-      `<h3 class="marker-title">${data.title}</h3>`+
-      `<h5 class="marker-desc">${data.desc}</h5>`+
-    '</div>'
+      return '<div class="marker-display">' +
+        `<button class="marker-edit marker${markers.length}"> edit </button>` +
+        `<h3 class="marker-title">${data.title}</h3>` +
+        `<h5 class="marker-desc">${data.desc}</h5>` +
+        '</div>'
     } else {
-      return '<div class="marker-form">'+
-      'Marker Title'+
-      '<input type="text" class="marker-title" name="title" placeholder="Title">'+
-      'Marker Description'+
-      '<input type="text" class="marker-desc" name="description" placeholder="Description">'+
-      'Image Url'+
-      '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">'+
-      `<button class="marker-data marker${markers.length}" >submit</button>`+
-    '</div>'
+      return '<div class="marker-form">' +
+        'Marker Title' +
+        '<input type="text" class="marker-title" name="title" placeholder="Title">' +
+        'Marker Description' +
+        '<input type="text" class="marker-desc" name="description" placeholder="Description">' +
+        'Image Url' +
+        '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">' +
+        `<button class="marker-data marker${markers.length}" >submit</button>` +
+        '</div>'
     }
   }
 
@@ -271,45 +285,47 @@
 </script>
 
 <script type="text/javascript">
-
   $(function () {
 
     // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
     '<% if (locals.user_id){ %>'
     $mapContainer = $("#mapCollection")
-      const empty = function () {
-        $('#mapCollection').empty();
-        for (let i = 0; i < '<%= maps.length %>'; i++) {
-          $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
-        }
-        initMapSlider();
+    const empty = function () {
+      $('#mapCollection').empty();
+      for (let i = 0; i < '<%= maps.length %>'; i++) {
+        $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
       }
-      $('#create').on('click', function () {
-        empty();
-      })
+      initMapSlider();
+    }
+    $('#create').on('click', function () {
+      empty();
+    })
     '<%  } %>'
 
 
-    $('.gmaps').on('click', `.marker-data`, function() {
+    $('.gmaps').on('click', `.marker-data`, function () {
       const title = $(this).siblings()[0];
       const desc = $(this).siblings()[1];
       const imgURL = $(this).siblings()[2];
       const parentDiv = $(this).parent();
 
-        for (const marker of markers) {
-          if (marker.id === this.classList[1]) {
-            marker.title = $(title).val();
-            marker.description = $(desc).val();
-            marker.imgURL = $(imgURL).val();
-            marker.edited = true;
-            const contentString = setContentString(marker.edited, {title: marker.title, desc: marker.description});
-            console.log('content string', contentString)
-            console.log('marker data', marker);
-            $(parentDiv).replaceWith(contentString);
+      for (const marker of markers) {
+        if (marker.id === this.classList[1]) {
+          marker.title = $(title).val();
+          marker.description = $(desc).val();
+          marker.imgURL = $(imgURL).val();
+          marker.edited = true;
+          const contentString = setContentString(marker.edited, {
+            title: marker.title,
+            desc: marker.description
+          });
+          console.log('content string', contentString)
+          console.log('marker data', marker);
+          $(parentDiv).replaceWith(contentString);
 
           if (marker.edited) {
             google.maps.event.clearInstanceListeners(marker);
-            google.maps.event.addListener(marker, 'click', function() {
+            google.maps.event.addListener(marker, 'click', function () {
               newInfoWindow(marker);
             })
           }
@@ -317,20 +333,23 @@
       }
     })
 
-    $('.gmaps').on('click', `.marker-edit`, function() {
+    $('.gmaps').on('click', `.marker-edit`, function () {
       const parentDiv = $(this).parent();
       for (const marker of markers) {
         if (marker.id === this.classList[1]) {
 
-        const contentString = setContentString(marker.edited, {title: marker.title, desc: marker.description});
-        $(parentDiv).replaceWith(contentString);
-        marker.edited = false;
+          const contentString = setContentString(marker.edited, {
+            title: marker.title,
+            desc: marker.description
+          });
+          $(parentDiv).replaceWith(contentString);
+          marker.edited = false;
 
-        if (!marker.edited) {
-          google.maps.event.clearInstanceListeners(marker);
-          google.maps.event.addListener(marker, 'click', function() {
-            newInfoWindow(marker);
-          })
+          if (!marker.edited) {
+            google.maps.event.clearInstanceListeners(marker);
+            google.maps.event.addListener(marker, 'click', function () {
+              newInfoWindow(marker);
+            })
           }
         }
       }
@@ -364,4 +383,3 @@
 </script>
 
 </html>
-
