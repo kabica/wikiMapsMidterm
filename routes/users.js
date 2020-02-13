@@ -365,7 +365,7 @@ module.exports = (db) => {
           return;
         }
         createNewUser(name, email, hashedPW, defaultCity, preferences)
-          .then(res.redirect('/mymaps'))
+          .then(res.redirect('/'))
       })
       .catch(err => {
         res
@@ -426,27 +426,81 @@ module.exports = (db) => {
   })
 
   const getMapsByTitle = function (title) {
-    let search = title.split(' ');
-    console.log(search)
-    return db.query(`SELECT * FROM maps WHERE title LIKE '%${search[0]}%' OR title LIKE '%${search[1]}%'`)
+    title.toLowerCase();
+    search = title.split(' ');
+    console.log(chalk.magenta(search));
+    return db.query(`SELECT * FROM maps WHERE lower(title) LIKE '%${search[0]}%' OR title LIKE '%${search[1]}%';`)
     .then(res => res.rows)
     .catch((error) => {
       console.log(error);
     });
   };
-  router.get("/discover/:title", (req, res) => {
-    getMapsByTitle(req.params['title'])
-    .then(maps => {
-      console.log('ALEX')
-      res.json(maps)
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: err.message
-      });
-    });
-  })
+  // router.get("/discover/:title", (req, res) => {
+  //   getMapsByTitle(req.params['title'])
+  //   .then(maps => {
+  //     console.log('ALEX')
+  //     res.json(maps)
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({
+  //       error: err.message
+  //     });
+  //   });
+  // })
 
+  router.get("/discover/:topic", (req, res) => {
+    let mapIDs = [];
+    let userMaps = [];
+    const userID = req.session.user_id;
+    getMapsByTitle(req.params['topic'])
+      .then(async result => {
+        console.log(chalk.yellow(JSON.stringify(result)));
+        result.forEach(map => {
+          userMaps.push({id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description});
+          mapIDs.push(map.id);
+        });
+        const [...mapMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
+        console.log(chalk.blue(JSON.stringify(mapMarkers)));
+
+        const mapData = [userMaps, mapMarkers]
+        res.send(mapData);
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: err.message
+          });
+      });
+  });
+
+  router.get("/alex/maps", (req, res) => {
+    let mapIDs = [];
+    let userMaps = [];
+    const userID = req.session.user_id;
+    getMapsByUserID(12)
+      .then(async result => {
+        console.log(chalk.red(JSON.stringify(result)));
+        result.forEach(map => {
+          userMaps.push({id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description});
+          mapIDs.push(map.id);
+        });
+        const [...userMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
+        // const templateVars = {
+        //   key: process.env.API_KEY,
+        //   maps: userMaps,
+        //   markers: userMarkers
+        // }
+        res.send([userMaps , userMarkers])
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: err.message
+          });
+      });
+  });
 
 
 

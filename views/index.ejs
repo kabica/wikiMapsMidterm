@@ -131,24 +131,24 @@
     markers.push(marker);
     marker.addListener('click', toggleBounce);
     const contentString =
-            '<div id="marker-form">'+
-              '<form class="marker-form" action="/alex" method="POST">'+
-                'Marker Title'+
-                '<input type="text" class="marker-title" name="title" placeholder="Title">'+
-                'Marker Description'+
-                '<input type="text" class="marker-desc" name="description" placeholder="Description">'+
-                'Image Url'+
-                '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">'+
-                '<button class="" type="submit">submit</button>'+
-              '</form>'+
-            '</div>';
+      '<div id="marker-form">' +
+      '<form class="marker-form" action="/alex" method="POST">' +
+      'Marker Title' +
+      '<input type="text" class="marker-title" name="title" placeholder="Title">' +
+      'Marker Description' +
+      '<input type="text" class="marker-desc" name="description" placeholder="Description">' +
+      'Image Url' +
+      '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">' +
+      '<button class="" type="submit">submit</button>' +
+      '</form>' +
+      '</div>';
     const infowindow = new google.maps.InfoWindow();
 
     // marker.addListener('click', toggleBounce);
-    google.maps.event.addListener(marker, 'click', function() {
-        infowindow.close(); // Close previously opened infowindow
-        infowindow.setContent(contentString);
-        infowindow.open(map, this);
+    google.maps.event.addListener(marker, 'click', function () {
+      infowindow.close(); // Close previously opened infowindow
+      infowindow.setContent(contentString);
+      infowindow.open(map, this);
     })
 
 
@@ -220,4 +220,3 @@
 </script>
 
 </html>
-
