@@ -65,6 +65,13 @@
   width: -webkit-fill-available;
 } */
 
+#slider-maps {
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* padding-right: 1em; */
+}
 
 #mapCollection {
   display: flex;
@@ -73,11 +80,16 @@
   /* overflow-y: hidden; */
   /* white-space: nowrap; */
 }
+
+.maps {
+  display: none;
+}
+
 .map {
-  margin-top: 100px;
-  margin-right: 20px;
-  height: 50vh;
+  margin: 0em 1em 0.5em 0.5em;
+  /* margin-right: 1em; */
+  height: 18em;
   border-radius: 8px;
-  width: 60vh;
+  width: 25em;
   flex: 0 0 auto;
 }

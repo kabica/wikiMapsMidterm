@@ -22,7 +22,7 @@ main {
   /* column-gap: 1em; */
 }
 
-.sliderMaps {
+#slider-maps {
   grid-area: slider;
 }
 
@@ -39,7 +39,7 @@ main {
 
   main {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1em 40em 30em;
+    grid-template-rows: 1em 20em 20em;
     grid-template-areas:
     "desc desc desc"
     "gmaps gmaps gmaps"
