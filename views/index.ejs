@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>Home Page</title>
-
   <!-- Framework CSS -->
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
-
   <!-- Internal CSS -->
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
   <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
@@ -18,28 +15,21 @@
   <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
   <!-- <link rel="stylesheet" href="/styles/sliderTEST.css" type="text/css" /> -->
   <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
-
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
-
   <!-- Internal JS -->
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
   <script type="text/javascript" src="/scripts/auth.js"></script>
   <script type="text/javascript" src="/scripts/slider.js"></script>
-
   <style>
   </style>
 </head>
-
 <body>
-
   <%- include partials/_menu %>
-
   <main class="container">
-
     <header class="map-desc">
       <h1 class="map-desc-title">MAP TITLE!</h1>
       <!-- <p class="map-desc-info">MAP INFO!</p> -->
@@ -49,48 +39,37 @@
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
       <button id="createMap" onclick="createMap(markers)">Create</button>
       <button id="clear" onclick="clearMarker(markers)">Clear</button>
-
       <%#s } %>
     </header>
-
     <section id="map" class="gmaps">
       <h2>MAPS!</h2>
     </section>
-
     <%# include partials/_discover %>
     <% console.log(locals) %>
     <%- include partials/_slider %>
   </main>
-
 </body>
 <script>
   // This example requires the Places library. Include the libraries=places
   // parameter when you first load the API. For example:
   // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
   let map;
   let service;
   let infowindow;
   let markers = [];
-
   function initMap() {
     var sydney = new google.maps.LatLng(-33.867, 151.195);
-
     // infowindow = new google.maps.InfoWindow();
-
     map = new google.maps.Map(
       document.getElementById('map'), {
         center: '<%= city %>',
         zoom: 15
       });
-
     var request = {
       query: '<%= city %>',
       fields: ['name', 'geometry'],
     };
-
     service = new google.maps.places.PlacesService(map);
-
     service.findPlaceFromQuery(request, function (results, status) {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
@@ -100,7 +79,6 @@
       }
     });
   }
-
   function initMapSlider() {
     let i = 0;
     // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
@@ -116,7 +94,6 @@
           lng: JSON.parse('<%= userMap.lng %>'),
         },
         gestureHandling: 'cooperative'
-
       });
     var marker = new google.maps.Marker({
       position: {
@@ -142,7 +119,6 @@
     '<%  } %>'
     '<%  } %>'
   };
-
   function createMarker(place) {
     let marker = new google.maps.Marker({
       map: map,
@@ -153,12 +129,9 @@
       edited: false,
       id: `marker1`
     });
-
     markers.push(marker);
     newInfoWindow(marker);
   }
-
-
   function addMarker(mapData) {
     let lat;
     let lng;
@@ -184,7 +157,6 @@
       })
     }
   };
-
   function createNewMarker(markerData) {
     marker = new google.maps.Marker({
       position: {
@@ -198,25 +170,18 @@
       edited: false,
       id: `marker${markers.length + 1}`
     });
-
     markers.push(marker);
     google.maps.event.clearInstanceListeners(marker);
     google.maps.event.addListener(marker, 'click', function () {
       newInfoWindow(marker);
     })
-
     // markers.forEach(marker => markerLoc.push({id: marker.id, lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}))
     // console.log(markerLoc);
   };
-
   function newInfoWindow(marker) {
-
-
     const infowindow = new google.maps.InfoWindow();
     // marker.addListener('click', toggleBounce);
-
     infowindow.close(); // Close previously opened infowindow
-
     // if (needString) {
     const contentString = setContentString(marker.edited, {
       title: marker.title,
@@ -226,7 +191,6 @@
     // }
     infowindow.open(map, marker);
   }
-
   function setContentString(edit, data) {
     if (edit) {
       return '<div class="marker-display">' +
@@ -246,7 +210,6 @@
         '</div>'
     }
   }
-
   const toggleBounce = function () {
     if (this.getAnimation() !== null) {
       this.setAnimation(null);
@@ -254,7 +217,6 @@
       this.setAnimation(google.maps.Animation.BOUNCE);
     }
   };
-
   const clearMarker = function (markers) {
     for (let i = 1; i < markers.length; i++) {
       markers[i].setMap(null);
@@ -283,10 +245,8 @@
     });
   }
 </script>
-
 <script type="text/javascript">
   $(function () {
-
     // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
     '<% if (locals.user_id){ %>'
     $mapContainer = $("#mapCollection")
@@ -301,14 +261,11 @@
       empty();
     })
     '<%  } %>'
-
-
     $('.gmaps').on('click', `.marker-data`, function () {
       const title = $(this).siblings()[0];
       const desc = $(this).siblings()[1];
       const imgURL = $(this).siblings()[2];
       const parentDiv = $(this).parent();
-
       for (const marker of markers) {
         if (marker.id === this.classList[1]) {
           marker.title = $(title).val();
@@ -322,7 +279,6 @@
           console.log('content string', contentString)
           console.log('marker data', marker);
           $(parentDiv).replaceWith(contentString);
-
           if (marker.edited) {
             google.maps.event.clearInstanceListeners(marker);
             google.maps.event.addListener(marker, 'click', function () {
@@ -332,19 +288,16 @@
         }
       }
     })
-
     $('.gmaps').on('click', `.marker-edit`, function () {
       const parentDiv = $(this).parent();
       for (const marker of markers) {
         if (marker.id === this.classList[1]) {
-
           const contentString = setContentString(marker.edited, {
             title: marker.title,
             desc: marker.description
           });
           $(parentDiv).replaceWith(contentString);
           marker.edited = false;
-
           if (!marker.edited) {
             google.maps.event.clearInstanceListeners(marker);
             google.maps.event.addListener(marker, 'click', function () {
@@ -353,17 +306,13 @@
           }
         }
       }
-
     })
-
     $('#testButton').click(function (e) {
       e.preventDefault();
       console.log('select_link clicked');
-
       var data = {};
       data.title = "title";
       data.message = "message";
-
       // $.ajax({
       //   type: 'POST',
       //   data: JSON.stringify(data),
@@ -374,12 +323,9 @@
       //     console.log(JSON.stringify(data));
       //   }
       // });
-
     });
   });
 </script>
-
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer>
 </script>
-
 </html>

@@ -336,7 +336,6 @@ module.exports = (db) => {
     res.redirect('/');
   });
 
-
   //============================== REGISTER ===============================//
   // router.get("/register", (req, res) => {
   //   templat
@@ -388,7 +387,7 @@ module.exports = (db) => {
       key: apiKEY,
       city: 'Vancouver'
     };
-    res.render("login", templateVars);
+    res.render("index", templateVars);
   });
 
   //============================== VALID USER ===============================//
