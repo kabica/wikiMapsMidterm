@@ -117,6 +117,11 @@
           gestureHandling: 'cooperative'
 
         });
+        map.addListener('click', function() {
+
+        console.log(JSON.stringify($(this).center));
+        });
+
       var marker = new google.maps.Marker({
         position: {
           lat: JSON.parse(userMap.lat),

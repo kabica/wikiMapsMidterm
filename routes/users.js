@@ -478,7 +478,7 @@ module.exports = (db) => {
     let mapIDs = [];
     let userMaps = [];
     const userID = req.session.user_id;
-    getMapsByUserID(12)
+    getMapsByUserID(userID)
       .then(async result => {
         console.log(chalk.red(JSON.stringify(result)));
         result.forEach(map => {
