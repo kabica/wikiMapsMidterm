@@ -12,6 +12,15 @@ const bcrypt = require('bcrypt');
 
 
 module.exports = (db) => {
+
+  router.get("/discover", (req, res) => {
+    const templateVars = {
+      key: process.env.API_KEY,
+      city: 'Calgary'
+    }
+    res.render("discover", templateVars)
+  })
+
   router.get('/home', (req,res) => {
     let templateVars = {
       key: process.env.API_KEY,
@@ -388,7 +397,7 @@ module.exports = (db) => {
       key: apiKEY,
       city: 'Vancouver'
     };
-    res.render("login", templateVars);
+    res.render("index", templateVars);
   });
 
   //============================== VALID USER ===============================//
@@ -524,8 +533,5 @@ module.exports = (db) => {
           });
       });
   });
-
-
-
   return router;
 };

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Home Page</title>
+
+  <!-- Framework CSS -->
+  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+
+  <!-- Internal CSS -->
+  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/header.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
+
+  <!-- Framework JS -->
+  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+  <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
+
+  <!-- Internal JS -->
+  <script type="text/javascript" src="/scripts/app.js"></script>
+  <script type="text/javascript" src="/scripts/nav.js"></script>
+  <script type="text/javascript" src="/scripts/auth.js"></script>
+  <script type="text/javascript" src="/scripts/slider.js"></script>
+
+  <style>
+
+  </style>
+</head>
+
+<body>
+
+  <%- include partials/_menu %>
+
+  <main class="discover">
+  </main>
+
+</body>
+<script>
+  // This example requires the Places library. Include the libraries=places
+  // parameter when you first load the API. For example:
+  // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+  let map;
+  let service;
+  let infowindow;
+  let markers = [];
+
+  function initMap() {
+    var sydney = new google.maps.LatLng(-33.867, 151.195);
+
+    // infowindow = new google.maps.InfoWindow();
+
+    map = new google.maps.Map(
+      document.getElementById('map'), {
+        center: '<%= city %>',
+        zoom: 15
+      });
+
+    var request = {
+      query: '<%= city %>',
+      fields: ['name', 'geometry'],
+    };
+
+    service = new google.maps.places.PlacesService(map);
+
+    service.findPlaceFromQuery(request, function (results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          createMarker(results[i]);
+        }
+        map.setCenter(results[0].geometry.location);
+      }
+    });
+  }
+
+  function initMapSlider() {
+    let i = 0;
+    // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
+    '<% if (locals.user_id){ %>'
+    '<% for(userMap of maps){ %>'
+    map = new google.maps.Map(
+      document.getElementById(`map${i}`), {
+        map_id: `Map: ${i}`,
+        zoom: 13,
+        disableDefaultUI: true,
+        center: {
+          lat: JSON.parse('<%= userMap.lat %>'),
+          lng: JSON.parse('<%= userMap.lng %>'),
+        },
+        gestureHandling: 'cooperative'
+
+      });
+    var marker = new google.maps.Marker({
+      position: {
+        lat: JSON.parse('<%= userMap.lat %>'),
+        lng: JSON.parse('<%= userMap.lng %>')
+      },
+      map: map
+    })
+    i++;
+    '<% for(userMarker of markers){ %>'
+    '<% for(userMarkerData of userMarker){ %>'
+    if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
+      let marker = new google.maps.Marker({
+        position: {
+          lat: JSON.parse('<%= userMarkerData.lat %>'),
+          lng: JSON.parse('<%= userMarkerData.lng %>')
+        },
+        map: map
+      })
+    };
+    '<%  } %>'
+    '<%  } %>'
+    '<%  } %>'
+    '<%  } %>'
+  };
+
+  function createMarker(place) {
+    let marker = new google.maps.Marker({
+      map: map,
+      position: place.geometry.location,
+      draggable: true,
+      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      title: `marker1`,
+      edited: false,
+      id: `marker1`
+    });
+
+    markers.push(marker);
+    newInfoWindow(marker);
+  }
+
+
+  function addMarker(mapData) {
+    let lat;
+    let lng;
+    if (mapData.hasOwnProperty('mapDataProviders')) {
+      // console.log(mapData)
+      lat = map.getCenter().lat();
+      lng = map.getCenter().lng();
+      createNewMarker({
+        lat: lat,
+        lng: lng,
+        map: map
+      });
+    } else {
+      // Add in some check that lat long and title are in there
+      mapData.forEach(maps => {
+        lat = maps.lat;
+        lng = maps.lng;
+        createNewMarker({
+          lat: lat,
+          lng: lng,
+          map: map
+        });
+      })
+    }
+  };
+
+  function createNewMarker(markerData) {
+    marker = new google.maps.Marker({
+      position: {
+        lat: markerData.lat,
+        lng: markerData.lng
+      },
+      map: markerData.map,
+      draggable: true,
+      animation: google.maps.Animation.DROP,
+      title: `marker${markers.length + 1}`,
+      edited: false,
+      id: `marker${markers.length + 1}`
+    });
+
+    markers.push(marker);
+    google.maps.event.clearInstanceListeners(marker);
+    google.maps.event.addListener(marker, 'click', function () {
+      newInfoWindow(marker);
+    })
+
+    // markers.forEach(marker => markerLoc.push({id: marker.id, lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}))
+    // console.log(markerLoc);
+  };
+
+  function newInfoWindow(marker) {
+
+
+    const infowindow = new google.maps.InfoWindow();
+    // marker.addListener('click', toggleBounce);
+
+    infowindow.close(); // Close previously opened infowindow
+
+    // if (needString) {
+    const contentString = setContentString(marker.edited, {
+      title: marker.title,
+      desc: marker.description
+    });
+    infowindow.setContent(contentString);
+    // }
+    infowindow.open(map, marker);
+  }
+
+  function setContentString(edit, data) {
+    if (edit) {
+      return '<div class="marker-display">' +
+        `<button class="marker-edit marker${markers.length}"> edit </button>` +
+        `<h3 class="marker-title">${data.title}</h3>` +
+        `<h5 class="marker-desc">${data.desc}</h5>` +
+        '</div>'
+    } else {
+      return '<div class="marker-form">' +
+        'Marker Title' +
+        '<input type="text" class="marker-title" name="title" placeholder="Title">' +
+        'Marker Description' +
+        '<input type="text" class="marker-desc" name="description" placeholder="Description">' +
+        'Image Url' +
+        '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">' +
+        `<button class="marker-data marker${markers.length}" >submit</button>` +
+        '</div>'
+    }
+  }
+
+  const toggleBounce = function () {
+    if (this.getAnimation() !== null) {
+      this.setAnimation(null);
+    } else {
+      this.setAnimation(google.maps.Animation.BOUNCE);
+    }
+  };
+
+  const clearMarker = function (markers) {
+    for (let i = 1; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
+  };
+  const createMap = function (markers) {
+    let markerData = [];
+    for (let i = 0; i < markers.length; i++) {
+      let marker = {};
+      marker['location'] = {
+        lat: markers[i].getPosition().lat(),
+        lng: markers[i].getPosition().lng(),
+      };
+      markerData.push(marker);
+    }
+    console.log(JSON.stringify(markerData));
+    $.ajax({
+      type: 'POST',
+      data: JSON.stringify(markerData),
+      // data: markerData,
+      contentType: 'application/json',
+      url: '/endpoint',
+      success: function (data) {
+        console.log('success');
+      }
+    });
+  }
+</script>
+
+<script type="text/javascript">
+  $(function () {
+
+    // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
+    '<% if (locals.user_id){ %>'
+    $mapContainer = $("#mapCollection")
+    const empty = function () {
+      $('#mapCollection').empty();
+      for (let i = 0; i < '<%= maps.length %>'; i++) {
+        $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
+      }
+      initMapSlider();
+    }
+    $('#create').on('click', function () {
+      empty();
+    })
+    '<%  } %>'
+  });
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer>
+</script>
+
+</html>

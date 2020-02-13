@@ -1,5 +1,7 @@
 .map-desc {
   grid-area: desc;
+  display: flex;
+
   margin: none;
 }
 
