@@ -425,6 +425,29 @@ module.exports = (db) => {
       });
   })
 
+  const getMapsByTitle = function (title) {
+    let search = title.split(' ');
+    console.log(search)
+    return db.query(`SELECT * FROM maps WHERE title LIKE '%${search[0]}%' OR title LIKE '%${search[1]}%'`)
+    .then(res => res.rows)
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+  router.get("/discover/:title", (req, res) => {
+    getMapsByTitle(req.params['title'])
+    .then(maps => {
+      console.log('ALEX')
+      res.json(maps)
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err.message
+      });
+    });
+  })
+
+
 
 
   return router;
