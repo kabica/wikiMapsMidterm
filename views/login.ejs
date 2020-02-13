@@ -3,49 +3,113 @@
 
 <head>
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-  <script type="text/javascript" src="/scripts/promiseAPI.js"></script>
-  <style>
-    /* Set the size of the div element that contains the map */
-    .testmap {
-      /* margin-top: 100px; */
-      height: 100px;
-      /* The height is 400 pixels */
-      width: 100%;
-      /* The width is the width of the web page */
-    }
-  </style>
+
+  <link rel="stylesheet" href="/styles/login.css" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
+
+<style>
+  /* Set the size of the div element that contains the map */
+  .map {
+    margin-top: 100px;
+    margin-left: 20px;
+    height: 50vh;
+    border-radius: 8px;
+    /* The height is 400 pixels */
+    width: 60vh;
+    flex: 0 0 auto;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(11, 14, 21);
+    width: 20%;
+    height: 100vh;
+    font-family: 'Bungee Hairline';
+    font-size: 25px;
+    color: white;
+    position: fixed;
+    z-index: 100;
+  }
+  .options {
+    border-bottom: 1px solid gray;
+    margin-left: 16px;
+    margin-right: 16px;
+    height: 80px;
+  }
+  .title {
+    font-family: 'Bungee Hairline';
+    font-size: 36px;
+    color: white;
+    border-bottom: 1px solid grey;
+    margin-bottom: 25px;
+    height: 45px;
+  }
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+  }
+  .maps{
+    display: flex;
+    flex-direction: row;
+
+
+  }
+  #mapCollection {
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    width: 100%;
+    flex-wrap: nowrap;
+    z-index: 10;
+
+  }
+  main {
+    margin-left: 20%;
+    height: 100vh;
+    width: -webkit-fill-available;
+  }
+</style>
 </head>
 
 <body>
-  <h3>My Google Maps Demo</h3>
-  <!--The div element for the map -->
-  <button id="create">Create</button>
-  <div id="mapCollection">
-  </div>
-  <script>
+  <nav>
+    <div class="title">GOOGLE API</div>
+    <div class="options">GOOGLE</div>
+    <div class="options">GOOGLE</div>
+    <div class="options">GOOGLE</div>
+    <div class="options">GOOGLE</div>
+  </nav>
+  <main>
+      <button id="create">Create</button>
+      <button id="data">Data</button>
+      <div class="maps"><div id="mapCollection"></div></div>
 
+  </main>
+
+
+  <script>
     function initMap() {
       let i = 0;
+      '<% for(userMap of maps){ %>'
+      map = new google.maps.Map(
+        document.getElementById(`map${i}`), {
+          zoom: 10,
+          center: {
+            lat: JSON.parse('<%= userMap.lat %>'),
+            lng: JSON.parse('<%= userMap.lng %>')
+          },
+          gestureHandling: 'cooperative'
 
-      '<% for (userMap of maps) { %>'
-      console.log('lat', '<%= userMap.lat %>')
-      console.log('lng', '<%= userMap.lng %>')
-
-        // console.log('LOGIN PAGE: ', i);
-        map = new google.maps.Map(
-          document.getElementById(`map${i}`), {
-            zoom: 10,
-            center: {lat:JSON.parse('<%= userMap.lat%>'), lng:JSON.parse('<%= userMap.lng%>')},
-            gestureHandling: 'cooperative'
-          });
-
-        var marker = new google.maps.Marker({
-          position: {lat:JSON.parse('<%= userMap.lat%>'), lng:JSON.parse('<%= userMap.lng%>')},
-          map: map
-        })
-
-        i++;
-
+        });
+      var marker = new google.maps.Marker({
+        position: {
+          lat: JSON.parse('<%= userMap.lat %>'),
+          lng: JSON.parse('<%= userMap.lng %>')
+        },
+        map: map
+      })
+      i++;
       '<% for(userMarker of markers){ %>'
       '<% for(userMarkerData of userMarker){ %>'
       if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
@@ -56,28 +120,27 @@
           },
           map: map
         })
-      }
+      };
       '<%  } %>'
       '<%  } %>'
-      '<% } %>'
-    }
-
+      '<%  } %>'
+    };
   </script>
+
   <script>
     $(document).ready(function () {
       $mapContainer = $("#mapCollection")
-
       const empty = function () {
         $('#mapCollection').empty();
-        for(let i = 0; i < '<%= maps.length %>'; i++) {
-          $('#mapCollection').append(`<div id='map${i}' class='testmap'>ALEX</div>`)
+        for (let i = 0; i < '<%= maps.length %>'; i++) {
+          $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
         }
         initMap();
       }
       $('#create').on('click', function () {
         empty();
       })
-    })
+    });
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
 

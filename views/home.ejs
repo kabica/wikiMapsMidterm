@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+
+  <link rel="stylesheet" href="/styles/login.css" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
+
+<style>
+  /* Set the size of the div element that contains the map */
+  #map {
+    height: 400px;
+    width: 800px;
+  }
+  .map {
+    margin-top: 100px;
+    margin-left: 20px;
+    height: 50vh;
+    border-radius: 8px;
+    /* The height is 400 pixels */
+    width: 60vh;
+    flex: 0 0 auto;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(11, 14, 21);
+    width: 20%;
+    height: 100vh;
+    font-family: 'Bungee Hairline';
+    font-size: 25px;
+    color: white;
+    position: fixed;
+    z-index: 100;
+  }
+  .options {
+    border-bottom: 1px solid gray;
+    margin-left: 16px;
+    margin-right: 16px;
+    height: 80px;
+  }
+  .title {
+    font-family: 'Bungee Hairline';
+    font-size: 36px;
+    color: white;
+    border-bottom: 1px solid grey;
+    margin-bottom: 25px;
+    height: 45px;
+  }
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+  }
+  .maps{
+    display: flex;
+    flex-direction: row;
+
+
+  }
+  #mapCollection {
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    width: 100%;
+    flex-wrap: nowrap;
+    z-index: 10;
+
+  }
+  main {
+    margin-left: 20%;
+    height: 100vh;
+    width: -webkit-fill-available;
+  }
+  .buttons {
+    width: 100px;
+    display: flex;
+    flex-direction: row;
+  }
+</style>
+</head>
+
+<body>
+  <nav>
+    <div class="title">GOOGLE API</div>
+    <div class="options">GOOGLE</div>
+    <div class="options">GOOGLE</div>
+    <div class="options">GOOGLE</div>
+    <div class="options">GOOGLE</div>
+    <form class="nav-search-form" action='/alex' method='POST'>
+      Search your city
+      <input type="text" class="nav-search-input" name="text">
+    </form>
+    <button class="open-button" onclick="openForm()">Open Form</button>
+  </nav>
+  <main>
+
+      <section id="map" class="gmaps"></section>
+      <div class="buttons">
+          <button id="drop" onclick="addMarker(map)">Add Mark</button>
+          <button id="create" onclick="createMap(markers)">Create</button>
+          <button id="create" onclick="clearMarker(markers)">Clear</button>
+      </div>
+
+  </main>
+
+
+<script>
+    // This example requires the Places library. Include the libraries=places
+    // parameter when you first load the API. For example:
+    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+    var map;
+    var service;
+    var infowindow;
+    let markers = [];
+
+    function initMap() {
+      var sydney = new google.maps.LatLng(-33.867, 151.195);
+
+      infowindow = new google.maps.InfoWindow();
+
+      map = new google.maps.Map(
+        document.getElementById('map'), {
+          center: sydney,
+          zoom: 15,
+          gestureHandling: 'cooperative'
+        });
+
+      var request = {
+        query: '<%= city %>',
+        fields: ['name', 'geometry'],
+      };
+
+      service = new google.maps.places.PlacesService(map);
+
+      service.findPlaceFromQuery(request, function (results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+          }
+
+          map.setCenter(results[0].geometry.location);
+        }
+      });
+    }
+
+    function createMarker(place) {
+      let marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location,
+        draggable: true,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+      });
+      markers.push(marker);
+
+      google.maps.event.addListener(marker, 'click', function () {
+        infowindow.setContent(place.name);
+        infowindow.open(map, this);
+      });
+    }
+
+
+    function addMarker(map) {
+      let lat = map.getCenter().lat();
+      let lng = map.getCenter().lng();
+      marker = new google.maps.Marker({
+        position: {
+          lat: lat,
+          lng: lng,
+        },
+        title: 'ALEX',
+        description: 'ALEX',
+        map: map,
+        draggable: true,
+        animation: google.maps.Animation.DROP,
+        id: 'bica'
+      });
+      markers.push(marker);
+      marker.addListener('click', toggleBounce);
+      const contentString =
+              '<div id="marker-form">'+
+                '<form class="marker-form" action="/alex" method="POST">'+
+                  'Marker Title'+
+                  '<input type="text" class="marker-title" name="title" placeholder="Title">'+
+                  'Marker Description'+
+                  '<input type="text" class="marker-desc" name="description" placeholder="Description">'+
+                  'Image Url'+
+                  '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">'+
+                  '<button class="" type="submit">submit</button>'+
+                '</form>'+
+              '</div>';
+      const infowindow = new google.maps.InfoWindow();
+
+      // marker.addListener('click', toggleBounce);
+      google.maps.event.addListener(marker, 'click', function() {
+          infowindow.close(); // Close previously opened infowindow
+          infowindow.setContent(contentString);
+          infowindow.open(map, this);
+      })
+
+
+    };
+
+    const toggleBounce = function () {
+      if (this.getAnimation() !== null) {
+        this.setAnimation(null);
+      } else {
+        this.setAnimation(google.maps.Animation.BOUNCE);
+      }
+    };
+
+    const clearMarker = function (markers) {
+      for (let i = 1; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+    };
+    const createMap = function (markers) {
+      let markerData = [];
+      for (let i = 0; i < markers.length; i++) {
+        let marker = {};
+        marker['location'] = {
+          lat: markers[i].getPosition().lat(),
+          lng: markers[i].getPosition().lng(),
+        };
+        markerData.push(marker);
+      }
+      console.log(JSON.stringify(markerData));
+      $.ajax({
+        type: 'POST',
+        data: JSON.stringify(markerData),
+        // data: markerData,
+        contentType: 'application/json',
+        url: '/endpoint',
+        success: function (data) {
+          console.log('success');
+        }
+      });
+    }
+  </script>
+
+  <script type="text/javascript">
+    $(function () {
+      $('#testButton').click(function (e) {
+        e.preventDefault();
+        console.log('select_link clicked');
+
+        var data = {};
+        data.title = "title";
+        data.message = "message";
+
+        $.ajax({
+          type: 'POST',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          url: '/endpoint',
+          success: function (data) {
+            console.log('success');
+            console.log(JSON.stringify(data));
+          }
+        });
+
+      });
+    });
+  </script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer>
+  </script>
+
+
+
+</body>
+
+</html>

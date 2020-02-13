@@ -14,13 +14,15 @@
   <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
   <link rel="stylesheet" href="/styles/header.css" type="text/css" />
   <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
-  <!-- <link rel="stylesheet" href="/styles/auth.css" type="text/css" /> -->
+  <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
   <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="/styles/sliderTEST.css" type="text/css" /> -->
   <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
 
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
 
   <!-- Internal JS -->
   <script type="text/javascript" src="/scripts/app.js"></script>
@@ -28,7 +30,6 @@
   <script type="text/javascript" src="/scripts/auth.js"></script>
 
   <style>
-
   </style>
 </head>
 
@@ -40,22 +41,22 @@
 
     <header class="map-desc">
       <h1 class="map-desc-title">MAP TITLE!</h1>
-      <p class="map-desc-info">MAP INFO!</p>
-      <form id="testButton">
+      <!-- <p class="map-desc-info">MAP INFO!</p> -->
+      <!-- <form id="testButton"> -->
         <!-- <input id="testButton" class="tweet" type="submit" value="Tweet" /> -->
-        <% if (locals.users) { %>
+        <%# if (locals.users_id) { %>
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
       <button id="createMap" onclick="createMap(markers)">Create</button>
       <button id="clear" onclick="clearMarker(markers)">Clear</button>
 
-      <% } %>
+      <%#s } %>
     </header>
 
-    <section id="map" class="gmaps"> -->
+    <section id="map" class="gmaps">
       <h2>MAPS!</h2>
     </section>
 
-    <!-- <%- include partials/_discover %> -->
+    <%# include partials/_discover %>
     <% console.log(locals) %>
     <%- include partials/_slider %>
   </main>
@@ -98,6 +99,46 @@
       }
     });
   }
+
+  function initMapSlider() {
+      let i = 0;
+      // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
+      '<% if (locals.user_id){ %>'
+      '<% for(userMap of maps){ %>'
+      map = new google.maps.Map(
+        document.getElementById(`map${i}`), {
+          zoom: 16,
+          center: {
+            lat: JSON.parse('<%= userMap.lat %>'),
+            lng: JSON.parse('<%= userMap.lng %>')
+          },
+          gestureHandling: 'cooperative'
+
+        });
+      var marker = new google.maps.Marker({
+        position: {
+          lat: JSON.parse('<%= userMap.lat %>'),
+          lng: JSON.parse('<%= userMap.lng %>')
+        },
+        map: map
+      })
+      i++;
+      '<% for(userMarker of markers){ %>'
+      '<% for(userMarkerData of userMarker){ %>'
+      if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
+        let marker = new google.maps.Marker({
+          position: {
+            lat: JSON.parse('<%= userMarkerData.lat %>'),
+            lng: JSON.parse('<%= userMarkerData.lng %>')
+          },
+          map: map
+        })
+      };
+      '<%  } %>'
+      '<%  } %>'
+      '<%  } %>'
+      '<%  } %>'
+    };
 
   function createMarker(place) {
     let marker = new google.maps.Marker({
@@ -232,6 +273,23 @@
 <script type="text/javascript">
 
   $(function () {
+
+    // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
+    '<% if (locals.user_id){ %>'
+    $mapContainer = $("#mapCollection")
+      const empty = function () {
+        $('#mapCollection').empty();
+        for (let i = 0; i < '<%= maps.length %>'; i++) {
+          $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
+        }
+        initMapSlider();
+      }
+      $('#create').on('click', function () {
+        empty();
+      })
+    '<%  } %>'
+
+
     $('.gmaps').on('click', `.marker-data`, function() {
       const title = $(this).siblings()[0];
       const desc = $(this).siblings()[1];

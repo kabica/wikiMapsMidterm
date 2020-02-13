@@ -12,7 +12,7 @@
       <input type="text" class="menu-search-input" name="search-input">
     </form>
   </section>
-  <% if (locals.users) { %>
+  <% if (locals.users_id) { %>
   <section class="user">
     <h2 class="user-email"><%= users[0].email %></h2>
     <span class="fa-stack fa-2x">
@@ -51,7 +51,6 @@
       <p>Active</p>
     </span>
   </section>
-  <button class="open-button" onclick="openForm()">Open Form</button>
 
   <%- include _auth %>
 

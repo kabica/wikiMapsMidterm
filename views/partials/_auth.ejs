@@ -25,10 +25,30 @@
   </form>
 </div> -->
 
-<aside class="auth-drop-down">
-  <form>
-    <input type="text" name="email" />
-    <input type="password" name="password" />
+
+<% if (!locals.user_id) { %>
+  <button id="auth-open" onclick="openForm()">Open Form</button>
+<% } else { %>
+  <form method="POST" action="/logout">
+    <button type="submit" id="auth-logout">Logout</button>
+  </form>
+<% } %>
+
+<aside id="auth-drop-down">
+  <form method="POST" action="/login" id="auth-login">
+    <input type="text" placeholder="Email" name="username" />
+    <input type="password" placeholder="Password" name="password" />
     <button type="submit" class="auth-submit">Login</button>
+    OR
+  </br>
+    <button type="button" class="auth-switch">Register</button>
+  </form>
+  <form method="POST" action="/register" id="auth-register">
+    <input type="text" placeholder="Email" name="username" />
+    <input type="password" placeholder="Password" name="password" />
+    <button type="submit" class="auth-submit">Register</button>
+    OR
+  </br>
+    <button type="button" class="auth-switch">Login</button>
   </form>
 </aside>

@@ -19,7 +19,11 @@ main {
   grid-area: content;
   display: grid;
   row-gap: 2em;
-  column-gap: 1em;
+  /* column-gap: 1em; */
+}
+
+.sliderMaps {
+  grid-area: slider;
 }
 
 /* Checking for desktop displays and Setting styles */
@@ -35,11 +39,12 @@ main {
 
   main {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 40em 5em;
+    grid-template-rows: 1em 40em 30em;
     grid-template-areas:
+    "desc desc desc"
     "gmaps gmaps gmaps"
-    "desc desc desc";
-    margin: 3em 1em 0em 1em;
+    "slider slider slider";
+    margin: 0em 1em 0em 1em;
   }
 }
 

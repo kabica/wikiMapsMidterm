@@ -8,9 +8,18 @@ const express = require('express');
 const router = express.Router();
 const apiKEY = process.env.API_KEY;
 const chalk = require('chalk');
+const bcrypt = require('bcrypt');
 
 
 module.exports = (db) => {
+  router.get('/home', (req,res) => {
+    let templateVars = {
+      key: process.env.API_KEY,
+      city: 'Calgary'
+    }
+    res.render('home', templateVars);
+  })
+
   router.get('/maptest', (req,res) => {
     templateVars = {
       key: process.env.API_KEY
@@ -41,7 +50,6 @@ module.exports = (db) => {
       .then(res => {
         return res.rows;
       })
-      // console.log(chalk.yellow('FUNCITON CALL: ',res.rows[0].id));
       .catch((error) => {
         console.log(chalk.red('error: ', error))
       });
@@ -51,22 +59,19 @@ module.exports = (db) => {
     let queryString = 'INSERT INTO markers (user_id, map_id, lat, lng, title, description, img_url) ';
     let paramString = '';
     const limit = markerData.length * 7;
-    console.log(limit);
     for (let i = 0; i < limit; i += 7) {
       paramString = paramString + `($${i + 1}, $${i + 2}, $${i + 3}, $${i + 4}, $${i + 5}, $${i + 6}, $${i + 7}),`;
-    }
+    };
     paramString = paramString.slice(0, -1);
     paramString = 'VALUES ' + paramString + ';';
     queryString += paramString;
-
+    console.log(chalk.magenta(queryString));
     const queryData = [];
     markerData.forEach(marker => {
       marker.forEach(val => {
         queryData.push(val);
       })
-    })
-    console.log('QUERYSTRING : ', queryString);
-    console.log('QUERYDATA : ', queryData);
+    });
     return db.query(queryString, queryData)
       .then(res => {
         console.log('MARKER TABLE: ', res.rows)
@@ -75,22 +80,16 @@ module.exports = (db) => {
       .catch((error) => {
         console.log(chalk.red('error: ', error))
       });
-  }
-
+  };
 
   router.post('/endpoint', function (req, res) {
-
-    const userID = req.session.user_id;
     const title = '999';
     const description = '999';
     // const center = req.body[0];
     console.log('test', req.body);
+    const userID = req.session.user_id;
     const mapLat = req.body[0].location.lat;
     const mapLng = req.body[0].location.lng;
-
-    console.log(chalk.magenta('mapLAT ',mapLat));
-    console.log(chalk.red('mapLNG: ', mapLng));
-
     createNewMap({
         user_id: userID,
         title: title,
@@ -138,29 +137,28 @@ module.exports = (db) => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
+
   router.get("/mymaps", (req, res) => {
-    const userID = req.session.user_id;
     let mapIDs = [];
     let userMaps = [];
+    const userID = req.session.user_id;
     getMapsByUserID(userID)
       .then(async result => {
         console.log(chalk.magenta(JSON.stringify(result)));
         result.forEach(map => {
-          let mapData = {id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description}
-          userMaps.push(mapData);
-          mapIDs.push(map.id)
-        })
-        console.log(chalk.blue(JSON.stringify(userMaps)))
-        console.log(chalk.magenta(JSON.stringify(mapIDs)))
-
+          userMaps.push({id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description});
+          mapIDs.push(map.id);
+        });
         const [...userMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
         const templateVars = {
           key: process.env.API_KEY,
           maps: userMaps,
-          markers: userMarkers
+          markers: userMarkers,
+          city: 'Calgary',
+          user_id: userID
         }
-        res.render('login', templateVars)
+        res.render('index', templateVars)
       })
       .catch(err => {
         res
@@ -169,9 +167,44 @@ module.exports = (db) => {
             error: err.message
           });
       });
+  });
 
+  const deleteMap = function (mapID) {
+    return db.query(`DELETE FROM maps WHERE id = ${mapID} RETURNING *;`)
+      .then(res => {
+        return res
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getUserByID = function (userID) {
+    return db.query(`SELECT * FROM users WHERE id = ${userID};`)
+      .then(user => {
+        return user;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-      //res.render('login', templateVars)
+  router.get("/:mapID/delete", (req, res) => {
+    const userID = req.session.user_id;
+    getUserByID(userID)
+    .then(user => {
+      if(!user) {
+        res.send('NOT LOGGED IN')
+      }
+      deleteMap(req.params['mapID'])
+    })
+    .then(res.redirect('/api/maps'))
+    .catch(err => {
+      res
+        .status(500)
+        .json({
+          error: err.message
+        });
+    });
   });
 
 
@@ -248,7 +281,7 @@ module.exports = (db) => {
   const login = function (email, password) {
     return getUserWithEmail(email)
       .then(user => {
-        if (password === user.password) {
+        if (bcrypt.compareSync(password, user.password)) {
           return user;
         }
         return null;
@@ -267,7 +300,7 @@ module.exports = (db) => {
           return;
         }
         req.session.user_id = user.id;
-        res.redirect('/');
+        res.redirect(`/mymaps`);
       })
       .catch(err => {
         res
@@ -278,7 +311,7 @@ module.exports = (db) => {
       });
 
   });
-  router.get("/:users", (req, res) => {
+  router.get("/:user", (req, res) => {
     email = req.params.users;
     db.query(`SELECT * FROM users WHERE email = '${email}'`)
       .then(userData => {
@@ -287,7 +320,7 @@ module.exports = (db) => {
           users: user
         }
         console.log(user, 'queryusers')
-        res.render("user", templateVars)
+        res.redirect("/mymaps", templateVars)
       })
       .catch(err => {
         res.status(500).json({
@@ -295,8 +328,9 @@ module.exports = (db) => {
         });
       });
   })
-  // GET -- LOGIN
-  router.get("/logout", (req, res) => {
+
+  // GET -- LOGOUT
+  router.post("/logout", (req, res) => {
     req.session.user_id = null;
     req.session = null;
     res.redirect('/');
@@ -323,16 +357,21 @@ module.exports = (db) => {
     const name = 'testName';
     const defaultCity = 'testCity';
     const preferences = 'testPreferences';
+
     const email = req.body.username;
     const password = req.body.password;
+    const hashedPW = bcrypt.hashSync(password, 10);
     getUserWithEmail(email)
       .then(user => {
         if (user) {
           res.send('ALREADY EXISTS')
           return;
         }
-        createNewUser(name, email, password, defaultCity, preferences)
-          .then(res.redirect('/api/users'))
+        createNewUser(name, email, hashedPW, defaultCity, preferences)
+          .then(newUser => {
+            req.session.user_id = newUser.id;
+            res.redirect('/mymaps')
+        })
       })
       .catch(err => {
         res
@@ -343,6 +382,7 @@ module.exports = (db) => {
       });
 
   });
+
   router.get("/", (req, res) => {
     const templateVars = {
       key: apiKEY,
@@ -407,6 +447,29 @@ module.exports = (db) => {
         });
       });
   })
+
+  const getMapsByTitle = function (title) {
+    let search = title.split(' ');
+    console.log(search)
+    return db.query(`SELECT * FROM maps WHERE title LIKE '%${search[0]}%' OR title LIKE '%${search[1]}%'`)
+    .then(res => res.rows)
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+  router.get("/discover/:title", (req, res) => {
+    getMapsByTitle(req.params['title'])
+    .then(maps => {
+      console.log('ALEX')
+      res.json(maps)
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err.message
+      });
+    });
+  })
+
 
 
 
