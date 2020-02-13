@@ -6,6 +6,10 @@ function nav() {
   $('.auth').on('click', function() {
     $(this).slideToggle();
   })
+
+  $('.nav-logo').on('click', function() {
+    $('.menu').slideToggle();
+  })
 }
 
 function openForm() {

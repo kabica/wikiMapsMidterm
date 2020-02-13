@@ -7,6 +7,10 @@ nav {
   grid-area: nav;
 }
 
+.menu-drop {
+  grid-area: navDropBtn;
+}
+
 .menu {
   grid-area: navDrop;
 }
@@ -22,20 +26,20 @@ main {
 
 @media screen and (min-width: 1024px) {
   body {
-    grid-template-columns: 10em auto;
-    grid-template-rows: 3.5em auto;
+    grid-template-columns: 16em auto;
+    grid-template-rows: 3em auto;
     grid-template-areas:
-    "nav nav"
+    "navDropBtn content"
     "navDrop content";
   }
 
   main {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 20em auto;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 40em 5em;
     grid-template-areas:
-    "gmaps gmaps gmaps desc"
-    "article1 article2 article3 .";
-    margin: 2em 0em 0em 2em;
+    "gmaps gmaps gmaps"
+    "desc desc desc";
+    margin: 3em 1em 0em 1em;
   }
 }
 

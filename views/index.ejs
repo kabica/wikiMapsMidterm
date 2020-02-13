@@ -14,8 +14,9 @@
   <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
   <link rel="stylesheet" href="/styles/header.css" type="text/css" />
   <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="/styles/auth.css" type="text/css" /> -->
   <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
 
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
@@ -24,6 +25,7 @@
   <!-- Internal JS -->
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
+  <script type="text/javascript" src="/scripts/auth.js"></script>
 
   <style>
 
@@ -31,11 +33,6 @@
 </head>
 
 <body>
-
-
-  <%- include partials/_nav %>
-
-  <%- include partials/_auth %>
 
   <%- include partials/_menu %>
 
@@ -46,17 +43,21 @@
       <p class="map-desc-info">MAP INFO!</p>
       <form id="testButton">
         <!-- <input id="testButton" class="tweet" type="submit" value="Tweet" /> -->
+        <% if (locals.users) { %>
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
       <button id="createMap" onclick="createMap(markers)">Create</button>
       <button id="clear" onclick="clearMarker(markers)">Clear</button>
+
+      <% } %>
     </header>
 
     <section id="map" class="gmaps"> -->
       <h2>MAPS!</h2>
     </section>
 
-    <%- include partials/_discover %>
+    <!-- <%- include partials/_discover %> -->
     <% console.log(locals) %>
+    <%- include partials/_slider %>
   </main>
 
 </body>
