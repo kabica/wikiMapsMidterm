@@ -1,3 +1,16 @@
+img {
+  width: 100px;
+  margin-left: 65px;
+}
+#google {
+  width: 120px;
+  margin-left: 55px;
+}
+#google_maps {
+  height: 60px;
+  margin-left: 55px;
+}
+
 .cat1 {
   grid-area: article1;
 }
@@ -43,7 +56,7 @@
 .topic {
   display: flex;
   font-family: 'Bungee Hairline';
-  font-size: 30px;
+  font-size: 20px;
   width: 90%;
   color: white;
   border-bottom: 1px solid rgb(62, 75, 73);
@@ -59,7 +72,7 @@
   display: flex;
   justify-items: center;
   flex-direction: column;
-  margin-top: 200px;
+  margin-top: 140px;
   width: 12em;
   align-items: center;
 }
@@ -284,4 +297,10 @@ body {
   margin-left: 16em;
   width: -webkit-fill-available;
   background-color: #1c1b21;
+}
+
+.pictures {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
