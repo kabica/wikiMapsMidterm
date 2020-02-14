@@ -1,8 +1,10 @@
-.pictures {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+#searchWindow {
+  background-color: gray;
+  outline: none;
+  border: 1px solid black;
+  margin-top: 0.6em;
 }
+
 img {
   margin-top: 0.25em;
   width: 5em;
@@ -300,4 +302,10 @@ body {
   margin-left: 16em;
   width: -webkit-fill-available;
   background-color: #1c1b21;
+}
+
+.pictures {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

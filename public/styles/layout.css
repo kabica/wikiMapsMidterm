@@ -1,6 +1,7 @@
 body {
   background-color: #EEE;
   display: grid;
+  background-color: #1c1b21;
 }
 
 nav {
@@ -18,7 +19,7 @@ nav {
 main {
   grid-area: content;
   display: grid;
-  row-gap: 2em;
+  /* row-gap: 2em; */
   /* column-gap: 1em; */
 }
 
@@ -43,7 +44,7 @@ main {
 
   .main-container {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1em 20em 20em;
+    grid-template-rows: 3em 30em 20em;
     grid-template-areas:
     "desc desc desc"
     "gmaps gmaps gmaps"

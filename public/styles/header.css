@@ -8,6 +8,14 @@
   margin-top: 0em;
 }
 
+#drop, #create_map, #clear {
+  font-family: 'Bungee Hairline';
+  font-size: 1em;
+  color: white;
+  margin: 0.2em 0.5em;
+  padding: 0.2em;
+}
+
 .gmaps {
   grid-area: gmaps / gmaps / slider / slider;
   height: 100%;

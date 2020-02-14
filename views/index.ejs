@@ -4,8 +4,11 @@
 <head>
   <title>Home Page</title>
   <!-- Bootstrap -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+  </script>
 
   <!-- Framework CSS -->
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
@@ -40,79 +43,88 @@
 
   </style>
 </head>
+
+
+
 <body>
-    <div class="alex">
+  <div class="alex">
+    <div class="brand">MAPS API</div>
+    <div class="topic">DISCOVER</div>
+    <div class="topic">EXPLORE</div>
+    <!-- <div class="topic">MAPS API</div> -->
+    <div class="pictures">
+      <img src="/styles/node.png" alt="">
+      <img id='google' src="/styles/google.png" alt="">
+    </div>
+    <div class="login_container">
+      <% if(!userID) {%>
 
-        <div class="brand">MAPS API</div>
-        <div class="topic">DISCOVER</div>
-        <div class="topic">EXPLORE</div>
-        <!-- <div class="topic">MAPS API</div> -->
-        <div class="pictures">
-        <img src="/styles/node.png" alt="">
-        <img id ='google' src="/styles/google.png" alt="">
-      </div>
-        <div class="login_container">
-            <% if(!userID) {%>
-            <form class='login_form'  action='/login' method='POST' id='loginContainer'>
-                <div class="form-group">
-                    <% if(register_error) {%>
-                      <labecontainerl for="exampleInputEmail1" id='register_error'>ALREADY EXISTS!</label>
-                      <% }else {%>
-                  <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label><% }%>
-                  <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-                  <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
-                </div>
-                <div class="form-group">
-                  <input name='password' type="password" class="form-control" id="password" placeholder="Password">
-                  <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
-                </div>
-                <div class="login_register">
-                    <button type="submit" class="btn btn-dark" id='loginUser'>Login</button>
-                    <button type="submit" class="btn btn-dark" id='registerUser'>New</button>
-                </div>
-                </form>
-
-                <form class='login_form'  action='/register' method='POST' id='registerContainer'>
-                  <div class="form-group">
-                    <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
-                    <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-                    <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
-                  </div>
-                  <div class="form-group">
-                    <input name='password' type="password" class="form-control" id="password" placeholder="Password">
-                    <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
-                  </div>
-                  <div class="login_register">
-                      <button type="submit" class="btn btn-dark" id='registerUser'>Register</button>
-                  </div>
-                  </form>
-                  <%  }else {%>
-                    <form class='login_form'  action='/logout' method='POST' id='logoutContainer'>
-
-
-
-                      </div>
-                      <div class="logout_form">
-                          <button type="submit" class="btn btn-dark" id='logout'>logout</button>
-                      </div>
-                      </form>
-                  <%  }%>
-
+      <form class='login_form' action='/login' method='POST' id='loginContainer'>
+        <div class="form-group">
+          <% if(register_error) {%>
+          <labecontainerl for="exampleInputEmail1" id='register_error'>ALREADY EXISTS!</label>
+            <% }else {%>
+            <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label><% }%>
+            <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp"
+              placeholder="Enter email">
+            <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
         </div>
+        <div class="form-group">
+          <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+          <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+        </div>
+        <div class="login_register">
+          <button type="submit" class="btn btn-dark" id='loginUser'>Login</button>
+          <button type="submit" class="btn btn-dark" id='registerUser'>New</button>
+        </div>
+      </form>
 
-      </div>
+      <form class='login_form' action='/register' method='POST' id='registerContainer'>
+        <div class="form-group">
+          <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+          <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp"
+            placeholder="Enter email">
+          <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+        </div>
+        <div class="form-group">
+          <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+          <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+        </div>
+        <div class="login_register">
+          <button type="submit" class="btn btn-dark" id='registerUser'>Register</button>
+        </div>
+      </form>
+      <%  }else {%>
+      <form class='login_form' action='/logout' method='POST' id='logoutContainer'>
+
+
+
+    </div>
+    <div class="logout_form">
+      <button type="submit" class="btn btn-dark" id='logout'>logout</button>
+    </div>
+    </form>
+    <%  }%>
+
+  </div>
+
+  </div>
   <main class="main-container">
     <header class="map-desc">
       <h1 class="map-desc-title">MAP TITLE!</h1>
 
-      <%# if (locals.users_id) { %>
-      <button id="drop" onclick="addMarker(map)">Add Mark</button>
-      <button id="create_map" onclick="createMap(markers)">Create</button>
-      <button id="clear" onclick="clearMarker(markers)">Clear</button>
+      <%# if (locals.user) { %>
+      <button class="btn btn-dark" id="drop" onclick="addMarker(map)">Add Mark</button>
+      <button class="btn btn-dark" id="create_map" onclick="createMap(markers)">Create</button>
+      <button class="btn btn-dark" id="clear" onclick="clearMarker(markers)">Clear</button>
       <%#s } %>
+
+        <form class="menu-search-form" id='navSearchBar'>
+          <input id='searchWindow'type="text" type="submit" class="menu-search-input" name="search-input">
+        </form>
     </header>
     <section id="map" class="gmaps">
-      <h2>MAPS!</h2>
+      <h2>Maps!</h2>
     </section>
     <% console.log(locals) %>
     <%- include partials/_slider %>
@@ -126,16 +138,44 @@
   let service;
   let infowindow;
   let markers = [];
+
   function initMap() {
     var sydney = new google.maps.LatLng(-33.867, 151.195);
     // infowindow = new google.maps.InfoWindow();
     map = new google.maps.Map(
       document.getElementById('map'), {
         center: '<%= city %>',
-        zoom: 15
+        zoom: 15,
+        gestureHandling: 'cooperative'
       });
+
     var request = {
       query: '<%= city %>',
+      fields: ['name', 'geometry'],
+    };
+    service = new google.maps.places.PlacesService(map);
+    service.findPlaceFromQuery(request, function (results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          createMarker(results[i]);
+        }
+        map.setCenter(results[0].geometry.location);
+      }
+    });
+  }
+
+  function initMapSearch(city) {
+    var sydney = new google.maps.LatLng(-33.867, 151.195);
+    // infowindow = new google.maps.InfoWindow();
+    map = new google.maps.Map(
+      document.getElementById('map'), {
+        center: city,
+        zoom: 15,
+        gestureHandling: 'cooperative'
+      });
+
+    let request = {
+      query: city,
       fields: ['name', 'geometry'],
     };
     service = new google.maps.places.PlacesService(map);
@@ -156,10 +196,11 @@
     map = new google.maps.Map(
       document.getElementById('map'), {
         center: center,
-        zoom: 15
+        zoom: 15,
+        gestureHandling: 'cooperative'
       });
 
-      let marker = new google.maps.Marker({
+    let marker = new google.maps.Marker({
       map: map,
       position: center,
       draggable: true,
@@ -225,6 +266,7 @@
     '<%  } %>'
     '<%  } %>'
   };
+
   function createMarker(place) {
     let marker = new google.maps.Marker({
       map: map,
@@ -238,6 +280,7 @@
     markers.push(marker);
     newInfoWindow(marker);
   }
+
   function addMarker(mapData) {
     console.log('mapdata', mapData)
     let lat;
@@ -264,6 +307,7 @@
       })
     }
   };
+
   function createNewMarker(markerData) {
     marker = new google.maps.Marker({
       position: {
@@ -285,6 +329,7 @@
     // markers.forEach(marker => markerLoc.push({id: marker.id, lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}))
     // console.log(markerLoc);
   };
+
   function newInfoWindow(marker) {
     const infowindow = new google.maps.InfoWindow();
     // marker.addListener('click', toggleBounce);
@@ -298,6 +343,7 @@
     // }
     infowindow.open(map, marker);
   }
+
   function setContentString(edit, data) {
     if (edit) {
       return '<div class="marker-display">' +
@@ -363,7 +409,9 @@
       if (icon.classList[1] === 'fa-expand-alt') {
         $.ajax({
           type: 'GET',
-          data: {mapID},
+          data: {
+            mapID
+          },
           // data: markerData,
           contentType: 'application/json',
           url: '/map/test',
@@ -372,9 +420,12 @@
             const markerData = data[1][0];
             map = new google.maps.Map(
               document.getElementById('map'), {
-              center: {lat: Number(data[0][0].lat), lng: Number(data[0][0].lng)},
-              zoom: 12
-            });
+                center: {
+                  lat: Number(data[0][0].lat),
+                  lng: Number(data[0][0].lng)
+                },
+                zoom: 12
+              });
 
             initMapRefresh(map, center, markerData)
           }
@@ -389,7 +440,7 @@
       $('#mapCollection').empty();
       // for (let i = 0; i < '<%= maps.length %>'; i++) {
       '<% for (let i = 0; i < maps.length; i++) { %>'
-        $('#mapCollection').append(`
+      $('#mapCollection').append(`
         <div class="map-btns">
           <div class="hover-btns">
         <span class="fa-stack fa-1x user-maps-icons">
@@ -406,10 +457,9 @@
         </span>
           </div>
           <div class="map <%= maps[i].id %>" id='map<%= i %>'>ALEX</div>
-          </div>`
-          )
-          '<% } %>'
-          // }
+          </div>`)
+      '<% } %>'
+      // }
       initMapSlider();
     }
 
@@ -467,14 +517,28 @@
       }
     })
     $("#registerUser").on("click", function (event) {
-        event.preventDefault();
-        $('#loginContainer').hide();
-        $('#registerContainer').show();
-      });
+      event.preventDefault();
+      $('#loginContainer').hide();
+      $('#registerContainer').show();
+    });
 
     $('#create').hide();
+
+    $('#navSearchBar').submit(function(event) {
+      event.preventDefault();
+      $(this).children().blur();
+      const city = $('#searchWindow').val();
+      initMapSearch(city);
+    })
+
+
+
+    // $('.menu-search-input').on("keyup", function(e) {
+    //   e.preventDefault();
+    // });
   });
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer>
 </script>
+
 </html>
