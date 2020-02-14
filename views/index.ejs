@@ -116,6 +116,11 @@
       <button class="btn btn-dark" id="create_map" onclick="createMap(markers)">Create</button>
       <button class="btn btn-dark" id="clear" onclick="clearMarker(markers)">Clear</button>
       <%#s } %>
+
+        <form class="menu-search-form">
+          SEARCH
+          <input type="text" type="submit" class="menu-search-input" name="search-input">
+        </form>
     </header>
     <section id="map" class="gmaps">
       <h2>Maps!</h2>
@@ -142,8 +147,35 @@
         zoom: 15,
         gestureHandling: 'cooperative'
       });
+
     var request = {
       query: '<%= city %>',
+      fields: ['name', 'geometry'],
+    };
+    service = new google.maps.places.PlacesService(map);
+    service.findPlaceFromQuery(request, function (results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          createMarker(results[i]);
+        }
+        map.setCenter(results[0].geometry.location);
+      }
+    });
+  }
+
+  function initMapSearch(city) {
+    console.log(city);
+    var sydney = new google.maps.LatLng(-33.867, 151.195);
+    // infowindow = new google.maps.InfoWindow();
+    map = new google.maps.Map(
+      document.getElementById('map'), {
+        center: city,
+        zoom: 15,
+        gestureHandling: 'cooperative'
+      });
+
+    var request = {
+      query: city,
       fields: ['name', 'geometry'],
     };
     service = new google.maps.places.PlacesService(map);
@@ -491,6 +523,10 @@
     });
 
     $('#create').hide();
+
+    // $('.menu-search-input').on("keyup", function(e) {
+    //   e.preventDefault();
+    // });
   });
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer>
