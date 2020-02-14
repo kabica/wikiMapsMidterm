@@ -19,7 +19,8 @@ CREATE TABLE maps (
   lat DECIMAL,
   lng DECIMAL,
   title VARCHAR(255) NOT NULL,
-  description TEXT
+  description TEXT,
+  favorites INTEGER
 );
 DROP TABLE IF EXISTS favorites CASCADE;
 CREATE TABLE favorites (

@@ -46,12 +46,22 @@ module.exports = (db) => {
 
   router.post("/alex", (req, res) => {
     let templateVars = {
+      userID: req.session.user_id,
       key: process.env.API_KEY,
       city: req.body.text
     }
     res.render('index', templateVars);
   });
 
+  const favoriteMapByID = function (mapID) {
+    return db.query(`UPDATE maps SET favorites = favorites + 1 WHERE id = $1 RETURNING favorites;`, [mapID])
+      .then(res => {
+        return res.rows;
+      })
+      .catch((error) => {
+        console.log(chalk.red('error: ', error))
+      });
+  }
   const createNewMap = function (map) {
     return db.query(`
     INSERT INTO maps (user_id, lat, lng, title, description)
@@ -94,8 +104,7 @@ module.exports = (db) => {
 
   router.post('/endpoint', function (req, res) {
     const title = '999';
-    const description = '999';
-    // const center = req.body[0];
+    const description = '999';;
     console.log('test', req.body);
     const userID = req.session.user_id;
     const mapLat = req.body[0].location.lat;
@@ -150,7 +159,6 @@ module.exports = (db) => {
   };
 
   router.get("/mymaps", (req, res) => {
-    console.log('FLAMES')
     let mapIDs = [];
     let userMaps = [];
     const userID = req.session.user_id;
@@ -167,9 +175,9 @@ module.exports = (db) => {
           maps: userMaps,
           markers: userMarkers,
           city: 'Calgary',
-          user_id: userID
+          user: userID,
+          userID: req.session.user_id
         }
-        console.log('AUSTIN!!!!!!!')
         res.render('index', templateVars)
       })
       .catch(err => {
@@ -362,13 +370,20 @@ module.exports = (db) => {
     getUserWithEmail(email)
       .then(user => {
         if (user) {
-          res.send('ALREADY EXISTS')
-          return;
+          // res.send('ALREADY EXISTS')
+          // return;
+          const templateVars = {
+            key: apiKEY,
+            city: 'Vancouver',
+            userID: req.session.user_id,
+            register_error: 1
+          };
+          res.render("index", templateVars);
         }
         createNewUser(name, email, hashedPW, defaultCity, preferences)
           .then(newUser => {
             req.session.user_id = newUser.id;
-            const templateVars = {key: process.env.API_KEY, city: 'Calgary'}
+            const templateVars = {key: process.env.API_KEY, city: 'Calgary', userID: req.session.user_id}
             res.render('index', templateVars)
         })
       })
@@ -385,7 +400,9 @@ module.exports = (db) => {
   router.get("/", (req, res) => {
     const templateVars = {
       key: apiKEY,
-      city: 'Vancouver'
+      city: 'Vancouver',
+      userID: req.session.user_id,
+      register_error: 0
     };
     res.render("index", templateVars);
   });
@@ -436,9 +453,9 @@ module.exports = (db) => {
   });
 
   router.get("/api/all", (req, res) => {
-    db.query(`SELECT * FROM users JOIN maps ON users.id = user_id GROUP BY users.id, maps.id LIMIT 2;`)
+    db.query(`SELECT * FROM users JOIN maps ON users.id = user_id GROUP BY users.id, maps.id;`)
       .then(userData => {
-        res.send(userData.rows[0])
+        res.send(userData.rows)
       })
       .catch(err => {
         res.status(500).json({
