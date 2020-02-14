@@ -48,7 +48,7 @@
     <div class="topic">EXPLORE</div>
     <div class="topic">MAPS API</div>
     <div class="login_container">
-      <% if(userID) {%>
+      <% if(!userID) {%>
         <form class='login_form'  action='/login' method='POST' id='loginContainer'>
             <div class="form-group">
               <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
