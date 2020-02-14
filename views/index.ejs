@@ -1,34 +1,82 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Home Page</title>
+  <!-- Bootstrap -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
   <!-- Framework CSS -->
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+
   <!-- Internal CSS -->
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
   <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
   <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/header.css" type="text/css" />
-  <!-- <link rel="stylesheet" href="/styles/discover.css" type="text/css" /> -->
+
   <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
   <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
-  <!-- <link rel="stylesheet" href="/styles/sliderTEST.css" type="text/css" /> -->
-  <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
+
+
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png"
+    href="https://cdn2.iconfinder.com/data/icons/funtime-animals-humans/60/004_019_parrot_bird_animal_pet-512.png">
+
   <!-- Internal JS -->
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
   <script type="text/javascript" src="/scripts/auth.js"></script>
-  <script type="text/javascript" src="/scripts/slider.js"></script>
+
+
   <style>
+
   </style>
 </head>
 <body>
-  <%- include partials/_menu %>
+    <div class="alex">
+        <div class="brand">MAPS API</div>
+        <div class="topic">DISCOVER</div>
+        <div class="topic">EXPLORE</div>
+        <div class="topic">MAPS API</div>
+        <div class="login_container">
+            <form class='login_form'  action='/login' method='POST' id='loginContainer'>
+                <div class="form-group">
+                  <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+                  <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                  <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+                </div>
+                <div class="form-group">
+                  <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+                  <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+                </div>
+                <div class="login_register">
+                    <button type="submit" class="btn btn-dark" id='loginUser'>Login</button>
+                    <button type="submit" class="btn btn-dark" id='registerUser'>New</button>
+                </div>
+                </form>
+                <form class='login_form'  action='/register' method='POST' id='registerContainer'>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+                    <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+                  </div>
+                  <div class="form-group">
+                    <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+                    <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+                  </div>
+                  <div class="login_register">
+                      <button type="submit" class="btn btn-dark" id='registerUser'>Register</button>
+                  </div>
+                  </form>
+        </div>
+
+      </div>
   <main class="container">
     <header class="map-desc">
       <h1 class="map-desc-title">MAP TITLE!</h1>

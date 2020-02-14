@@ -15,6 +15,7 @@ module.exports = (db) => {
 
   router.get("/discover", (req, res) => {
     const templateVars = {
+      userID: req.session.user_id,
       key: process.env.API_KEY,
       city: 'Calgary'
     }
@@ -264,7 +265,6 @@ module.exports = (db) => {
     db.query(`SELECT * FROM maps;`)
       .then(data => {
         const maps = data.rows;
-        // const finalData = JSON.stringify(maps).replace(/\\/g, '');
         res.json({
           maps
         });
