@@ -1,15 +1,13 @@
 img {
-  width: 100px;
-  margin-left: 65px;
+  margin-top: 0.25em;
+  width: 5em;
+  margin-left: 5em;
 }
 #google {
-  width: 120px;
-  margin-left: 55px;
+  width: 8em;
+  margin-left: 3.7em;
 }
-#google_maps {
-  height: 60px;
-  margin-left: 55px;
-}
+
 
 .cat1 {
   grid-area: article1;

@@ -44,7 +44,7 @@ main {
 
   .main-container {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 3em 20em 20em;
+    grid-template-rows: 3em 30em 20em;
     grid-template-areas:
     "desc desc desc"
     "gmaps gmaps gmaps"
