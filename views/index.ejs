@@ -22,8 +22,6 @@
   <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
   <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
 
-
-
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
@@ -54,7 +52,7 @@
             <form class='login_form'  action='/login' method='POST' id='loginContainer'>
                 <div class="form-group">
                     <% if(register_error) {%>
-                      <label for="exampleInputEmail1" id='register_error'>ALREADY EXISTS!</label>
+                      <labecontainerl for="exampleInputEmail1" id='register_error'>ALREADY EXISTS!</label>
                       <% }else {%>
                   <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label><% }%>
                   <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
@@ -99,7 +97,7 @@
         </div>
 
       </div>
-  <main class="container">
+  <main class="main-container">
     <header class="map-desc">
       <h1 class="map-desc-title">MAP TITLE!</h1>
 
@@ -184,8 +182,9 @@
 
   function initMapSlider() {
     let i = 0;
+    console.log('lat')
     // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
-    '<% if (locals.user_id){ %>'
+    '<% if (locals.user){ %>'
     '<% for(userMap of maps){ %>'
     map = new google.maps.Map(
       document.getElementById(`map${i}`), {
@@ -409,11 +408,13 @@
           // }
       initMapSlider();
     }
+
+    '<%  } %>'
+
     $('#my-maps').on('click', function () {
       empty();
       // initMapSlider();
     })
-    '<%  } %>'
 
     $('.gmaps').on('click', `.marker-data`, function () {
       const title = $(this).siblings()[0];
