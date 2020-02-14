@@ -12,6 +12,15 @@ const bcrypt = require('bcrypt');
 
 
 module.exports = (db) => {
+
+  router.get("/discover", (req, res) => {
+    const templateVars = {
+      key: process.env.API_KEY,
+      city: 'Calgary'
+    }
+    res.render("discover", templateVars)
+  })
+
   router.get('/home', (req,res) => {
     let templateVars = {
       key: process.env.API_KEY,
@@ -140,6 +149,7 @@ module.exports = (db) => {
   };
 
   router.get("/mymaps", (req, res) => {
+    console.log('FLAMES')
     let mapIDs = [];
     let userMaps = [];
     const userID = req.session.user_id;
@@ -158,6 +168,7 @@ module.exports = (db) => {
           city: 'Calgary',
           user_id: userID
         }
+        console.log('AUSTIN!!!!!!!')
         res.render('index', templateVars)
       })
       .catch(err => {
@@ -269,18 +280,20 @@ module.exports = (db) => {
   //================================ LOGIN =================================//
 
   const getUserWithEmail = function (email) {
+    console.log(chalk.blue(email))
     return db.query(`
   SELECT * FROM users
-  WHERE email = $1
+  WHERE email = $1;
   `, [email])
       .then(res => res.rows[0])
       .catch((error) => {
-        console.log(error);
+        console.log('ERRRRRRROR:', error);
       });
   };
   const login = function (email, password) {
     return getUserWithEmail(email)
       .then(user => {
+        console.log(chalk.yellow(JSON.stringify(user)))
         if (bcrypt.compareSync(password, user.password)) {
           return user;
         }
@@ -289,11 +302,12 @@ module.exports = (db) => {
   };
   // POST -- LOGIN
   router.post("/login", (req, res) => {
-    const email = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
+    console.log(chalk.magenta(password));
     login(email, password)
       .then(user => {
-        if (!user) {
+        if (user === null) {
           res.send({
             error: "error"
           });
@@ -311,23 +325,7 @@ module.exports = (db) => {
       });
 
   });
-  router.get("/:user", (req, res) => {
-    email = req.params.users;
-    db.query(`SELECT * FROM users WHERE email = '${email}'`)
-      .then(userData => {
-        const user = userData.rows;
-        templateVars = {
-          users: user
-        }
-        console.log(user, 'queryusers')
-        res.redirect("/mymaps", templateVars)
-      })
-      .catch(err => {
-        res.status(500).json({
-          error: err.message
-        });
-      });
-  })
+
 
   // GET -- LOGOUT
   router.post("/logout", (req, res) => {
@@ -357,7 +355,8 @@ module.exports = (db) => {
     const defaultCity = 'testCity';
     const preferences = 'testPreferences';
 
-    const email = req.body.username;
+    console.log(chalk.red(JSON.stringify(req.body)))
+    const email = req.body.email;
     const password = req.body.password;
     const hashedPW = bcrypt.hashSync(password, 10);
     getUserWithEmail(email)
@@ -369,7 +368,8 @@ module.exports = (db) => {
         createNewUser(name, email, hashedPW, defaultCity, preferences)
           .then(newUser => {
             req.session.user_id = newUser.id;
-            res.redirect('/mymaps')
+            const templateVars = {key: process.env.API_KEY, city: 'Calgary'}
+            res.render('index', templateVars)
         })
       })
       .catch(err => {
@@ -457,18 +457,40 @@ module.exports = (db) => {
       console.log(error);
     });
   };
-  // router.get("/discover/:title", (req, res) => {
-  //   getMapsByTitle(req.params['title'])
-  //   .then(maps => {
-  //     console.log('ALEX')
-  //     res.json(maps)
-  //   })
-  //   .catch(err => {
-  //     res.status(500).json({
-  //       error: err.message
-  //     });
-  //   });
-  // })
+  const getMapsByMapID = function (mapID) {
+    return db.query(`SELECT * FROM maps WHERE id = ${mapID};`)
+    .then(res => res.rows)
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+  router.get("/map/test", (req, res) => {
+    let mapIDs = [];
+    let userMaps = [];
+    const mapID = 4;
+    getMapsByMapID(mapID)
+      .then(async result => {
+        console.log(chalk.yellow(JSON.stringify(result)));
+        result.forEach(map => {
+          userMaps.push({id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description});
+          mapIDs.push(map.id);
+        });
+        const [...mapMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
+        console.log(chalk.blue(JSON.stringify(mapMarkers)));
+
+        const mapData = [userMaps, mapMarkers]
+        res.send(mapData);
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: err.message
+          });
+      });
+  });
+
+
 
   router.get("/discover/:topic", (req, res) => {
     let mapIDs = [];
@@ -524,7 +546,22 @@ module.exports = (db) => {
       });
   });
 
-
-
+  router.get("/:user", (req, res) => {
+    email = req.params.users;
+    db.query(`SELECT * FROM users WHERE email = '${email}'`)
+      .then(userData => {
+        const user = userData.rows;
+        templateVars = {
+          users: user
+        }
+        console.log(user, 'queryusers')
+        res.redirect("/mymaps", templateVars)
+      })
+      .catch(err => {
+        res.status(500).json({
+          error: err.message
+        });
+      });
+  })
   return router;
 };

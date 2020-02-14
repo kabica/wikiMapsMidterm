@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Home Page</title>
+  <!-- Bootstrap -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+  <!-- Framework CSS -->
+  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+
+  <!-- Internal CSS -->
+  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
+
+  <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
+
+
+  <!-- Framework JS -->
+  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+  <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png"
+    href="https://cdn2.iconfinder.com/data/icons/funtime-animals-humans/60/004_019_parrot_bird_animal_pet-512.png">
+
+  <!-- Internal JS -->
+  <script type="text/javascript" src="/scripts/app.js"></script>
+  <script type="text/javascript" src="/scripts/nav.js"></script>
+  <script type="text/javascript" src="/scripts/auth.js"></script>
+
+
+  <style>
+
+  </style>
+</head>
+
+<body>
+
+  <%# include partials/_menu %>
+  <div class="alex">
+    <div class="brand">MAPS API</div>
+    <div class="topic">DISCOVER</div>
+    <div class="topic">EXPLORE</div>
+    <div class="topic">MAPS API</div>
+    <div class="login_container">
+        <form class='login_form'  action='/login' method='POST' id='loginContainer'>
+            <div class="form-group">
+              <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+              <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+              <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+            </div>
+            <div class="form-group">
+              <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+              <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+            </div>
+            <div class="login_register">
+                <button type="submit" class="btn btn-dark" id='loginUser'>Login</button>
+                <button type="submit" class="btn btn-dark" id='registerUser'>New</button>
+            </div>
+            </form>
+            <form class='login_form'  action='/register' method='POST' id='registerContainer'>
+              <div class="form-group">
+                <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+                <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+              </div>
+              <div class="form-group">
+                <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+                <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+              </div>
+              <div class="login_register">
+                  <button type="submit" class="btn btn-dark" id='registerUser'>Register</button>
+              </div>
+              </form>
+    </div>
+
+  </div>
+
+
+  <main class="discover">
+      <button type="button" class="btn btn-outline-dark" id='create'>Dark</button>
+      <button type="button" class="btn btn-outline-dark" id='food'>Dark</button>
+      <button type="button" class="btn btn-outline-dark" id='movie'>Dark</button>
+      <!-- <button id="create">Create</button> -->
+      <!-- <button value='999' id="food">Food</button>
+      <button value='999' id="movie">Fill</button> -->
+
+
+
+
+      <div class='maps' id='mapCollection'></div>
+      <div class='maps' id='foodmap'></div>
+      <div class='maps' id='moviemap'></div>
+
+
+
+  </main>
+
+</body>
+<script>
+
+    $(function () {
+      function initMap(mapData, type) {
+      let i = 0;
+      for(userMap of mapData[0]){
+      let elem = `${type}${i}`
+      map = new google.maps.Map(
+        document.getElementById(elem), {
+          id: userMap.id,
+          zoom: 10,
+          center: {
+            lat: JSON.parse(userMap.lat),
+            lng: JSON.parse(userMap.lng)
+          },
+          gestureHandling: 'cooperative'
+
+        });
+
+      var marker = new google.maps.Marker({
+        position: {
+          lat: JSON.parse(userMap.lat),
+          lng: JSON.parse(userMap.lng)
+        },
+        map: map
+      })
+      i++;
+      for(userMarker of mapData[1]){
+        for(userMarkerData of userMarker){
+      if (JSON.parse(userMarkerData.map_id) === JSON.parse(userMap.id)) {
+        let marker = new google.maps.Marker({
+          position: {
+            lat: JSON.parse(userMarkerData.lat),
+            lng: JSON.parse(userMarkerData.lng)
+          },
+          map: map
+        })
+      };
+      }
+      }
+    }
+    };
+
+      $("#food").on("click", function () {
+        title = $(this).val().split(' ');
+        console.log(title);
+        $.ajax({
+            url: `/discover/999`,
+            method: 'GET'
+          })
+          .done(mapData => {
+            const populateMaps = function () {
+              $('#foodmap').empty();
+              for (let i = 0; i < mapData[0].length; i++) {
+                $('#foodmap').append(`<div class="map" id='foodMap${i}'></div>`)
+              }
+              type = 'foodMap';
+              initMap(mapData, type);
+            }
+            populateMaps();
+            console.log('ALEX', title);
+          })
+      });
+
+      $("#create").on("click", function () {
+        title = $(this).val().split(' ');
+        console.log(title);
+        $.ajax({
+            url: `/alex/maps`,
+            method: 'GET'
+          })
+          .done(mapData => {
+            const populateMaps = function () {
+              $('#mapCollection').empty();
+              for (let i = 0; i < mapData[0].length; i++) {
+                $('#mapCollection').append(`<div class="map" id='map${i}'></div>`)
+              }
+              type = 'map';
+              initMap(mapData, type);
+            }
+            populateMaps();
+          })
+      });
+      $("#movie").on("click", function () {
+        title = $(this).val().split(' ');
+        console.log(title);
+        $.ajax({
+            url: `/discover/999`,
+            method: 'GET'
+          })
+          .done(mapData => {
+            const populateMaps = function () {
+              $('#moviemap').empty();
+              for (let i = 0; i < mapData[0].length; i++) {
+                $('#moviemap').append(`<div class="map" id='moviemap${i}'></div>`)
+              }
+              type = 'moviemap';
+              initMap(mapData, type);
+            }
+            populateMaps();
+          })
+      });
+
+      $("#registerUser").on("click", function (event) {
+        event.preventDefault();
+        $('#loginContainer').hide();
+        $('#registerContainer').show();
+
+
+      });
+
+    });
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
+
+</html>
