@@ -1,9 +1,6 @@
 $( document ).ready(function() {
-  $('#create').on('click', () => {
+  $('#my-maps').on('click', () => {
     $('.maps').slideToggle();
     $('.maps').show();
-    // console.log((this));
   })
-
-
 })

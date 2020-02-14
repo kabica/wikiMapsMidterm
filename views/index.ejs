@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
   <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
   <link rel="stylesheet" href="/styles/header.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
 
   <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
   <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
@@ -34,6 +35,7 @@
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
   <script type="text/javascript" src="/scripts/auth.js"></script>
+  <script type="text/javascript" src="/scripts/slider.js"></script>
 
 
   <style>
@@ -378,7 +380,7 @@
     })
 
     // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
-    '<% if (locals.user_id){ %>'
+    '<% if (locals.user){ %>'
     $mapContainer = $("#mapCollection")
     const empty = function () {
       $('#mapCollection').empty();
@@ -401,14 +403,15 @@
         </span>
           </div>
           <div class="map <%= maps[i].id %>" id='map<%= i %>'>ALEX</div>
-        </div>`
-        )
-      '<% } %>'
-      // }
+          </div>`
+          )
+          '<% } %>'
+          // }
       initMapSlider();
     }
-    $('#create').on('click', function () {
+    $('#my-maps').on('click', function () {
       empty();
+      // initMapSlider();
     })
     '<%  } %>'
 
