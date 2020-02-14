@@ -105,6 +105,10 @@
   padding-right: 1em;
 }
 
+.user-maps-icons:hover {
+  color: green;
+}
+
 .map {
   margin: 0em 1em 0.5em 0.5em;
   /* margin-right: 1em; */
