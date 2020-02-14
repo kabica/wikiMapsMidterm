@@ -96,7 +96,7 @@
     });
   }
 
-  function initMapRefresh(map, center) {
+  function initMapRefresh(map, center, markerData) {
     markers = [];
     var sydney = new google.maps.LatLng(-33.867, 151.195);
     // infowindow = new google.maps.InfoWindow();
@@ -116,7 +116,17 @@
       id: `marker1`
     });
 
-    console.log(',arkesrs',markers)
+
+    for (userMarkers of markerData) {
+      marker = new google.maps.Marker({
+        position: {
+          lat: Number(userMarkers.lat),
+          lng: Number(userMarkers.lng)
+        },
+        map: map
+      })
+    }
+
     markers.push(marker);
 
   }
@@ -173,8 +183,6 @@
       edited: false,
       id: `marker1`
     });
-
-    console.log('mar', marker)
 
     markers.push(marker);
     newInfoWindow(marker);
@@ -313,7 +321,6 @@
 
     $('#mapCollection').on('click', '.hover-btns', (event) => {
       const icon = $(event.target).siblings()[0];
-      // console.log(icon.classList[1])
       const mapSib = $(event.target).parentsUntil('.map-btns')[1];
       const mapID = $(mapSib).siblings()[0].classList[1];
       if (icon.classList[1] === 'fa-expand-alt') {
@@ -324,18 +331,15 @@
           contentType: 'application/json',
           url: '/map/test',
           success: function (data) {
-            const center = new google.maps.LatLng(data[0][0].lat, data[0][0].lng)
-            // const center = {lat: Number(data[0][0].lat), lng: data[0][0].lng};
-            console.log({lat: Number(data[0][0].lat), lng: data[0][0].lng})
+            const center = new google.maps.LatLng(data[0][0].lat, data[0][0].lng);
+            const markerData = data[1][0];
             map = new google.maps.Map(
               document.getElementById('map'), {
               center: {lat: Number(data[0][0].lat), lng: Number(data[0][0].lng)},
               zoom: 12
             });
 
-            initMapRefresh(map, center)
-            // google.maps.event.trigger(map, 'resize');
-            console.log(data[0][0]);
+            initMapRefresh(map, center, markerData)
           }
         });
       };
