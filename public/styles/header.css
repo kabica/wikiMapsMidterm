@@ -8,6 +8,12 @@
   margin-top: 0em;
 }
 
+.map-desc-title {
+  font-family: 'Bungee Hairline';
+  color: white;
+  margin: 0.2em 1em 0em 0em;
+}
+
 #drop, #create_map, #clear {
   font-family: 'Bungee Hairline';
   font-size: 1em;

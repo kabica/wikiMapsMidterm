@@ -109,7 +109,7 @@
   </div>
   <main class="main-container">
     <header class="map-desc">
-      <h1 class="map-desc-title">MAP TITLE!</h1>
+      <h1 class="map-desc-title"><%= locals.city %></h1>
 
       <%# if (locals.user) { %>
       <button class="btn btn-dark" id="drop" onclick="addMarker(map)">Add Mark</button>
@@ -197,7 +197,8 @@
       document.getElementById('map'), {
         center: center,
         zoom: 15,
-        gestureHandling: 'cooperative'
+        gestureHandling: 'cooperative',
+        title: map.title
       });
 
     let marker = new google.maps.Marker({
@@ -221,8 +222,8 @@
       })
     }
 
+    $('.map-desc-title').text(`Map: ${map.title}`);
     markers.push(marker);
-
   }
 
   function initMapSlider() {
@@ -282,7 +283,6 @@
   }
 
   function addMarker(mapData) {
-    console.log('mapdata', mapData)
     let lat;
     let lng;
     if (mapData.hasOwnProperty('mapDataProviders')) {
@@ -385,7 +385,6 @@
       };
       markerData.push(marker);
     }
-    console.log(JSON.stringify(markerData));
     $.ajax({
       type: 'POST',
       data: JSON.stringify(markerData),
@@ -422,8 +421,9 @@
               document.getElementById('map'), {
                 center: {
                   lat: Number(data[0][0].lat),
-                  lng: Number(data[0][0].lng)
+                  lng: Number(data[0][0].lng),
                 },
+                title: mapID,
                 zoom: 12
               });
 
