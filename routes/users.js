@@ -524,7 +524,7 @@ module.exports = (db) => {
     const userID = req.session.user_id;
     getMapsByUserID(userID)
       .then(async result => {
-        console.log(chalk.red(JSON.stringify(result)));
+        console.log(chalk.white(JSON.stringify(result)));
         result.forEach(map => {
           userMaps.push({id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description});
           mapIDs.push(map.id);

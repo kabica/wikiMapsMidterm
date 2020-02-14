@@ -127,7 +127,7 @@
 
 #create {
   grid-area: b1;
-  /* background-color: rgba(14, 138, 125, 0.377); */
+  background-color: rgba(14, 138, 125, 0.377);
   opacity: 0.6;
   color: white;
   word-wrap: break-word;
