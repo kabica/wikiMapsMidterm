@@ -1,3 +1,10 @@
+#searchWindow {
+  background-color: gray;
+  outline: none;
+  border: 1px solid black;
+  margin-top: 0.6em;
+}
+
 img {
   margin-top: 0.25em;
   width: 5em;

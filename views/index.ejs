@@ -44,6 +44,8 @@
   </style>
 </head>
 
+
+
 <body>
   <div class="alex">
     <div class="brand">MAPS API</div>
@@ -117,9 +119,8 @@
       <button class="btn btn-dark" id="clear" onclick="clearMarker(markers)">Clear</button>
       <%#s } %>
 
-        <form class="menu-search-form">
-          SEARCH
-          <input type="text" type="submit" class="menu-search-input" name="search-input">
+        <form class="menu-search-form" id='navSearchBar'>
+          <input id='searchWindow'type="text" type="submit" class="menu-search-input" name="search-input">
         </form>
     </header>
     <section id="map" class="gmaps">
@@ -164,7 +165,6 @@
   }
 
   function initMapSearch(city) {
-    console.log(city);
     var sydney = new google.maps.LatLng(-33.867, 151.195);
     // infowindow = new google.maps.InfoWindow();
     map = new google.maps.Map(
@@ -174,7 +174,7 @@
         gestureHandling: 'cooperative'
       });
 
-    var request = {
+    let request = {
       query: city,
       fields: ['name', 'geometry'],
     };
@@ -523,6 +523,15 @@
     });
 
     $('#create').hide();
+
+    $('#navSearchBar').submit(function(event) {
+      event.preventDefault();
+      $(this).children().blur();
+      const city = $('#searchWindow').val();
+      initMapSearch(city);
+    })
+
+
 
     // $('.menu-search-input').on("keyup", function(e) {
     //   e.preventDefault();
