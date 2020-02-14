@@ -474,6 +474,39 @@ module.exports = (db) => {
       console.log(error);
     });
   };
+  // const getMapsByMapID = function (mapID) {
+  //   return db.query(`SELECT * FROM maps WHERE id = ${mapID};`)
+  //   .then(res => res.rows)
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
+  // };
+  // router.get("/map/test", (req, res) => {
+  //   let mapIDs = [];
+  //   let userMaps = [];
+  //   const mapID = 4;
+  //   getMapsByMapID(mapID)
+  //     .then(async result => {
+  //       console.log(chalk.yellow(JSON.stringify(result)));
+  //       result.forEach(map => {
+  //         userMaps.push({id: map.id, lat: map.lat, lng: map.lng, title: map.title, description: map.description});
+  //         mapIDs.push(map.id);
+  //       });
+  //       const [...mapMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
+  //       console.log(chalk.blue(JSON.stringify(mapMarkers)));
+
+  //       const mapData = [userMaps, mapMarkers]
+  //       res.send(mapData);
+  //     })
+  //     .catch(err => {
+  //       res
+  //         .status(500)
+  //         .json({
+  //           error: err.message
+  //         });
+  //     });
+  // });
+
   const getMapsByMapID = function (mapID) {
     return db.query(`SELECT * FROM maps WHERE id = ${mapID};`)
     .then(res => res.rows)
@@ -481,10 +514,12 @@ module.exports = (db) => {
       console.log(error);
     });
   };
+
   router.get("/map/test", (req, res) => {
     let mapIDs = [];
     let userMaps = [];
-    const mapID = 4;
+    const mapID = req.query.mapID;
+
     getMapsByMapID(mapID)
       .then(async result => {
         console.log(chalk.yellow(JSON.stringify(result)));
@@ -494,7 +529,6 @@ module.exports = (db) => {
         });
         const [...mapMarkers] = await Promise.all(mapIDs.map(getMarkersByMapID));
         console.log(chalk.blue(JSON.stringify(mapMarkers)));
-
         const mapData = [userMaps, mapMarkers]
         res.send(mapData);
       })

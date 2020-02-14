@@ -15,12 +15,12 @@
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
   <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
   <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/header.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
 
   <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
   <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
   <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
-
-
 
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
@@ -33,6 +33,7 @@
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
   <script type="text/javascript" src="/scripts/auth.js"></script>
+  <script type="text/javascript" src="/scripts/slider.js"></script>
 
 
   <style>
@@ -41,19 +42,22 @@
 </head>
 <body>
     <div class="alex">
+
         <div class="brand">MAPS API</div>
         <div class="topic">DISCOVER</div>
         <div class="topic">EXPLORE</div>
         <!-- <div class="topic">MAPS API</div> -->
+        <div class="pictures">
         <img src="/styles/node.png" alt="">
         <img id ='google' src="/styles/google.png" alt="">
+      </div>
         <div class="login_container">
             <% if(!userID) {%>
 
             <form class='login_form'  action='/login' method='POST' id='loginContainer'>
                 <div class="form-group">
                     <% if(register_error) {%>
-                      <label for="exampleInputEmail1" id='register_error'>ALREADY EXISTS!</label>
+                      <labecontainerl for="exampleInputEmail1" id='register_error'>ALREADY EXISTS!</label>
                       <% }else {%>
                   <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label><% }%>
                   <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
@@ -98,12 +102,10 @@
         </div>
 
       </div>
-  <main class="container">
+  <main class="main-container">
     <header class="map-desc">
       <h1 class="map-desc-title">MAP TITLE!</h1>
-      <!-- <p class="map-desc-info">MAP INFO!</p> -->
-      <!-- <form id="testButton"> -->
-      <!-- <input id="testButton" class="tweet" type="submit" value="Tweet" /> -->
+
       <%# if (locals.users_id) { %>
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
       <button id="create_map" onclick="createMap(markers)">Create</button>
@@ -113,7 +115,6 @@
     <section id="map" class="gmaps">
       <h2>MAPS!</h2>
     </section>
-    <%# include partials/_discover %>
     <% console.log(locals) %>
     <%- include partials/_slider %>
   </main>
@@ -148,10 +149,47 @@
       }
     });
   }
+
+  function initMapRefresh(map, center, markerData) {
+    markers = [];
+    var sydney = new google.maps.LatLng(-33.867, 151.195);
+    // infowindow = new google.maps.InfoWindow();
+    map = new google.maps.Map(
+      document.getElementById('map'), {
+        center: center,
+        zoom: 15
+      });
+
+      let marker = new google.maps.Marker({
+      map: map,
+      position: center,
+      draggable: true,
+      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      title: `marker1`,
+      edited: false,
+      id: `marker1`
+    });
+
+
+    for (userMarkers of markerData) {
+      marker = new google.maps.Marker({
+        position: {
+          lat: Number(userMarkers.lat),
+          lng: Number(userMarkers.lng)
+        },
+        map: map
+      })
+    }
+
+    markers.push(marker);
+
+  }
+
   function initMapSlider() {
     let i = 0;
+    console.log('lat')
     // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
-    '<% if (locals.user_id){ %>'
+    '<% if (locals.user){ %>'
     '<% for(userMap of maps){ %>'
     map = new google.maps.Map(
       document.getElementById(`map${i}`), {
@@ -202,6 +240,7 @@
     newInfoWindow(marker);
   }
   function addMarker(mapData) {
+    console.log('mapdata', mapData)
     let lat;
     let lng;
     if (mapData.hasOwnProperty('mapDataProviders')) {
@@ -316,20 +355,72 @@
 </script>
 <script type="text/javascript">
   $(function () {
+
+
+    $('#mapCollection').on('click', '.hover-btns', (event) => {
+      const icon = $(event.target).siblings()[0];
+      const mapSib = $(event.target).parentsUntil('.map-btns')[1];
+      const mapID = $(mapSib).siblings()[0].classList[1];
+      if (icon.classList[1] === 'fa-expand-alt') {
+        $.ajax({
+          type: 'GET',
+          data: {mapID},
+          // data: markerData,
+          contentType: 'application/json',
+          url: '/map/test',
+          success: function (data) {
+            const center = new google.maps.LatLng(data[0][0].lat, data[0][0].lng);
+            const markerData = data[1][0];
+            map = new google.maps.Map(
+              document.getElementById('map'), {
+              center: {lat: Number(data[0][0].lat), lng: Number(data[0][0].lng)},
+              zoom: 12
+            });
+
+            initMapRefresh(map, center, markerData)
+          }
+        });
+      };
+    })
+
     // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
-    '<% if (locals.user_id){ %>'
+    '<% if (locals.user){ %>'
     $mapContainer = $("#mapCollection")
     const empty = function () {
       $('#mapCollection').empty();
-      for (let i = 0; i < '<%= maps.length %>'; i++) {
-        $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
-      }
+      // for (let i = 0; i < '<%= maps.length %>'; i++) {
+      '<% for (let i = 0; i < maps.length; i++) { %>'
+        $('#mapCollection').append(`
+        <div class="map-btns">
+          <div class="hover-btns">
+        <span class="fa-stack fa-1x user-maps-icons">
+          <i class="far fa-star fa-stack-1x"></i>
+          <i class="far fa-circle fa-stack-2x"></i>
+        </span>
+        <span class="fa-stack fa-1x user-maps-icons">
+          <i class="fas fa-edit fa-stack-1x"></i>
+          <i class="far fa-circle fa-stack-2x"></i>
+        </span>
+        <span class="fa-stack fa-1x user-maps-icons">
+          <i class="fas fa-expand-alt fa-stack-1x"></i>
+          <i class="far fa-circle fa-stack-2x"></i>
+        </span>
+          </div>
+          <div class="map <%= maps[i].id %>" id='map<%= i %>'>ALEX</div>
+          </div>`
+          )
+          '<% } %>'
+          // }
       initMapSlider();
     }
-    $('#create').on('click', function () {
-      empty();
-    })
+
     '<%  } %>'
+
+    $('#my-maps').on('click', function () {
+      empty();
+      // initMapSlider();
+    })
+
     $('.gmaps').on('click', `.marker-data`, function () {
       const title = $(this).siblings()[0];
       const desc = $(this).siblings()[1];
