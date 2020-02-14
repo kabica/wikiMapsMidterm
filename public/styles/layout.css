@@ -22,15 +22,12 @@ main {
   /* column-gap: 1em; */
 }
 
-/* .discover {
-  grid-area: content;
-  display: grid;
-  row-gap: 2em;
-  column-gap: 1em;
-} */
-
 #slider-maps {
   grid-area: slider;
+}
+
+.discover {
+  grid-area: navDrop;
 }
 
 /* Checking for desktop displays and Setting styles */
@@ -51,19 +48,19 @@ main {
     "desc desc desc"
     "gmaps gmaps gmaps"
     "slider slider slider";
-    margin: 0em 1em 0em 1em;
+    margin: 0em 1em 0em 16em;
   }
 
   .discover {
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 2em 20em 20em 20em 2em;
+    grid-template-columns: 8vh 1fr 1fr 1fr;
+    grid-template-rows: 6vh 50vh 50vh 50vh 6vh;
     grid-template-areas:
-    ". . ."
-    "row1 row1 row1"
-    "row2 row2 row2"
-    "row3 row3 row3"
-    ". . .";
-    margin: 0em 1em 0em 1em;
+    ". . . ."
+    "b1 row1 row1 row1"
+    "b2 row2 row2 row2"
+    "b3 row3 row3 row3"
+    ". . . .";
+    margin: 0em 0em 0em 1em;
   }
 }
 

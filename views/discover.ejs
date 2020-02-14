@@ -3,6 +3,9 @@
 
 <head>
   <title>Home Page</title>
+  <!-- Bootstrap -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
   <!-- Framework CSS -->
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
@@ -12,21 +15,24 @@
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
   <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
   <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/header.css" type="text/css" />
+
   <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
   <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
+
 
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png"
+    href="https://cdn2.iconfinder.com/data/icons/funtime-animals-humans/60/004_019_parrot_bird_animal_pet-512.png">
 
   <!-- Internal JS -->
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
   <script type="text/javascript" src="/scripts/auth.js"></script>
-  <script type="text/javascript" src="/scripts/slider.js"></script>
+
 
   <style>
 
@@ -35,254 +41,192 @@
 
 <body>
 
-  <%- include partials/_menu %>
+  <%# include partials/_menu %>
+  <div class="alex">
+    <div class="brand">MAPS API</div>
+    <div class="topic">DISCOVER</div>
+    <div class="topic">EXPLORE</div>
+    <div class="topic">MAPS API</div>
+    <div class="login_container">
+      <% if(!userID) {%>
+        <form class='login_form'  action='/login' method='POST' id='loginContainer'>
+            <div class="form-group">
+              <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+              <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+              <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+            </div>
+            <div class="form-group">
+              <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+              <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+            </div>
+            <div class="login_register">
+                <button type="submit" class="btn btn-dark" id='loginUser'>Login</button>
+                <button type="submit" class="btn btn-dark" id='registerUser'>New</button>
+            </div>
+            </form>
+            <form class='login_form'  action='/register' method='POST' id='registerContainer'>
+              <div class="form-group">
+                <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+                <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+              </div>
+              <div class="form-group">
+                <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+                <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+              </div>
+              <div class="login_register">
+                  <button type="submit" class="btn btn-dark" id='registerUser'>Register</button>
+              </div>
+              </form>
+              <%  }else {%>
+                <form class='login_form'  action='/logout' method='POST' id='logoutContainer'>
+
+
+
+                  </div>
+                  <div class="login_register">
+                      <button type="submit" class="btn btn-dark" id='logout'>logout</button>
+                  </div>
+                  </form>
+              <%  }%>
+    </div>
+
+  </div>
+
 
   <main class="discover">
+      <button type="button" class="btn btn-outline-dark" id='create'>my  maps</button>
+      <button type="button" class="btn btn-outline-dark" id='food'>my  favs</button>
+      <button type="button" class="btn btn-outline-dark" id='movie'>people</button>
+      <!-- <button id="create">Create</button> -->
+      <!-- <button value='999' id="food">Food</button>
+      <button value='999' id="movie">Fill</button> -->
+
+
+
+
+      <div class='maps' id='mapCollection'></div>
+      <div class='maps' id='foodmap'></div>
+      <div class='maps' id='moviemap'></div>
+
+
+
   </main>
 
 </body>
 <script>
-  // This example requires the Places library. Include the libraries=places
-  // parameter when you first load the API. For example:
-  // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
-  let map;
-  let service;
-  let infowindow;
-  let markers = [];
+    $(function () {
+      function initMap(mapData, type) {
+      let i = 0;
+      for(userMap of mapData[0]){
+      let elem = `${type}${i}`
+      map = new google.maps.Map(
+        document.getElementById(elem), {
+          id: userMap.id,
+          zoom: 10,
+          center: {
+            lat: JSON.parse(userMap.lat),
+            lng: JSON.parse(userMap.lng)
+          },
+          gestureHandling: 'cooperative'
 
-  function initMap() {
-    var sydney = new google.maps.LatLng(-33.867, 151.195);
-
-    // infowindow = new google.maps.InfoWindow();
-
-    map = new google.maps.Map(
-      document.getElementById('map'), {
-        center: '<%= city %>',
-        zoom: 15
-      });
-
-    var request = {
-      query: '<%= city %>',
-      fields: ['name', 'geometry'],
-    };
-
-    service = new google.maps.places.PlacesService(map);
-
-    service.findPlaceFromQuery(request, function (results, status) {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        for (var i = 0; i < results.length; i++) {
-          createMarker(results[i]);
-        }
-        map.setCenter(results[0].geometry.location);
-      }
-    });
-  }
-
-  function initMapSlider() {
-    let i = 0;
-    // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
-    '<% if (locals.user_id){ %>'
-    '<% for(userMap of maps){ %>'
-    map = new google.maps.Map(
-      document.getElementById(`map${i}`), {
-        map_id: `Map: ${i}`,
-        zoom: 13,
-        disableDefaultUI: true,
-        center: {
-          lat: JSON.parse('<%= userMap.lat %>'),
-          lng: JSON.parse('<%= userMap.lng %>'),
-        },
-        gestureHandling: 'cooperative'
-
-      });
-    var marker = new google.maps.Marker({
-      position: {
-        lat: JSON.parse('<%= userMap.lat %>'),
-        lng: JSON.parse('<%= userMap.lng %>')
-      },
-      map: map
-    })
-    i++;
-    '<% for(userMarker of markers){ %>'
-    '<% for(userMarkerData of userMarker){ %>'
-    if (JSON.parse('<%= userMarkerData.map_id%>') === JSON.parse('<%= userMap.id%>')) {
-      let marker = new google.maps.Marker({
-        position: {
-          lat: JSON.parse('<%= userMarkerData.lat %>'),
-          lng: JSON.parse('<%= userMarkerData.lng %>')
-        },
-        map: map
-      })
-    };
-    '<%  } %>'
-    '<%  } %>'
-    '<%  } %>'
-    '<%  } %>'
-  };
-
-  function createMarker(place) {
-    let marker = new google.maps.Marker({
-      map: map,
-      position: place.geometry.location,
-      draggable: true,
-      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-      title: `marker1`,
-      edited: false,
-      id: `marker1`
-    });
-
-    markers.push(marker);
-    newInfoWindow(marker);
-  }
-
-
-  function addMarker(mapData) {
-    let lat;
-    let lng;
-    if (mapData.hasOwnProperty('mapDataProviders')) {
-      // console.log(mapData)
-      lat = map.getCenter().lat();
-      lng = map.getCenter().lng();
-      createNewMarker({
-        lat: lat,
-        lng: lng,
-        map: map
-      });
-    } else {
-      // Add in some check that lat long and title are in there
-      mapData.forEach(maps => {
-        lat = maps.lat;
-        lng = maps.lng;
-        createNewMarker({
-          lat: lat,
-          lng: lng,
-          map: map
         });
+
+      var marker = new google.maps.Marker({
+        position: {
+          lat: JSON.parse(userMap.lat),
+          lng: JSON.parse(userMap.lng)
+        },
+        map: map
       })
-    }
-  };
-
-  function createNewMarker(markerData) {
-    marker = new google.maps.Marker({
-      position: {
-        lat: markerData.lat,
-        lng: markerData.lng
-      },
-      map: markerData.map,
-      draggable: true,
-      animation: google.maps.Animation.DROP,
-      title: `marker${markers.length + 1}`,
-      edited: false,
-      id: `marker${markers.length + 1}`
-    });
-
-    markers.push(marker);
-    google.maps.event.clearInstanceListeners(marker);
-    google.maps.event.addListener(marker, 'click', function () {
-      newInfoWindow(marker);
-    })
-
-    // markers.forEach(marker => markerLoc.push({id: marker.id, lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}))
-    // console.log(markerLoc);
-  };
-
-  function newInfoWindow(marker) {
-
-
-    const infowindow = new google.maps.InfoWindow();
-    // marker.addListener('click', toggleBounce);
-
-    infowindow.close(); // Close previously opened infowindow
-
-    // if (needString) {
-    const contentString = setContentString(marker.edited, {
-      title: marker.title,
-      desc: marker.description
-    });
-    infowindow.setContent(contentString);
-    // }
-    infowindow.open(map, marker);
-  }
-
-  function setContentString(edit, data) {
-    if (edit) {
-      return '<div class="marker-display">' +
-        `<button class="marker-edit marker${markers.length}"> edit </button>` +
-        `<h3 class="marker-title">${data.title}</h3>` +
-        `<h5 class="marker-desc">${data.desc}</h5>` +
-        '</div>'
-    } else {
-      return '<div class="marker-form">' +
-        'Marker Title' +
-        '<input type="text" class="marker-title" name="title" placeholder="Title">' +
-        'Marker Description' +
-        '<input type="text" class="marker-desc" name="description" placeholder="Description">' +
-        'Image Url' +
-        '<input type="text" class="marker-img" name="imgURL" placeholder="image URL">' +
-        `<button class="marker-data marker${markers.length}" >submit</button>` +
-        '</div>'
-    }
-  }
-
-  const toggleBounce = function () {
-    if (this.getAnimation() !== null) {
-      this.setAnimation(null);
-    } else {
-      this.setAnimation(google.maps.Animation.BOUNCE);
-    }
-  };
-
-  const clearMarker = function (markers) {
-    for (let i = 1; i < markers.length; i++) {
-      markers[i].setMap(null);
-    }
-  };
-  const createMap = function (markers) {
-    let markerData = [];
-    for (let i = 0; i < markers.length; i++) {
-      let marker = {};
-      marker['location'] = {
-        lat: markers[i].getPosition().lat(),
-        lng: markers[i].getPosition().lng(),
+      i++;
+      for(userMarker of mapData[1]){
+        for(userMarkerData of userMarker){
+      if (JSON.parse(userMarkerData.map_id) === JSON.parse(userMap.id)) {
+        let marker = new google.maps.Marker({
+          position: {
+            lat: JSON.parse(userMarkerData.lat),
+            lng: JSON.parse(userMarkerData.lng)
+          },
+          map: map
+        })
       };
-      markerData.push(marker);
-    }
-    console.log(JSON.stringify(markerData));
-    $.ajax({
-      type: 'POST',
-      data: JSON.stringify(markerData),
-      // data: markerData,
-      contentType: 'application/json',
-      url: '/endpoint',
-      success: function (data) {
-        console.log('success');
       }
+      }
+    }
+    };
+
+      $("#food").on("click", function () {
+        title = $(this).val().split(' ');
+        console.log(title);
+        $.ajax({
+            url: `/discover/999`,
+            method: 'GET'
+          })
+          .done(mapData => {
+            const populateMaps = function () {
+              $('#foodmap').empty();
+              for (let i = 0; i < mapData[0].length; i++) {
+                $('#foodmap').append(`<div class="map" id='foodMap${i}'></div>`)
+              }
+              type = 'foodMap';
+              initMap(mapData, type);
+            }
+            populateMaps();
+            console.log('ALEX', title);
+          })
+      });
+
+      $("#create").on("click", function () {
+        title = $(this).val().split(' ');
+        console.log(title);
+        $.ajax({
+            url: `/alex/maps`,
+            method: 'GET'
+          })
+          .done(mapData => {
+            const populateMaps = function () {
+              $('#mapCollection').empty();
+              for (let i = 0; i < mapData[0].length; i++) {
+                $('#mapCollection').append(`<div class="map" id='map${i}'></div>`)
+              }
+              type = 'map';
+              initMap(mapData, type);
+            }
+            populateMaps();
+          })
+      });
+      $("#movie").on("click", function () {
+
+        console.log(title);
+        $.ajax({
+            url: `/discover/999`,
+            method: 'GET'
+          })
+          .done(mapData => {
+            const populateMaps = function () {
+              $('#moviemap').empty();
+              for (let i = 0; i < mapData[0].length; i++) {
+                $('#moviemap').append(`<div class="map" id='moviemap${i}'></div>`)
+              }
+              type = 'moviemap';
+              initMap(mapData, type);
+            }
+            populateMaps();
+          })
+      });
+
+      $("#registerUser").on("click", function (event) {
+        event.preventDefault();
+        $('#loginContainer').hide();
+        $('#registerContainer').show();
+
+
+      });
+
     });
-  }
-</script>
-
-<script type="text/javascript">
-  $(function () {
-
-    // REMOVE THIS WHEN NOT LOGGED IN USER HAS RANDOM MAPS
-    '<% if (locals.user_id){ %>'
-    $mapContainer = $("#mapCollection")
-    const empty = function () {
-      $('#mapCollection').empty();
-      for (let i = 0; i < '<%= maps.length %>'; i++) {
-        $('#mapCollection').append(`<div class="map" id='map${i}'>ALEX</div>`)
-      }
-      initMapSlider();
-    }
-    $('#create').on('click', function () {
-      empty();
-    })
-    '<%  } %>'
-  });
-</script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer>
-</script>
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
 
 </html>

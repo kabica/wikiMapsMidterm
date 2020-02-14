@@ -3,6 +3,9 @@
 
 <head>
   <title>Home Page</title>
+  <!-- Bootstrap -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
   <!-- Framework CSS -->
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
@@ -13,66 +16,93 @@
   <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
   <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
   <link rel="stylesheet" href="/styles/header.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
+
   <link rel="stylesheet" href="/styles/auth.css" type="text/css" />
   <link rel="stylesheet" href="/styles/marker.css" type="text/css" />
-  <!-- <link rel="stylesheet" href="/styles/sliderTEST.css" type="text/css" /> -->
-  <link rel="stylesheet" href="/styles/slider.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
+
 
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Hairline&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png"
+    href="https://cdn2.iconfinder.com/data/icons/funtime-animals-humans/60/004_019_parrot_bird_animal_pet-512.png">
 
   <!-- Internal JS -->
   <script type="text/javascript" src="/scripts/app.js"></script>
   <script type="text/javascript" src="/scripts/nav.js"></script>
   <script type="text/javascript" src="/scripts/auth.js"></script>
-  <script type="text/javascript" src="/scripts/slider.js"></script>
+
 
   <style>
+
   </style>
 </head>
-
 <body>
+    <div class="alex">
+        <div class="brand">MAPS API</div>
+        <div class="topic">DISCOVER</div>
+        <div class="topic">EXPLORE</div>
+        <div class="topic">MAPS API</div>
+        <div class="login_container">
+            <form class='login_form'  action='/login' method='POST' id='loginContainer'>
+                <div class="form-group">
+                  <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+                  <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                  <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+                </div>
+                <div class="form-group">
+                  <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+                  <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+                </div>
+                <div class="login_register">
+                    <button type="submit" class="btn btn-dark" id='loginUser'>Login</button>
+                    <button type="submit" class="btn btn-dark" id='registerUser'>New</button>
+                </div>
+                </form>
+                <form class='login_form'  action='/register' method='POST' id='registerContainer'>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+                    <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+                  </div>
+                  <div class="form-group">
+                    <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+                    <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+                  </div>
+                  <div class="login_register">
+                      <button type="submit" class="btn btn-dark" id='registerUser'>Register</button>
+                  </div>
+                  </form>
+        </div>
 
-  <%- include partials/_menu %>
-
+      </div>
   <main class="container">
-
     <header class="map-desc">
       <h1 class="map-desc-title">MAP TITLE!</h1>
-      <!-- <p class="map-desc-info">MAP INFO!</p> -->
-      <!-- <form id="testButton"> -->
-      <!-- <input id="testButton" class="tweet" type="submit" value="Tweet" /> -->
+
       <%# if (locals.users_id) { %>
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
       <button id="createMap" onclick="createMap(markers)">Create</button>
       <button id="clear" onclick="clearMarker(markers)">Clear</button>
-
       <%#s } %>
     </header>
-
     <section id="map" class="gmaps">
       <h2>MAPS!</h2>
     </section>
-
-    <%# include partials/_discover %>
     <% console.log(locals) %>
     <%- include partials/_slider %>
   </main>
-
 </body>
 <script>
   // This example requires the Places library. Include the libraries=places
   // parameter when you first load the API. For example:
   // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
   let map;
   let service;
   let infowindow;
   let markers = [];
-
   function initMap() {
     var sydney = new google.maps.LatLng(-33.867, 151.195);
     // infowindow = new google.maps.InfoWindow();
@@ -146,7 +176,6 @@
           lng: JSON.parse('<%= userMap.lng %>'),
         },
         gestureHandling: 'cooperative'
-
       });
     var marker = new google.maps.Marker({
       position: {
@@ -172,7 +201,6 @@
     '<%  } %>'
     '<%  } %>'
   };
-
   function createMarker(place) {
     let marker = new google.maps.Marker({
       map: map,
@@ -183,12 +211,9 @@
       edited: false,
       id: `marker1`
     });
-
     markers.push(marker);
     newInfoWindow(marker);
   }
-
-
   function addMarker(mapData) {
     console.log('mapdata', mapData)
     let lat;
@@ -215,7 +240,6 @@
       })
     }
   };
-
   function createNewMarker(markerData) {
     marker = new google.maps.Marker({
       position: {
@@ -229,25 +253,18 @@
       edited: false,
       id: `marker${markers.length + 1}`
     });
-
     markers.push(marker);
     google.maps.event.clearInstanceListeners(marker);
     google.maps.event.addListener(marker, 'click', function () {
       newInfoWindow(marker);
     })
-
     // markers.forEach(marker => markerLoc.push({id: marker.id, lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}))
     // console.log(markerLoc);
   };
-
   function newInfoWindow(marker) {
-
-
     const infowindow = new google.maps.InfoWindow();
     // marker.addListener('click', toggleBounce);
-
     infowindow.close(); // Close previously opened infowindow
-
     // if (needString) {
     const contentString = setContentString(marker.edited, {
       title: marker.title,
@@ -257,7 +274,6 @@
     // }
     infowindow.open(map, marker);
   }
-
   function setContentString(edit, data) {
     if (edit) {
       return '<div class="marker-display">' +
@@ -277,7 +293,6 @@
         '</div>'
     }
   }
-
   const toggleBounce = function () {
     if (this.getAnimation() !== null) {
       this.setAnimation(null);
@@ -285,7 +300,6 @@
       this.setAnimation(google.maps.Animation.BOUNCE);
     }
   };
-
   const clearMarker = function (markers) {
     for (let i = 1; i < markers.length; i++) {
       markers[i].setMap(null);
@@ -314,7 +328,6 @@
     });
   }
 </script>
-
 <script type="text/javascript">
   $(function () {
 
@@ -385,7 +398,6 @@
       const desc = $(this).siblings()[1];
       const imgURL = $(this).siblings()[2];
       const parentDiv = $(this).parent();
-
       for (const marker of markers) {
         if (marker.id === this.classList[1]) {
           marker.title = $(title).val();
@@ -399,7 +411,6 @@
           console.log('content string', contentString)
           console.log('marker data', marker);
           $(parentDiv).replaceWith(contentString);
-
           if (marker.edited) {
             google.maps.event.clearInstanceListeners(marker);
             google.maps.event.addListener(marker, 'click', function () {
@@ -409,19 +420,16 @@
         }
       }
     })
-
     $('.gmaps').on('click', `.marker-edit`, function () {
       const parentDiv = $(this).parent();
       for (const marker of markers) {
         if (marker.id === this.classList[1]) {
-
           const contentString = setContentString(marker.edited, {
             title: marker.title,
             desc: marker.description
           });
           $(parentDiv).replaceWith(contentString);
           marker.edited = false;
-
           if (!marker.edited) {
             google.maps.event.clearInstanceListeners(marker);
             google.maps.event.addListener(marker, 'click', function () {
@@ -430,17 +438,13 @@
           }
         }
       }
-
     })
-
     $('#testButton').click(function (e) {
       e.preventDefault();
       console.log('select_link clicked');
-
       var data = {};
       data.title = "title";
       data.message = "message";
-
       // $.ajax({
       //   type: 'POST',
       //   data: JSON.stringify(data),
@@ -451,12 +455,9 @@
       //     console.log(JSON.stringify(data));
       //   }
       // });
-
     });
   });
 </script>
-
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer>
 </script>
-
 </html>
