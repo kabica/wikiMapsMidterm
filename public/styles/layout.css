@@ -32,7 +32,7 @@ main {
 
 /* Checking for desktop displays and Setting styles */
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 900px) {
   body {
     grid-template-columns: 16em auto;
     grid-template-rows: 3em auto;
@@ -53,7 +53,7 @@ main {
 
   .discover {
     grid-template-columns: 8vh 1fr 1fr 1fr;
-    grid-template-rows: 6vh 50vh 50vh 50vh 6vh;
+    grid-template-rows: 5vh 50vh 50vh 50vh 6vh;
     grid-template-areas:
     ". . . ."
     "b1 row1 row1 row1"

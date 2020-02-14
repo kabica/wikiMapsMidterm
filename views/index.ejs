@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="/styles/discover.css" type="text/css" />
 
 
+
   <!-- Framework JS -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script src="https://kit.fontawesome.com/3449331f18.js" crossorigin="anonymous"></script>
@@ -46,9 +47,14 @@
         <div class="topic">EXPLORE</div>
         <div class="topic">MAPS API</div>
         <div class="login_container">
+            <% if(!userID) {%>
+
             <form class='login_form'  action='/login' method='POST' id='loginContainer'>
                 <div class="form-group">
-                  <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+                    <% if(register_error) {%>
+                      <label for="exampleInputEmail1" id='register_error'>ALREADY EXISTS!</label>
+                      <% }else {%>
+                  <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label><% }%>
                   <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
                   <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
                 </div>
@@ -61,6 +67,7 @@
                     <button type="submit" class="btn btn-dark" id='registerUser'>New</button>
                 </div>
                 </form>
+
                 <form class='login_form'  action='/register' method='POST' id='registerContainer'>
                   <div class="form-group">
                     <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
@@ -75,6 +82,18 @@
                       <button type="submit" class="btn btn-dark" id='registerUser'>Register</button>
                   </div>
                   </form>
+                  <%  }else {%>
+                    <form class='login_form'  action='/logout' method='POST' id='logoutContainer'>
+
+
+
+                      </div>
+                      <div class="logout_form">
+                          <button type="submit" class="btn btn-dark" id='logout'>logout</button>
+                      </div>
+                      </form>
+                  <%  }%>
+
         </div>
 
       </div>
@@ -84,7 +103,7 @@
 
       <%# if (locals.users_id) { %>
       <button id="drop" onclick="addMarker(map)">Add Mark</button>
-      <button id="createMap" onclick="createMap(markers)">Create</button>
+      <button id="create_map" onclick="createMap(markers)">Create</button>
       <button id="clear" onclick="clearMarker(markers)">Clear</button>
       <%#s } %>
     </header>
@@ -439,23 +458,13 @@
         }
       }
     })
-    $('#testButton').click(function (e) {
-      e.preventDefault();
-      console.log('select_link clicked');
-      var data = {};
-      data.title = "title";
-      data.message = "message";
-      // $.ajax({
-      //   type: 'POST',
-      //   data: JSON.stringify(data),
-      //   contentType: 'application/json',
-      //   url: '/endpoint',
-      //   success: function (data) {
-      //     console.log('success');
-      //     console.log(JSON.stringify(data));
-      //   }
-      // });
-    });
+    $("#registerUser").on("click", function (event) {
+        event.preventDefault();
+        $('#loginContainer').hide();
+        $('#registerContainer').show();
+      });
+
+    $('#create').hide();
   });
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap" async defer>
