@@ -4,8 +4,11 @@
 <head>
   <title>Home Page</title>
   <!-- Bootstrap -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+  </script>
 
   <!-- Framework CSS -->
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
@@ -44,74 +47,76 @@
 
   <%# include partials/_menu %>
   <div class="alex">
-      <div class="brand">MAPS API</div>
-      <div class="topic">DISCOVER</div>
-      <div class="topic">EXPLORE</div>
-      <!-- <div class="topic">MAPS API</div> -->
-      <img src="/styles/node.png" alt="">
-      <img id ='google' src="/styles/google.png" alt="">
+    <div class="brand">MAPS API</div>
+    <div class="topic">DISCOVER</div>
+    <div class="topic">EXPLORE</div>
+    <!-- <div class="topic">MAPS API</div> -->
+    <img src="/styles/node.png" alt="">
+    <img id='google' src="/styles/google.png" alt="">
     <div class="login_container">
       <% if(!userID) {%>
-        <form class='login_form'  action='/login' method='POST' id='loginContainer'>
-            <div class="form-group">
-              <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
-              <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-              <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
-            </div>
-            <div class="form-group">
-              <input name='password' type="password" class="form-control" id="password" placeholder="Password">
-              <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
-            </div>
-            <div class="login_register">
-                <button type="submit" class="btn btn-dark" id='loginUser'>Login</button>
-                <button type="submit" class="btn btn-dark" id='registerUser'>New</button>
-            </div>
-            </form>
-            <form class='login_form'  action='/register' method='POST' id='registerContainer'>
-              <div class="form-group">
-                <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
-                <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-                <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
-              </div>
-              <div class="form-group">
-                <input name='password' type="password" class="form-control" id="password" placeholder="Password">
-                <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
-              </div>
-              <div class="login_register">
-                  <button type="submit" class="btn btn-dark" id='registerUser'>Register</button>
-              </div>
-              </form>
-              <%  }else {%>
-                <form class='login_form'  action='/logout' method='POST' id='logoutContainer'>
+      <form class='login_form' action='/login' method='POST' id='loginContainer'>
+        <div class="form-group">
+          <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+          <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp"
+            placeholder="Enter email">
+          <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+        </div>
+        <div class="form-group">
+          <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+          <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+        </div>
+        <div class="login_register">
+          <button type="submit" class="btn btn-dark" id='loginUser'>Login</button>
+          <button type="submit" class="btn btn-dark" id='registerUser'>New</button>
+        </div>
+      </form>
+      <form class='login_form' action='/register' method='POST' id='registerContainer'>
+        <div class="form-group">
+          <label for="exampleInputEmail1" id='credentials'>CREDENTIALS</label>
+          <input name='email' type="email" class="form-control" id="email" aria-describedby="emailHelp"
+            placeholder="Enter email">
+          <small id="emailHelp" class="form-text text-muted">servers love secrets</small>
+        </div>
+        <div class="form-group">
+          <input name='password' type="password" class="form-control" id="password" placeholder="Password">
+          <small id="emailHelp" class="form-text text-muted">we promise &hearts;</small>
+        </div>
+        <div class="login_register">
+          <button type="submit" class="btn btn-dark" id='registerUser'>Register</button>
+        </div>
+      </form>
+      <%  }else {%>
+      <form class='login_form' action='/logout' method='POST' id='logoutContainer'>
 
 
 
-                  </div>
-                  <div class="logout_form">
-                      <button type="submit" class="btn btn-dark" id='logout'>logout</button>
-                  </div>
-                  </form>
-              <%  }%>
     </div>
+    <div class="logout_form">
+      <button type="submit" class="btn btn-dark" id='logout'>logout</button>
+    </div>
+    </form>
+    <%  }%>
+  </div>
 
   </div>
 
 
   <main class="discover">
 
-      <button type="button" class="btn btn-outline-dark" id='create'>my  maps</button>
-      <button type="button" class="btn btn-outline-dark" id='food'>my  favs</button>
-      <button type="button" class="btn btn-outline-dark" id='movie'>people</button>
-      <!-- <button id="create">Create</button> -->
-      <!-- <button value='999' id="food">Food</button>
+    <button type="button" class="btn btn-outline-dark" id='create'>my maps</button>
+    <button type="button" class="btn btn-outline-dark" id='food'>my favs</button>
+    <button type="button" class="btn btn-outline-dark" id='movie'>people</button>
+    <!-- <button id="create">Create</button> -->
+    <!-- <button value='999' id="food">Food</button>
       <button value='999' id="movie">Fill</button> -->
 
 
 
 
-      <div class='maps' id='mapCollection'></div>
-      <div class='maps' id='foodmap'></div>
-      <div class='maps' id='moviemap'></div>
+    <div class='maps' id='mapCollection'></div>
+    <div class='maps' id='foodmap'></div>
+    <div class='maps' id='moviemap'></div>
 
 
 
@@ -119,118 +124,117 @@
 
 </body>
 <script>
-
-    $(function () {
-      function initMap(mapData, type) {
+  $(function () {
+    function initMap(mapData, type) {
       let i = 0;
-      for(userMap of mapData[0]){
-      let elem = `${type}${i}`
-      map = new google.maps.Map(
-        document.getElementById(elem), {
-          id: userMap.id,
-          zoom: 10,
-          center: {
+      for (userMap of mapData[0]) {
+        let elem = `${type}${i}`
+        map = new google.maps.Map(
+          document.getElementById(elem), {
+            id: userMap.id,
+            zoom: 10,
+            center: {
+              lat: JSON.parse(userMap.lat),
+              lng: JSON.parse(userMap.lng)
+            },
+            gestureHandling: 'cooperative'
+
+          });
+
+        var marker = new google.maps.Marker({
+          position: {
             lat: JSON.parse(userMap.lat),
             lng: JSON.parse(userMap.lng)
           },
-          gestureHandling: 'cooperative'
-
-        });
-
-      var marker = new google.maps.Marker({
-        position: {
-          lat: JSON.parse(userMap.lat),
-          lng: JSON.parse(userMap.lng)
-        },
-        map: map
-      })
-      i++;
-      for(userMarker of mapData[1]){
-        for(userMarkerData of userMarker){
-      if (JSON.parse(userMarkerData.map_id) === JSON.parse(userMap.id)) {
-        let marker = new google.maps.Marker({
-          position: {
-            lat: JSON.parse(userMarkerData.lat),
-            lng: JSON.parse(userMarkerData.lng)
-          },
           map: map
         })
-      };
+        i++;
+        for (userMarker of mapData[1]) {
+          for (userMarkerData of userMarker) {
+            if (JSON.parse(userMarkerData.map_id) === JSON.parse(userMap.id)) {
+              let marker = new google.maps.Marker({
+                position: {
+                  lat: JSON.parse(userMarkerData.lat),
+                  lng: JSON.parse(userMarkerData.lng)
+                },
+                map: map
+              })
+            };
+          }
+        }
       }
-      }
-    }
     };
 
-      $("#food").on("click", function () {
-        title = $(this).val().split(' ');
-        console.log(title);
-        $.ajax({
-            url: `/discover/999`,
-            method: 'GET'
-          })
-          .done(mapData => {
-            const populateMaps = function () {
-              $('#foodmap').empty();
-              for (let i = 0; i < mapData[0].length; i++) {
-                $('#foodmap').append(`<div class="map" id='foodMap${i}'></div>`)
-              }
-              type = 'foodMap';
-              initMap(mapData, type);
+    $("#food").on("click", function () {
+      title = $(this).val().split(' ');
+      console.log(title);
+      $.ajax({
+          url: `/discover/999`,
+          method: 'GET'
+        })
+        .done(mapData => {
+          const populateMaps = function () {
+            $('#foodmap').empty();
+            for (let i = 0; i < mapData[0].length; i++) {
+              $('#foodmap').append(`<div class="map" id='foodMap${i}'></div>`)
             }
-            populateMaps();
-            console.log('ALEX', title);
-          })
-      });
+            type = 'foodMap';
+            initMap(mapData, type);
+          }
+          populateMaps();
+          console.log('ALEX', title);
+        })
+    });
 
-      $("#create").on("click", function () {
-        title = $(this).val().split(' ');
-        console.log(title);
-        $.ajax({
-            url: `/alex/maps`,
-            method: 'GET'
-          })
-          .done(mapData => {
-            const populateMaps = function () {
-              $('#mapCollection').empty();
-              for (let i = 0; i < mapData[0].length; i++) {
-                $('#mapCollection').append(`<div class="map" id='map${i}'></div>`)
-              }
-              type = 'map';
-              initMap(mapData, type);
+    $("#create").on("click", function () {
+      title = $(this).val().split(' ');
+      console.log(title);
+      $.ajax({
+          url: `/alex/maps`,
+          method: 'GET'
+        })
+        .done(mapData => {
+          const populateMaps = function () {
+            $('#mapCollection').empty();
+            for (let i = 0; i < mapData[0].length; i++) {
+              $('#mapCollection').append(`<div class="map" id='map${i}'></div>`)
             }
-            populateMaps();
-          })
-      });
-      $("#movie").on("click", function () {
+            type = 'map';
+            initMap(mapData, type);
+          }
+          populateMaps();
+        })
+    });
+    $("#movie").on("click", function () {
 
-        console.log(title);
-        $.ajax({
-            url: `/discover/999`,
-            method: 'GET'
-          })
-          .done(mapData => {
-            const populateMaps = function () {
-              $('#moviemap').empty();
-              for (let i = 0; i < mapData[0].length; i++) {
-                $('#moviemap').append(`<div class="map" id='moviemap${i}'></div>`)
-              }
-              type = 'moviemap';
-              initMap(mapData, type);
+      console.log(title);
+      $.ajax({
+          url: `/discover/999`,
+          method: 'GET'
+        })
+        .done(mapData => {
+          const populateMaps = function () {
+            $('#moviemap').empty();
+            for (let i = 0; i < mapData[0].length; i++) {
+              $('#moviemap').append(`<div class="map" id='moviemap${i}'></div>`)
             }
-            populateMaps();
-          })
-      });
+            type = 'moviemap';
+            initMap(mapData, type);
+          }
+          populateMaps();
+        })
+    });
 
-      $("#registerUser").on("click", function (event) {
-        event.preventDefault();
-        $('#loginContainer').hide();
-        $('#registerContainer').show();
+    $("#registerUser").on("click", function (event) {
+      event.preventDefault();
+      $('#loginContainer').hide();
+      $('#registerContainer').show();
 
-
-      });
 
     });
-  </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
+
+  });
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap"></script>
 
 </html>
